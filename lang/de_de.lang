@@ -1,0 +1,20 @@
+url = Url
+url_title = Url
+
+url_article = Artikel
+url_data = Daten
+url_generate = Urls generieren
+url_generate_error_article = Artikel wählen
+url_generate_error_table = Tabelle wählen
+url_generate_legend_article = In welchem Artikel erfolgt die Ausgabe
+url_generate_legend_table = Aus welcher Tabelle werden die Urls erstellt
+url_generate_no_additive = kein Zusatz
+url_generate_notice_id = Spalte der dazugehörigen eindeutigen Id
+url_generate_notice_name = Spalten aus der die Url erzeugt wird
+url_generate_notice_restriction = Hiermit kann das erstellen der Urls für den obigen Artikel eingeschränkt werden. Hilfreich bei Relationen mit einer anderen Tabelle. News können zum Bsp. in mehrere Kategorien aufgeteilt werden.
+url_generate_restriction = Einschränkung
+url_generate_no_restriction = Keine Einschränkung
+url_id = Id
+url_language = Sprache
+url_no_table_selected = keine Tabelle ausgewählt
+url_table = Tabelle
