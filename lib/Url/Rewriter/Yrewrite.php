@@ -10,14 +10,18 @@
  */
 namespace Url\Rewriter;
 
+use Url\Generator;
+
 class Yrewrite extends Rewriter
 {
     /**
      * @return string
      */
-    public function extensionPointArticleIdNotFound()
+    public function articleIdNotFound()
     {
-        return 'YREWRITE_PREPARE';
+        \rex_extension::register('YREWRITE_PREPARE', function (\rex_extension_point $ep) {
+            return Generator::getArticleParams();
+        }, \rex_extension::EARLY);
     }
 
     /**
@@ -31,9 +35,9 @@ class Yrewrite extends Rewriter
     /**
      * @return string
      */
-    public function callFullUrl()
+    public function getFullUrl($article_id, $clang_id)
     {
-
+        return \rex_yrewrite::getFullUrlByArticleId($article_id, $clang_id);
     }
 
     /**
@@ -41,7 +45,8 @@ class Yrewrite extends Rewriter
      */
     public function getSuffix()
     {
-        return '.html';
+        $scheme = \rex_yrewrite::getScheme();
+        return $scheme->getSuffix();
     }
 
     /**
@@ -50,18 +55,9 @@ class Yrewrite extends Rewriter
      *
      * @return string
      */
-    public function normalize($string)
+    public function normalize($string, $clang = 0)
     {
-        $string = str_replace(
-            ['Ä', 'Ö', 'Ü', 'ä', 'ö', 'ü', 'ß', '/'],
-            ['Ae', 'Oe', 'Ue', 'ae', 'oe', 'ue', 'ss', '-'],
-            $string
-        );
-        $string = iconv('UTF-8', 'ASCII//TRANSLIT', $string);
-        $string = preg_replace('/[^\w -]+/', '', $string);
-        $string = strtolower(trim($string));
-        $string = urlencode($string);
-        $string = preg_replace('/[+-]+/', '-', $string);
-        return $string;
+        $scheme = \rex_yrewrite::getScheme();
+        return $scheme->normalize($string, $clang);
     }
 }

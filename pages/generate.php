@@ -59,7 +59,7 @@ if (!function_exists('url_generate_column_data')) {
         $replace = [];
         $dbconfigs = rex::getProperty('db');
         foreach($dbconfigs as $DBID => $dbconfig) {
-            $search[] = $DBID . Generator::getDatabaseTableSeparator();
+            $search[] = Generator::mergeDatabaseAndTable($DBID, '');
             $replace[] = $dbconfig['name'] . '.';
         }
         $table_out = str_replace($search, $replace, $table);
@@ -100,7 +100,7 @@ if ($func == '') {
     $list = rex_list::factory($query);
     $list->addTableAttribute('class', 'table-striped');
 
-    $tdIcon = '<i class="rex-icon rex-icon-refresh"></i>';
+    $tdIcon = '<i class="rex-icon rex-icon-anchor"></i>';
     $thIcon = '<a href="' . $list->getUrl(['func' => 'add']) . '"' . rex::getAccesskey($this->i18n('add'), 'add') . '><i class="rex-icon rex-icon-add-article"></i></a>';
     $list->addColumn($thIcon, $tdIcon, 0, ['<th class="rex-table-icon">###VALUE###</th>', '<td class="rex-table-icon">###VALUE###</td>']);
     $list->setColumnParams($thIcon, ['func' => 'edit', 'id' => '###id###']);
@@ -117,8 +117,8 @@ if ($func == '') {
     $list->addColumn('data', '');
     $list->setColumnLabel('data', $this->i18n('url_data'));
     $list->setColumnFormat('data', 'custom', 'url_generate_column_data');
-
     $list->addColumn($this->i18n('function'), $this->i18n('edit'));
+    $list->setColumnLayout($this->i18n('function'), ['<th class="rex-table-action" colspan="2">###VALUE###</th>', '<td class="rex-table-action">###VALUE###</td>']);
     $list->setColumnParams($this->i18n('function'), array('func' => 'edit', 'id' => '###id###'));
 
     $content = $list->get();
@@ -155,7 +155,9 @@ if ($func == '') {
         $field->setPrefix('<div class="rex-select-style">');
         $field->setSuffix('</div>');
         $field->setLabel($this->i18n('url_language'));
+        $field->setNotice($this->i18n('url_generate_notice_article_clang_ids'));
         $select = $field->getSelect();
+        $select->addOption($this->i18n('url_generate_article_clang_ids'), '0');
         foreach (rex_clang::getAll() as $clang) {
             $select->addOption($clang->getName(), $clang->getId());
         }
@@ -194,10 +196,10 @@ if ($func == '') {
         $dbname = $dbconfigs[$DBID]['name'];
         $select->addOptGroup($dbname);
         foreach ($dbtables as $dbtable) {
-            $select->addOption($dbtable, $DBID . Generator::getDatabaseTableSeparator() . $dbtable);
+            $select->addOption($dbtable, Generator::mergeDatabaseAndTable($DBID, $dbtable));
             $columns = rex_sql::showColumns($dbtable, $DBID);
             foreach ($columns as $column) {
-                $fields[$DBID . Generator::getDatabaseTableSeparator() . $dbtable][] = $column['name'];
+                $fields[Generator::mergeDatabaseAndTable($DBID, $dbtable)][] = $column['name'];
             }
         }
     }
@@ -245,7 +247,6 @@ if ($func == '') {
             $select->addOptions($options, true);
 
 
-
             $type = 'select';
             $name = $table . '_id';
             $f = $fieldContainer->addGroupedField($group, $type, $name);
@@ -255,6 +256,24 @@ if ($func == '') {
             $f->setNotice($this->i18n('url_generate_notice_id'));
             $select = $f->getSelect();
             $select->addOptions($options, true);
+
+            if (count(rex_clang::getAll()) >= 2) {
+                $f->setHeader('<div class="url-grid"><div class="url-grid-item">');
+                $f->setFooter('</div>');
+
+                $type = 'select';
+                $name = $table . '_clang_id';
+                $f = $fieldContainer->addGroupedField($group, $type, $name);
+                $f->setHeader('<div class="url-grid-item">');
+                $f->setFooter('</div></div>');
+                $f->setPrefix('<div class="rex-select-style">');
+                $f->setSuffix('</div>');
+                $f->setLabel($this->i18n('url_language'));
+                $f->setNotice($this->i18n('url_generate_notice_clang_id'));
+                $select = $f->getSelect();
+                $select->addOption($this->i18n('url_generate_no_clang_id'), '');
+                $select->addOptions($options, true);
+            }
 
 
             $type = 'select';
@@ -277,7 +296,7 @@ if ($func == '') {
             $f->setPrefix('<div class="rex-select-style">');
             $f->setSuffix('</div>');
             $select = $f->getSelect();
-            $select->addOptions(\Url\Generator::getRestrictionOperators());
+            $select->addOptions(Generator::getRestrictionOperators());
 
             $type = 'text';
             $name = $table . '_restriction_value';

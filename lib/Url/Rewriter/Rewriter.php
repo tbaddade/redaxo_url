@@ -12,11 +12,10 @@ namespace Url\Rewriter;
 
 abstract class Rewriter
 {
-
     /**
      * @return string
      */
-    abstract function extensionPointArticleIdNotFound();
+    abstract function articleIdNotFound();
 
     /**
      * @return string
@@ -26,7 +25,7 @@ abstract class Rewriter
     /**
      * @return string
      */
-    abstract function callFullUrl();
+    abstract function getFullUrl($article_id, $clang_id);
 
     /**
      * @return string
