@@ -217,6 +217,7 @@ class Generator
 
     public static function getArticleParams()
     {
+        self::ensurePaths();
         $currentUrl = Url::current();
 
         foreach (self::$paths as $domain => $articleIds) {
@@ -236,6 +237,7 @@ class Generator
 
     public static function getId()
     {
+        self::ensurePaths();
         $currentUrl = Url::current();
 
         foreach (self::$paths as $domain => $articleIds) {
@@ -266,6 +268,7 @@ class Generator
             $clangId = \rex_clang::getCurrentId();
         }
 
+        self::ensurePaths();
         $currentUrl = Url::current();
         foreach (self::$paths as $domain => $articleIds) {
             if (isset($articleIds[$articleId][$primaryId][$clangId])) {
@@ -294,6 +297,13 @@ class Generator
 
         if ($primaryId > 0) {
             return self::getUrlById($primaryId, $articleId, $clangId);
+        }
+    }
+
+    public static function ensurePaths()
+    {
+        if (empty(self::$paths)) {
+            self::generatePathFile([]);
         }
     }
 

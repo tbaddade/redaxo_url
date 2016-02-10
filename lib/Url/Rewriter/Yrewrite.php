@@ -20,7 +20,6 @@ class Yrewrite extends Rewriter
     public function articleIdNotFound()
     {
         \rex_extension::register('YREWRITE_PREPARE', function (\rex_extension_point $ep) {
-            Generator::readPathFile();
             return Generator::getArticleParams();
         }, \rex_extension::EARLY);
     }
