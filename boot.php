@@ -15,9 +15,11 @@ use \Url\Generator;
 class_alias('Url\Url', 'Url');
 class_alias('Url\Generator', 'UrlGenerator');
 
+Url::boot();
+Generator::boot();
+Url::getRewriter()->articleIdNotFound();
+
 rex_extension::register('PACKAGES_INCLUDED', function ($params) {
-    Url::boot();
-    Generator::boot();
 
     // if anything changes -> refresh PathFile
     if (rex::isBackend()) {
@@ -47,7 +49,6 @@ rex_extension::register('PACKAGES_INCLUDED', function ($params) {
         return Generator::rewrite($params);
     }, rex_extension::EARLY);
 
-    Url::getRewriter()->articleIdNotFound();
 
 }, rex_extension::EARLY);
 

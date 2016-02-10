@@ -10,8 +10,6 @@
  */
 namespace Url;
 
-use \Url\Url;
-
 class Generator
 {
     private static $databaseTableSeparator = '_xxx_';
@@ -21,7 +19,7 @@ class Generator
     public static function boot()
     {
         self::$pathfile = \rex_path::addonCache('url', 'pathlist.php');
-        self::readPathFile();
+        //self::readPathFile();
     }
 
     public static function getRestrictionOperators()
@@ -213,11 +211,6 @@ class Generator
                     }
                 }
             }
-            /*
-            echo '<pre>';
-            print_r(self::$paths);
-            echo '</pre>';
-            */
            \rex_file::putCache(self::$pathfile, self::$paths);
         }
     }
@@ -232,7 +225,7 @@ class Generator
                     foreach ($ids as $id => $clangIds) {
                         foreach ($clangIds as $clangId => $path) {
                             if ($currentUrl->getPath() == $path) {
-                                return array('article_id' => $articleId, 'clang' => $clangId);
+                                return ['article_id' => $articleId, 'clang' => $clangId];
                             }
                         }
                     }
@@ -310,11 +303,6 @@ class Generator
             self::generatePathFile([]);
         }
         self::$paths = \rex_file::getCache(self::$pathfile);
-        /*
-        echo '<pre>';
-        print_r(self::$paths);
-        echo '</pre>';
-        */
     }
 }
 
