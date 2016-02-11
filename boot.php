@@ -17,7 +17,9 @@ class_alias('Url\Generator', 'UrlGenerator');
 
 Url::boot();
 Generator::boot();
-Url::getRewriter()->articleIdNotFound();
+if (null !== Url::getRewriter()) {
+    Url::getRewriter()->articleIdNotFound();
+}
 
 rex_extension::register('PACKAGES_INCLUDED', function ($params) {
 

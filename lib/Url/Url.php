@@ -690,7 +690,11 @@ class Url
             if (\rex_addon::get('yrewrite')->isAvailable()) {
                 self::setRewriter(new YRewrite());
             } else {
-                throw new \rex_functional_exception('Please install a rewriter addon and call Url::setRewriter(Rewriter $rewriter).');
+                if (\rex_be_controller::getCurrentPage() == 'packages') {
+                    \rex_extension::register('PAGE_TITLE_SHOWN', function (\rex_extension_point $ep) {
+                        return $ep->setSubject(\rex_view::error('<h4>Url Addon:</h4><p>Please install a rewriter addon or deactivate the Url AddOn.</p>'));
+                    });
+                }
             }
         }
     }
