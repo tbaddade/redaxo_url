@@ -293,10 +293,19 @@ class Generator
 
         $articleId = $params['id'];
         $clangId = $params['clang'];
-        $primaryId = (isset($params['params']['id'])) ? $params['params']['id'] : 0;
+        $primaryId = 0;
+        if (isset($params['params']['id'])) {
+            $primaryId = $params['params']['id'];
+            unset($params['params']['id']);
+        }
 
         if ($primaryId > 0) {
-            return self::getUrlById($primaryId, $articleId, $clangId);
+            $url = self::getUrlById($primaryId, $articleId, $clangId);
+            $urlParams = '';
+            if (count($params['params'])) {
+                $urlParams = \rex_string::buildQuery($params['params'], $params['separator']);
+            }
+            return $url . ($urlParams ? '?' . $urlParams : '');
         }
     }
 
