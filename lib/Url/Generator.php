@@ -65,6 +65,7 @@ class Generator
         $table->restrictionField = $parameters[$databaseAndTable][$databaseAndTable . '_restriction_field'];
         $table->restrictionOperator = $parameters[$databaseAndTable][$databaseAndTable . '_restriction_operator'];
         $table->restrictionValue = $parameters[$databaseAndTable][$databaseAndTable . '_restriction_value'];
+        $table->pathNames = $parameters[$databaseAndTable][$databaseAndTable . '_path_names'];
         return $table;
 
     }
@@ -205,7 +206,17 @@ class Generator
                             $path .= (isset($savePaths[$path])) ? '-' . $entry['id'] : '';
                             $path = Url::getRewriter()->normalize($path);
                             $path .= Url::getRewriter()->getSuffix();
-                            self::$paths[$url->getDomain()][$articleId][$entry['id']][$articleClangId] = $url->appendPathSegment($path)->getUrl();
+                            self::$paths[$url->getDomain()][$articleId][$entry['id']][$articleClangId]['root'] = $url->appendPathSegment($path)->getUrl();
+
+                            if (isset($table->pathNames) && $table->pathNames != '') {
+                                $pathNames = explode("\n", trim($table->pathNames));
+                                foreach ($pathNames as $pathName) {
+                                    $urlForPathName = clone($url);
+                                    $pathName = trim($pathName) . Url::getRewriter()->getSuffix();
+                                    self::$paths[$url->getDomain()][$articleId][$entry['id']][$articleClangId]['path_names'][] = $urlForPathName->appendPathSegment($pathName)->getUrl();
+                                }
+                            }
+
                             $savePaths[$path] = '';
                         }
                     }
@@ -225,7 +236,7 @@ class Generator
                 foreach ($articleIds as $articleId => $ids) {
                     foreach ($ids as $id => $clangIds) {
                         foreach ($clangIds as $clangId => $path) {
-                            if ($currentUrl->getPath() == $path) {
+                            if ($currentUrl->getPath() == $path['root'] || in_array($currentUrl->getPath(), $path['path_names'])) {
                                 return ['article_id' => $articleId, 'clang' => $clangId];
                             }
                         }
@@ -245,7 +256,7 @@ class Generator
                 foreach ($articleIds as $articleId => $ids) {
                     foreach ($ids as $id => $clangIds) {
                         foreach ($clangIds as $clangId => $path) {
-                            if ($currentUrl->getPath() == $path) {
+                            if ($currentUrl->getPath() == $path['root'] || in_array($currentUrl->getPath(), $path['path_names'])) {
                                 return $id;
                             }
                         }
@@ -273,9 +284,9 @@ class Generator
         foreach (self::$paths as $domain => $articleIds) {
             if (isset($articleIds[$articleId][$primaryId][$clangId])) {
                 if ($currentUrl->getDomain() == $domain) {
-                    return $articleIds[$articleId][$primaryId][$clangId];
+                    return $articleIds[$articleId][$primaryId][$clangId]['root'];
                 } else {
-                    return $currentUrl->setHost($domain)->getSchemeAndHttpHost() . $articleIds[$articleId][$primaryId][$clangId];
+                    return $currentUrl->setHost($domain)->getSchemeAndHttpHost() . $articleIds[$articleId][$primaryId][$clangId]['root'];
                 }
             }
         }

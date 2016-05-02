@@ -71,10 +71,21 @@ if (!function_exists('url_generate_column_data')) {
         $url = rtrim($url, '-');
         $url = Generator::appendRewriterSuffix($url);
 
+        $url_paths = '';
+        if ($table_parameters[$table][$table . '_path_names'] != '') {
+            $paths = explode("\n", trim($table_parameters[$table][$table . '_path_names']));
+            if (count($paths)) {
+                foreach ($paths as $path) {
+                    $url_paths .= Generator::appendRewriterSuffix($url . trim($path)) . '<br />';
+                }
+            }
+        }
+
         $return .= '<dl class="url-dl">';
         $return .= '<dt>' . rex_i18n::msg('url_table') . ': </dt><dd><code>' . $table_out . '</code></dd>';
         $return .= '<dt>' . rex_i18n::msg('url') . ': </dt><dd>' . $url . '</dd>';
         $return .= '<dt>' . rex_i18n::msg('url_id') . ': </dt><dd><code>' . $table_parameters[$table][$table . '_id'] . '</code></dd>';
+        $return .= '<dt>' . rex_i18n::msg('url_generate_path_names_short') . ': </dt><dd>' . $url_paths . '</dd>';
 
         $field = $table_parameters[$table][$table . '_restriction_field'];
         $operator = $table_parameters[$table][$table . '_restriction_operator'];
@@ -170,7 +181,6 @@ if ($func == '') {
     $field->setPrefix('<div class="rex-select-style">');
     $field->setSuffix('</div>');
     $field->setLabel($this->i18n('url_table'));
-    $field->setAttribute('onchange', 'url_generate_table(this);');
     $select = $field->getSelect();
     $select->addOption($this->i18n('url_no_table_selected'), '');
 
@@ -304,6 +314,13 @@ if ($func == '') {
             $f = $fieldContainer->addGroupedField($group, $type, $name);
             $f->setHeader('<div class="url-grid-item url-grid-item-small">');
             $f->setFooter('</div><p class="help-block">' . $this->i18n('url_generate_notice_restriction') . '</p></div>');
+
+
+            $type = 'textarea';
+            $name = $table . '_path_names';
+            $f = $fieldContainer->addGroupedField($group, $type, $name);
+            $f->setLabel($this->i18n('url_generate_path_names'));
+            $f->setNotice($this->i18n('url_generate_notice_path_names'));
         }
     }
 
@@ -342,6 +359,12 @@ if ($func == 'add' || $func == 'edit') {
 }
 ?>
 <style>
+    .form-group > dd .rex-select-style select.form-control {
+        margin-top: 0;
+        margin-bottom: 0;
+        padding-top: 7px;
+        padding-bottom: 7px;
+    }
     .url-container .input-group,
     .url-container .rex-select-style {
         width: 300px;
