@@ -208,6 +208,7 @@ class Generator
                             $path .= Url::getRewriter()->getSuffix();
                             self::$paths[$url->getDomain()][$articleId][$entry['id']][$articleClangId]['root'] = $url->appendPathSegment($path)->getUrl();
 
+                            self::$paths[$url->getDomain()][$articleId][$entry['id']][$articleClangId]['path_names'] = [];
                             if (isset($table->pathNames) && $table->pathNames != '') {
                                 $pathNames = explode("\n", trim($table->pathNames));
                                 foreach ($pathNames as $pathName) {
@@ -258,6 +259,29 @@ class Generator
                         foreach ($clangIds as $clangId => $path) {
                             if ($currentUrl->getPath() == $path['root'] || in_array($currentUrl->getPath(), $path['path_names'])) {
                                 return $id;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    public static function getPath()
+    {
+        self::ensurePaths();
+        $currentUrl = Url::current();
+
+        foreach (self::$paths as $domain => $articleIds) {
+            if ($currentUrl->getDomain() == $domain) {
+                foreach ($articleIds as $articleId => $ids) {
+                    foreach ($ids as $id => $clangIds) {
+                        foreach ($clangIds as $clangId => $path) {
+                            foreach ($path['path_names'] as $path_name) {
+                                if ($currentUrl->getPath() == $path_name) {
+                                    return self::stripRewriterSuffix(str_replace($path['root'], '', $path_name));
+                                }
                             }
                         }
                     }
