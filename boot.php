@@ -32,7 +32,7 @@ rex_extension::register('PACKAGES_INCLUDED', function ($params) {
             'ARTICLE_GENERATED',
             'ALL_GENERATED',
             'REX_FORM_SAVED',
-            'XFORM_DATA_ADDED', 'XFORM_DATA_UPDATED',
+            'YFORM_DATA_ADDED', 'YFORM_DATA_UPDATED',
         ];
 
         foreach ($extensionPoints as $extensionPoint) {
