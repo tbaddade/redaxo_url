@@ -32,6 +32,7 @@ url_generate_path_children = Kindkategorien können an die Url gehangen werden
 url_generate_seo = Seo
 url_generate_sitemap = Sitemap
 url_generate_url_param_key = Parameter für rex_getUrl()
+url_generate_url_param_key_short = Url Aufruf
 url_id = Id
 url_language = Sprache
 url_no_table_selected = keine Tabelle ausgewählt

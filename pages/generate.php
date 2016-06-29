@@ -87,6 +87,12 @@ if (!function_exists('url_generate_column_data')) {
         $return .= '<dt>' . rex_i18n::msg('url') . ': </dt><dd>' . $url . '</dd>';
         $return .= '<dt>' . rex_i18n::msg('url_id') . ': </dt><dd><code>' . $table_parameters[$table][$table . '_id'] . '</code></dd>';
 
+        if ($table_parameters[$table][$table . '_url_param_key'] != '') {
+            $return .= '<dt>' . rex_i18n::msg('url_generate_url_param_key_short') . ': </dt><dd><code>rex_getUrl(\'\', \'\', [\'<b>' . $table_parameters[$table][$table . '_url_param_key'] . '</b>\' => {n}])</code></dd>';
+        } else {
+            $return .= '<dt>' . rex_i18n::msg('url_generate_url_param_key_short') . ': </dt><dd><code>rex_getUrl(' . $list->getValue('article_id') . ', ' . $list->getValue('clang_id') . ', [\'id\' => {n}])</code></dd>';
+        }
+
         if ($url_paths != '') {
             $return .= '<dt>' . rex_i18n::msg('url_generate_path_names_short') . ': </dt><dd>' . $url_paths . '</dd>';
         }
