@@ -27,10 +27,76 @@ class Yrewrite extends Rewriter
     /**
      * @return string
      */
-    public function extensionPointAddSitemap()
+    public function getSitemapExtensionPoint()
     {
-
+        return 'YREWRITE_SITEMAP';
     }
+
+    /**
+     * @return array
+     */
+    public function getSitemapFrequency()
+    {
+        return \rex_yrewrite_seo::$changefreq;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSitemapPriority()
+    {
+        return \rex_yrewrite_seo::$priority;
+    }
+
+    /**
+     * @return object
+     */
+    public function getSeoInstance()
+    {
+        return (new \rex_yrewrite_seo());
+    }
+
+    /**
+     * @return string
+     */
+    public function getSeoTitleTagMethod()
+    {
+        return 'getTitleTag';
+    }
+
+    /**
+     * @return string
+     */
+    public function getSeoDescriptionTagMethod()
+    {
+        return 'getDescriptionTag';
+    }
+
+    /**
+     * @return string
+     */
+    public function getSeoCanonicalTagMethod()
+    {
+        return 'getCanonicalUrlTag';
+    }
+
+    /**
+     * @return string
+     */
+    public function getSeoHreflangTagsMethod()
+    {
+        return 'getHreflangTags';
+    }
+
+    /**
+     * @return string
+     */
+    public function getSeoRobotsTagMethod()
+    {
+        return 'getRobotsTag';
+    }
+
+
 
     /**
      * @return string

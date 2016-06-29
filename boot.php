@@ -11,9 +11,11 @@
 
 use \Url\Url;
 use \Url\Generator;
+use \Url\Seo;
 
 class_alias('Url\Url', 'Url');
 class_alias('Url\Generator', 'UrlGenerator');
+class_alias('Url\Seo', 'UrlSeo');
 
 Url::boot();
 Generator::boot();
@@ -51,6 +53,17 @@ rex_extension::register('PACKAGES_INCLUDED', function ($params) {
         return Generator::rewrite($params);
     }, rex_extension::EARLY);
 
+    if (Url::getRewriter()->getSitemapExtensionPoint()) {
+        rex_extension::register(Url::getRewriter()->getSitemapExtensionPoint(), function (rex_extension_point $ep) {
+            $sitemap = $ep->getSubject();
+            if (is_array($sitemap)) {
+                $sitemap = array_merge($sitemap, Seo::getSitemap());
+            } else {
+                $sitemap = Seo::getSitemap();
+            }
+            $ep->setSubject($sitemap);
+        }, rex_extension::EARLY);
+    }
 
 }, rex_extension::EARLY);
 

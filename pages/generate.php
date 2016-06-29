@@ -9,6 +9,7 @@
  * file that was distributed with this source code.
  */
 
+use \Url\Url;
 use \Url\Rewriter\Rewriter;
 use \Url\Generator;
 
@@ -85,15 +86,31 @@ if (!function_exists('url_generate_column_data')) {
         $return .= '<dt>' . rex_i18n::msg('url_table') . ': </dt><dd><code>' . $table_out . '</code></dd>';
         $return .= '<dt>' . rex_i18n::msg('url') . ': </dt><dd>' . $url . '</dd>';
         $return .= '<dt>' . rex_i18n::msg('url_id') . ': </dt><dd><code>' . $table_parameters[$table][$table . '_id'] . '</code></dd>';
-        $return .= '<dt>' . rex_i18n::msg('url_generate_path_names_short') . ': </dt><dd>' . $url_paths . '</dd>';
+
+        if ($url_paths != '') {
+            $return .= '<dt>' . rex_i18n::msg('url_generate_path_names_short') . ': </dt><dd>' . $url_paths . '</dd>';
+        }
 
         $field = $table_parameters[$table][$table . '_restriction_field'];
         $operator = $table_parameters[$table][$table . '_restriction_operator'];
         $value = $table_parameters[$table][$table . '_restriction_value'];
-
         if ($field != '') {
             $return .= '<dt>' . rex_i18n::msg('url_generate_restriction') . ': </dt><dd><code>' . $field . $operator . $value . '</code></dd>';
         }
+
+        $sitemapAdd = $table_parameters[$table][$table . '_sitemap_add'];
+        if ($sitemapAdd == '1') {
+            $sitemapFrequency = $table_parameters[$table][$table . '_sitemap_frequency'];
+            $sitemapPriority = $table_parameters[$table][$table . '_sitemap_priority'];
+            $return .= '
+                <dt>' . rex_i18n::msg('url_generate_sitemap') . ': </dt>
+                <dd>
+                    ' . rex_i18n::msg('yes') . '<br />
+                    <small>' . rex_i18n::msg('url_generate_notice_sitemap_frequency') . ':</small> <code>' . $sitemapFrequency . '</code><br />
+                    <small>' . rex_i18n::msg('url_generate_notice_sitemap_priority') . ':</small> <code>' . $sitemapPriority . '</code>
+                </dd>';
+        }
+
         $return .= '</dl>';
         return $return;
     }
@@ -315,12 +332,72 @@ if ($func == '') {
             $f->setHeader('<div class="url-grid-item url-grid-item-small">');
             $f->setFooter('</div><p class="help-block">' . $this->i18n('url_generate_notice_restriction') . '</p></div>');
 
-
             $type = 'textarea';
             $name = $table . '_path_names';
             $f = $fieldContainer->addGroupedField($group, $type, $name);
+            $f->setHeader('<hr class="url-hr" />');
             $f->setLabel($this->i18n('url_generate_path_names'));
             $f->setNotice($this->i18n('url_generate_notice_path_names'));
+
+
+            $type = 'select';
+            $name = $table . '_seo_title';
+            $f = $fieldContainer->addGroupedField($group, $type, $name);
+            $f->setHeader('<hr class="url-hr" /><div class="url-grid"><div class="url-grid-item">');
+            $f->setFooter('</div>');
+            $f->setPrefix('<div class="rex-select-style">');
+            $f->setSuffix('</div>');
+            $f->setLabel($this->i18n('url_generate_seo'));
+            $f->setNotice($this->i18n('url_generate_notice_seo_title'));
+            $select = $f->getSelect();
+            $select->addOption($this->i18n('url_generate_no_selection'), '');
+            $select->addOptions($options, true);
+
+            $type = 'select';
+            $name = $table . '_seo_description';
+            $f = $fieldContainer->addGroupedField($group, $type, $name);
+            $f->setHeader('<div class="url-grid-item">');
+            $f->setFooter('</div></div>');
+            $f->setPrefix('<div class="rex-select-style">');
+            $f->setSuffix('</div>');
+            $f->setNotice($this->i18n('url_generate_notice_seo_description'));
+            $select = $f->getSelect();
+            $select->addOption($this->i18n('url_generate_no_selection'), '');
+            $select->addOptions($options, true);
+
+            $type = 'select';
+            $name = $table . '_sitemap_add';
+            $f = $fieldContainer->addGroupedField($group, $type, $name);
+            $f->setHeader('<hr class="url-hr" /><div class="url-grid"><div class="url-grid-item">');
+            $f->setFooter('</div>');
+            $f->setLabel($this->i18n('url_generate_sitemap'));
+            $f->setPrefix('<div class="rex-select-style">');
+            $f->setSuffix('</div>');
+            $f->setNotice($this->i18n('url_generate_notice_sitemap_add'));
+            $select = $f->getSelect();
+            $select->addOptions(['0' => $this->i18n('no'), '1' => $this->i18n('yes')]);
+
+            $type = 'select';
+            $name = $table . '_sitemap_frequency';
+            $f = $fieldContainer->addGroupedField($group, $type, $name);
+            $f->setHeader('<div class="url-grid-item">');
+            $f->setFooter('</div>');
+            $f->setPrefix('<div class="rex-select-style">');
+            $f->setSuffix('</div>');
+            $f->setNotice($this->i18n('url_generate_notice_sitemap_frequency'));
+            $select = $f->getSelect();
+            $select->addOptions(Url::getRewriter()->getSitemapFrequency(), true);
+
+            $type = 'select';
+            $name = $table . '_sitemap_priority';
+            $f = $fieldContainer->addGroupedField($group, $type, $name);
+            $f->setHeader('<div class="url-grid-item">');
+            $f->setFooter('</div></div>');
+            $f->setPrefix('<div class="rex-select-style">');
+            $f->setSuffix('</div>');
+            $f->setNotice($this->i18n('url_generate_notice_sitemap_priority'));
+            $select = $f->getSelect();
+            $select->addOptions(Url::getRewriter()->getSitemapPriority(), true);
         }
     }
 
@@ -441,5 +518,8 @@ if ($func == 'add' || $func == 'edit') {
     .url-dl > dd {
         margin-left: 110px;
         margin-bottom: 4px;
+    }
+    .url-hr {
+        border-top-color: #c1c9d4;
     }
 </style>

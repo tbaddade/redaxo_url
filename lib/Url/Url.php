@@ -47,7 +47,7 @@ class Url
             $url = 'http:' . $url;
         }
         $components = parse_url($url);
-        if (isset($urlo['scheme']) && !$this->isProtocolRelative()) {
+        if (isset($components['scheme']) && !$this->isProtocolRelative()) {
             $this->scheme = strtolower($components['scheme']);
         }
         if (isset($components['user'])) {
@@ -255,7 +255,7 @@ class Url
             return $this->getHost();
         }
 
-        return $this->getHost() . ':' . $port;
+        return $this->getHost() . ($port != '' ? ':' . $port : '');
     }
 
 

@@ -20,7 +20,48 @@ abstract class Rewriter
     /**
      * @return string
      */
-    abstract function extensionPointAddSitemap();
+    abstract function getSitemapExtensionPoint();
+
+    /**
+     * @return array
+     */
+    abstract function getSitemapFrequency();
+
+    /**
+     * @return array
+     */
+    abstract function getSitemapPriority();
+
+    /**
+     * @return object
+     */
+    abstract function getSeoInstance();
+
+    /**
+     * @return string
+     */
+    abstract function getSeoTitleTagMethod();
+
+    /**
+     * @return string
+     */
+    abstract function getSeoDescriptionTagMethod();
+
+    /**
+     * @return string
+     */
+    abstract function getSeoCanonicalTagMethod();
+
+    /**
+     * @return string
+     */
+    abstract function getSeoHreflangTagsMethod();
+
+    /**
+     * @return string
+     */
+    abstract function getSeoRobotsTagMethod();
+
 
     /**
      * @return string
