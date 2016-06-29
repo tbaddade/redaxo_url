@@ -22,6 +22,7 @@ url_generate_notice_seo_description = Spalte aus der die Description erzeugt wir
 url_generate_notice_sitemap_add = Urls in die Sitemap.xml aufnehmen?
 url_generate_notice_sitemap_frequency = Frequenz
 url_generate_notice_sitemap_priority = Wichtigkeit
+url_generate_notice_url_param_key = Man benötigt beim Benutzen von rex_getUrl nicht mehr die Artikel-Id vom oben ausgewählten Artikel. Aus<br /><code>rex_getUrl(4, '', ['id' => 5])</code> wird <code>rex_getUrl('', '', ['news-id' => 5])</code>
 url_generate_restriction = Einschränkung
 url_generate_no_restriction = Keine Einschränkung
 url_generate_no_selection = Keine Auswahl
@@ -30,6 +31,7 @@ url_generate_path_names_short = zus. Pfade
 url_generate_path_children = Kindkategorien können an die Url gehangen werden
 url_generate_seo = Seo
 url_generate_sitemap = Sitemap
+url_generate_url_param_key = Parameter für rex_getUrl()
 url_id = Id
 url_language = Sprache
 url_no_table_selected = keine Tabelle ausgewählt

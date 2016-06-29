@@ -71,6 +71,7 @@ class Generator
         $table->sitemapAdd = $parameters[$databaseAndTable][$databaseAndTable . '_sitemap_add'];
         $table->sitemapFrequency = $parameters[$databaseAndTable][$databaseAndTable . '_sitemap_frequency'];
         $table->sitemapPriority = $parameters[$databaseAndTable][$databaseAndTable . '_sitemap_priority'];
+        $table->urlParamKey = $parameters[$databaseAndTable][$databaseAndTable . '_url_param_key'];
         return $table;
 
     }
@@ -224,6 +225,7 @@ class Generator
                             $object->fullUrl = $url->getFullUrl();
                             $object->pathNames = [];
                             $object->fullPathNames = [];
+                            $object->urlParamKey = $table->urlParamKey;
 
                             //self::$paths[$url->getDomain()][$articleId][$entry['id']][$articleClangId]['root'] = $url->appendPathSegment($path)->getUrl();
                             //self::$paths[$url->getDomain()][$articleId][$entry['id']][$articleClangId]['path_names'] = [];
@@ -399,6 +401,29 @@ class Generator
             }
         }
     }
+
+    public static function getArticleIdByUrlParamKey($paramKey)
+    {
+        self::ensurePaths();
+        $currentUrl = Url::current();
+
+        foreach (self::$paths as $domain => $articleIds) {
+            if ($currentUrl->getDomain() == $domain) {
+                foreach ($articleIds as $articleId => $ids) {
+                    foreach ($ids as $id => $clangIds) {
+                        foreach ($clangIds as $clangId => $object) {
+                            if ($object->urlParamKey == $paramKey) {
+                                return $articleId;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+
     /**
      * gibt die Url eines Datensatzes zurück
      * wurde über rex_getUrl() aufgerufen
@@ -416,6 +441,18 @@ class Generator
         if (isset($params['params']['id'])) {
             $primaryId = $params['params']['id'];
             unset($params['params']['id']);
+        } elseif (count($params['params']) > 0) {
+            foreach ($params['params'] as $key => $value) {
+                if ((int)$value > 0) {
+                    $articleIdFound = self::getArticleIdByUrlParamKey($key);
+                    if ($articleIdFound) {
+                        $articleId = $articleIdFound;
+                        $primaryId = (int)$value;
+                        unset($params['params'][$key]);
+                        break;
+                    }
+                }
+            }
         }
 
         if ($primaryId > 0) {

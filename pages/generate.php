@@ -332,6 +332,16 @@ if ($func == '') {
             $f->setHeader('<div class="url-grid-item url-grid-item-small">');
             $f->setFooter('</div><p class="help-block">' . $this->i18n('url_generate_notice_restriction') . '</p></div>');
 
+
+            $type = 'text';
+            $name = $table . '_url_param_key';
+            $value = '';
+            $f = $fieldContainer->addGroupedField($group, $type, $name);
+            $f->setHeader('<div class="url-grid"><div class="url-grid-item">');
+            $f->setLabel($this->i18n('url_generate_url_param_key'));
+            $f->setFooter('</div><p class="help-block">' . $this->i18n('url_generate_notice_url_param_key') . '</p></div>');
+
+
             $type = 'textarea';
             $name = $table . '_path_names';
             $f = $fieldContainer->addGroupedField($group, $type, $name);
@@ -443,7 +453,8 @@ if ($func == 'add' || $func == 'edit') {
         padding-bottom: 7px;
     }
     .url-container .input-group,
-    .url-container .rex-select-style {
+    .url-container .rex-select-style,
+    .url-container .url-grid-item .form-control {
         width: 300px;
     }
     .url-container .help-block {
@@ -451,7 +462,8 @@ if ($func == 'add' || $func == 'edit') {
         font-size: 90%;
     }
     .url-container .url-grid-item-small .rex-select-style,
-    .url-container .url-grid-item-small .rex-form-group {
+    .url-container .url-grid-item-small .rex-form-group,
+    .url-container .url-grid-item-small .form-control {
         width: 135px;
     }
     .url-grid {
