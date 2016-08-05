@@ -14,7 +14,7 @@ class Generator
 {
     private static $databaseTableSeparator = '_xxx_';
     private static $pathfile = '';
-    public static $pathPipePlaceholder = 'xbpxqdx';
+    public static $pathSlashPlaceholder = 'xbpxqdx';
     public static $paths = [];
 
     public static function boot()
@@ -304,10 +304,10 @@ class Generator
                                     // normalize macht aus einem "/" > "-"
                                     $pathSegment =
                                         str_replace(
-                                            self::$pathPipePlaceholder, '/',
+                                            self::$pathSlashPlaceholder, '/',
                                             Url::getRewriter()->normalize(
                                                 str_replace(
-                                                    '/', self::$pathPipePlaceholder,
+                                                    '/', self::$pathSlashPlaceholder,
                                                     $pathNameForUrl))
                                             ) . Url::getRewriter()->getSuffix();
                                     $object->pathNames[$pathNameForNav] = $urlForPathName->appendPathSegment($pathSegment)->getUrl();

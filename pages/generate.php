@@ -81,10 +81,10 @@ if (!function_exists('url_generate_column_data')) {
                     $pathNameParts = explode('|', $path);
                     $pathNameForUrl = trim($pathNameParts[0]);
                     $pathSegment = str_replace(
-                                        Generator::$pathPipePlaceholder, '/',
+                                        Generator::$pathSlashPlaceholder, '/',
                                         Url::getRewriter()->normalize(
                                             str_replace(
-                                                '/', Generator::$pathPipePlaceholder,
+                                                '/', Generator::$pathSlashPlaceholder,
                                                 $pathNameForUrl))
                                         );
                     $url_paths .= Generator::appendRewriterSuffix($url . $pathSegment) . '<br />';
