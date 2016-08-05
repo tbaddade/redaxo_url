@@ -229,7 +229,7 @@ class Generator
                     $querySelect = implode(',', $querySelect);
 
                     $query = 'SELECT ' . $querySelect . ' FROM ' . $table->name . ' ' . $queryFrom . ' ' . $queryWhere . '';
-                    $entries = \rex_sql::factory($table->dbid)->setDebug()->setQuery($query)->getArray();
+                    $entries = \rex_sql::factory($table->dbid)->setQuery($query)->getArray();
                     if (count($entries)) {
                         $savePaths = [];
                         foreach ($entries as $entry) {
@@ -359,10 +359,6 @@ class Generator
             }
            \rex_file::putCache(self::$pathfile, self::$paths);
         }
-
-        echo '<pre>';
-        print_r(\rex_file::getCache(self::$pathfile));
-        echo '</pre>';
     }
 
     public static function getArticleParams()
