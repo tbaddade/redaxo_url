@@ -279,6 +279,8 @@ class Generator
                             $path .= (isset($savePaths[$path])) ? '-' . $entry['id'] : '';
                             $path .= Url::getRewriter()->getSuffix();
 
+                            $path = \rex_extension::registerPoint(new \rex_extension_point('URL_GENERATOR_PATH_CREATED', $path, ['article_id' => $articleId, 'clang_id' => $clangId, 'data' => $entry]));
+
                             $object = new \stdClass();
                             $object->url = $url->appendPathSegment($path)->getUrl();
                             $object->fullUrl = $url->getFullUrl();
