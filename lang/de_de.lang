@@ -2,6 +2,7 @@ url = Url
 url_title = Url
 
 url_article = Artikel
+url_article_language = Sprache des Artikels
 url_data = Daten
 url_generate = Urls generieren
 url_generate_article_clang_ids = alle Sprachen
@@ -11,11 +12,11 @@ url_generate_legend_article = In welchem Artikel erfolgt die Ausgabe
 url_generate_legend_table = Aus welcher Tabelle werden die Urls erstellt
 url_generate_no_additive = kein Zusatz
 url_generate_no_clang_id = keine Spalte für Sprachen vorhanden
-url_generate_notice_article_clang_ids = wenn "alle Sprachen" ausgewählt, dann muss eine Spalte für die Sprache ausgewählt werden
+url_generate_notice_article_clang_ids = wenn "alle Sprachen" ausgewählt, dann muss eine Spalte für die Sprache ausgewählt werden. Ansonsten kann der Datensatz keiner Sprache zugeordnet werden.
 url_generate_notice_id = Spalte der dazugehörigen eindeutigen Id
 url_generate_notice_clang_id = Spalte der dazugehörigen eindeutigen Clang Id
 url_generate_notice_name = Spalten aus der die Url erzeugt wird
-url_generate_notice_path_names = ohne <code>/</code> am Anfang und Ende<br />Der Artikel erscheint auch, wenn diese Pfade an der Url hängen.
+url_generate_notice_path_names = ohne <code>/</code> am Anfang und Ende<br />Der Artikel erscheint auch, wenn diese Pfade an der Url hängen. <br />Notiert man hinter einem "|" einen Titel, so kann dieser später als Menüpunkt dienen (Bsp.: ueber-uns | Über uns)
 url_generate_notice_restriction = Hiermit kann das erstellen der Urls für den obigen Artikel eingeschränkt werden. Hilfreich bei Relationen mit einer anderen Tabelle. News können zum Bsp. in mehrere Kategorien aufgeteilt werden.
 url_generate_notice_seo_title = Spalte aus der der Titel erzeugt wird
 url_generate_notice_seo_description = Spalte aus der die Description erzeugt wird
@@ -26,7 +27,8 @@ url_generate_notice_url_param_key = Man benötigt beim Benutzen von rex_getUrl n
 url_generate_restriction = Einschränkung
 url_generate_no_restriction = Keine Einschränkung
 url_generate_no_selection = Keine Auswahl
-url_generate_path_names = zusätzliche Pfadangaben
+url_generate_paths = zusätzliche Pfade für die Url
+url_generate_path_names = eigene Pfade an die Url hängen
 url_generate_path_names_short = zus. Pfade
 url_generate_path_children = Kindkategorien können an die Url gehangen werden
 url_generate_seo = Seo
@@ -37,3 +39,23 @@ url_id = Id
 url_language = Sprache
 url_no_table_selected = keine Tabelle ausgewählt
 url_table = Tabelle
+
+
+url_after = dahinter
+url_before = davor
+
+url_generate_relation_insert = Position
+url_generate_relation_insert_notice = Wo sollen die Pfade in der Url eingefügt werden?
+
+url_generate_path_own = eigene Pfade
+url_generate_path_categories = Unterkategorien
+url_generate_path_categories_append = Unterkategorien anhängen?
+url_generate_path_categories_notice = Sofern vorhanden, können Unterkategorien an die Url gehangen werden?
+
+url_generate_path_relation = Relation
+url_generate_path_relation_table = Tabelle
+
+url_generate_relation_field = Pfade aus einer Relationstabelle bilden
+url_generate_notice_relation_field = Spalte der Relation. Weiter unten die Relationstabelle und Spalten auswählen um die Url zu erweitern
+url_generate_legend_table_relation = Relationstabelle
+url_generate_no_relation_field = Url nicht erweitern

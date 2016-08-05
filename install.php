@@ -9,6 +9,12 @@
  * file that was distributed with this source code.
  */
 
+rex_sql_table::get(rex::getTable('url_generate'))
+->ensureColumn(new rex_sql_column('relation_table', 'varchar(255)'))
+->ensureColumn(new rex_sql_column('relation_table_parameters', 'text'))
+->ensureColumn(new rex_sql_column('relation_insert', 'varchar(255)'))
+->alter();
+
 
 $sql = rex_sql::factory();
 $sql->setQuery('CREATE TABLE IF NOT EXISTS `' . rex::getTable('url_generate') . '` (
@@ -18,6 +24,9 @@ $sql->setQuery('CREATE TABLE IF NOT EXISTS `' . rex::getTable('url_generate') . 
     `url` TEXT NOT NULL,
     `table` VARCHAR(255) NOT NULL,
     `table_parameters` TEXT NOT NULL,
+    `relation_table` VARCHAR(255) NOT NULL,
+    `relation_table_parameters` TEXT NOT NULL,
+    `relation_insert` VARCHAR(255) NOT NULL,
     `createdate` INT(11) NOT NULL,
     `createuser` VARCHAR(255) NOT NULL,
     `updatedate` INT(11) NOT NULL,

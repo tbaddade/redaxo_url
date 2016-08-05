@@ -14,6 +14,7 @@ class Generator
 {
     private static $databaseTableSeparator = '_xxx_';
     private static $pathfile = '';
+    public static $pathPipePlaceholder = 'xbpxqdx';
     public static $paths = [];
 
     public static function boot()
@@ -49,29 +50,38 @@ class Generator
         return explode(self::$databaseTableSeparator, $value);
     }
 
-    protected static function getTableObject($databaseAndTable, $parameters)
+    protected static function getTableObject($databaseAndTable, $parameters, $relationTable = false)
     {
         $parameters = json_decode($parameters, true);
         $databaseAndTableInformation = self::separateDatabaseAndTable($databaseAndTable);
 
         $table = new \stdClass();
         $table->dbid = $databaseAndTableInformation[0];
-        $table->name = $databaseAndTableInformation[1];
-        $table->field_1 = $parameters[$databaseAndTable][$databaseAndTable . '_field_1'];
-        $table->field_2 = $parameters[$databaseAndTable][$databaseAndTable . '_field_2'];
-        $table->field_3 = $parameters[$databaseAndTable][$databaseAndTable . '_field_3'];
-        $table->id = $parameters[$databaseAndTable][$databaseAndTable . '_id'];
-        $table->clang_id = $parameters[$databaseAndTable][$databaseAndTable . '_clang_id'];
-        $table->restrictionField = $parameters[$databaseAndTable][$databaseAndTable . '_restriction_field'];
-        $table->restrictionOperator = $parameters[$databaseAndTable][$databaseAndTable . '_restriction_operator'];
-        $table->restrictionValue = $parameters[$databaseAndTable][$databaseAndTable . '_restriction_value'];
-        $table->pathNames = $parameters[$databaseAndTable][$databaseAndTable . '_path_names'];
-        $table->seoTitle = $parameters[$databaseAndTable][$databaseAndTable . '_seo_title'];
-        $table->seoDescription = $parameters[$databaseAndTable][$databaseAndTable . '_seo_description'];
-        $table->sitemapAdd = $parameters[$databaseAndTable][$databaseAndTable . '_sitemap_add'];
-        $table->sitemapFrequency = $parameters[$databaseAndTable][$databaseAndTable . '_sitemap_frequency'];
-        $table->sitemapPriority = $parameters[$databaseAndTable][$databaseAndTable . '_sitemap_priority'];
-        $table->urlParamKey = $parameters[$databaseAndTable][$databaseAndTable . '_url_param_key'];
+        if ($relationTable) {
+            $table->name = substr($databaseAndTableInformation[1], 9);
+        } else {
+            $table->name = $databaseAndTableInformation[1];
+        }
+        $table->field_1 = $parameters[$databaseAndTable . '_field_1'];
+        $table->field_2 = $parameters[$databaseAndTable . '_field_2'];
+        $table->field_3 = $parameters[$databaseAndTable . '_field_3'];
+        $table->id = $parameters[$databaseAndTable . '_id'];
+        $table->clang_id = $parameters[$databaseAndTable . '_clang_id'];
+
+        if (! $relationTable) {
+            $table->relationField = $parameters[$databaseAndTable . '_relation_field'];
+            $table->restrictionField = $parameters[$databaseAndTable . '_restriction_field'];
+            $table->restrictionOperator = $parameters[$databaseAndTable . '_restriction_operator'];
+            $table->restrictionValue = $parameters[$databaseAndTable . '_restriction_value'];
+            $table->pathNames = $parameters[$databaseAndTable . '_path_names'];
+            $table->pathCategories = $parameters[$databaseAndTable . '_path_categories'];
+            $table->seoTitle = $parameters[$databaseAndTable . '_seo_title'];
+            $table->seoDescription = $parameters[$databaseAndTable . '_seo_description'];
+            $table->sitemapAdd = $parameters[$databaseAndTable . '_sitemap_add'];
+            $table->sitemapFrequency = $parameters[$databaseAndTable . '_sitemap_frequency'];
+            $table->sitemapPriority = $parameters[$databaseAndTable . '_sitemap_priority'];
+            $table->urlParamKey = $parameters[$databaseAndTable . '_url_param_key'];
+        }
         return $table;
 
     }
@@ -114,7 +124,10 @@ class Generator
                                 `clang_id`,
                                 `url`,
                                 `table`,
-                                `table_parameters`
+                                `table_parameters`,
+                                `relation_table`,
+                                `relation_table_parameters`,
+                                `relation_insert`
                     FROM        ' . \rex::getTable('url_generate');
 
         $results = \rex_sql::factory()->setQuery($query)->getArray();
@@ -159,40 +172,64 @@ class Generator
 
                         switch ($table->restrictionOperator) {
                             case 'FIND_IN_SET':
-                                $queryWhere = ' WHERE ' . $table->restrictionOperator . ' (' . $table->restrictionValue . ', ' . $table->restrictionField . ')';
+                                $queryWhere = ' WHERE ' . $table->restrictionOperator . ' (' . $table->restrictionValue . ', ' . $table->name . '.' . $table->restrictionField . ')';
                                 break;
 
                             default:
-                                $queryWhere = ' WHERE ' . $table->restrictionField . ' ' . $table->restrictionOperator . ' ' . $table->restrictionValue;
+                                $queryWhere = ' WHERE ' . $table->name . '.' . $table->restrictionField . ' ' . $table->restrictionOperator . ' ' . $table->restrictionValue;
                                 break;
                         }
                     }
 
                     $querySelect = [];
-                    $querySelect[] = '`' . $table->id . '` AS id';
+                    $querySelect[] = $table->name . '.' . $table->id . ' AS id';
                     if (count(\rex_clang::getAll()) >= 2 && $clangId == '0' && $table->clang_id != '') {
-                        $querySelect[] = '`' . $table->clang_id . '` AS clang_id';
+                        $querySelect[] = $table->name . '.' . $table->clang_id . ' AS clang_id';
                     }
                     if ($table->field_1 != '') {
-                        $querySelect[] = '`' . $table->field_1 . '` AS field_1';
+                        $querySelect[] = $table->name . '.' . $table->field_1 . ' AS field_1';
                     }
                     if ($table->field_2 != '') {
-                        $querySelect[] = '`' . $table->field_2 . '` AS field_2';
+                        $querySelect[] = $table->name . '.' . $table->field_2 . ' AS field_2';
                     }
                     if ($table->field_3 != '') {
-                        $querySelect[] = '`' . $table->field_3 . '` AS field_3';
+                        $querySelect[] = $table->name . '.' . $table->field_3 . ' AS field_3';
                     }
                     if (isset($table->seoTitle) && $table->seoTitle != '') {
-                        $querySelect[] = '`' . $table->seoTitle . '` AS seo_title';
+                        $querySelect[] = $table->name . '.' . $table->seoTitle . ' AS seo_title';
                     }
                     if (isset($table->seoDescription) && $table->seoDescription != '') {
-                        $querySelect[] = '`' . $table->seoDescription . '` AS seo_description';
+                        $querySelect[] = $table->name . '.' . $table->seoDescription . ' AS seo_description';
+                    }
+
+                    $queryFrom = '';
+                    $relationFlag = false;
+                    if (isset($table->relationField) && $table->relationField != '' &&
+                        isset($result['relation_table']) && $result['relation_table'] != '') {
+                        $relationFlag = true;
+                        $relationTable = self::getTableObject($result['relation_table'], $result['relation_table_parameters'], true);
+
+                        $queryFrom = 'LEFT JOIN ' . $relationTable->name . ' ON ' . $table->name . '.' . $table->relationField . ' = ' . $relationTable->name . '.' . $relationTable->id;
+
+                        $querySelect[] = $relationTable->name . '.' . $relationTable->id . ' AS relation_id';
+                        if (count(\rex_clang::getAll()) >= 2 && $clangId == '0' && $relationTable->clang_id != '') {
+                            $querySelect[] = $relationTable->name . '.' . $relationTable->clang_id . ' AS relation_clang_id';
+                        }
+                        if ($relationTable->field_1 != '') {
+                            $querySelect[] = $relationTable->name . '.' . $relationTable->field_1 . ' AS relation_field_1';
+                        }
+                        if ($relationTable->field_2 != '') {
+                            $querySelect[] = $relationTable->name . '.' . $relationTable->field_2 . ' AS relation_field_2';
+                        }
+                        if ($relationTable->field_3 != '') {
+                            $querySelect[] = $relationTable->name . '.' . $relationTable->field_3 . ' AS relation_field_3';
+                        }
                     }
 
                     $querySelect = implode(',', $querySelect);
 
-                    $query = 'SELECT  ' . $querySelect . ' FROM    ' . $table->name . ' ' . $queryWhere . '';
-                    $entries = \rex_sql::factory($table->dbid)->setQuery($query)->getArray();
+                    $query = 'SELECT ' . $querySelect . ' FROM ' . $table->name . ' ' . $queryFrom . ' ' . $queryWhere . '';
+                    $entries = \rex_sql::factory($table->dbid)->setDebug()->setQuery($query)->getArray();
                     if (count($entries)) {
                         $savePaths = [];
                         foreach ($entries as $entry) {
@@ -206,6 +243,30 @@ class Generator
                             if (isset($entry['field_3']) && $entry['field_3'] != '') {
                                 $path[] = $entry['field_3'];
                             }
+                            $path = Url::getRewriter()->normalize(implode('-', $path));
+
+                            if ($relationFlag) {
+                                $relationPath = [];
+                                if (isset($entry['relation_field_1']) && $entry['relation_field_1'] != '') {
+                                    $relationPath[] = $entry['relation_field_1'];
+                                }
+                                if (isset($entry['relation_field_2']) && $entry['relation_field_2'] != '') {
+                                    $relationPath[] = $entry['relation_field_2'];
+                                }
+                                if (isset($entry['relation_field_3']) && $entry['relation_field_3'] != '') {
+                                    $relationPath[] = $entry['relation_field_3'];
+                                }
+                                $relationPath = Url::getRewriter()->normalize(implode('-', $relationPath));
+
+                                switch($result['relation_insert']) {
+                                    case 'before':
+                                        $path = $relationPath . '/' . $path;
+                                        break;
+                                    case 'after':
+                                        $path = $path . '/' . $relationPath;
+                                        break;
+                                }
+                            }
 
                             $articleClangId = $clangId;
                             if (count(\rex_clang::getAll()) >= 2 && $clangId == '0' && $table->clang_id != '') {
@@ -215,9 +276,7 @@ class Generator
                             $articleUrl = self::stripRewriterSuffix($articleUrl) . '/';
                             $url = Url::parse($articleUrl);
 
-                            $path = implode('-', $path);
                             $path .= (isset($savePaths[$path])) ? '-' . $entry['id'] : '';
-                            $path = Url::getRewriter()->normalize($path);
                             $path .= Url::getRewriter()->getSuffix();
 
                             $object = new \stdClass();
@@ -225,18 +284,47 @@ class Generator
                             $object->fullUrl = $url->getFullUrl();
                             $object->pathNames = [];
                             $object->fullPathNames = [];
+                            $object->pathCategories = [];
+                            $object->fullPathCategories = [];
                             $object->urlParamKey = $table->urlParamKey;
 
-                            //self::$paths[$url->getDomain()][$articleId][$entry['id']][$articleClangId]['root'] = $url->appendPathSegment($path)->getUrl();
-                            //self::$paths[$url->getDomain()][$articleId][$entry['id']][$articleClangId]['path_names'] = [];
                             if (isset($table->pathNames) && $table->pathNames != '') {
                                 $pathNames = explode("\n", trim($table->pathNames));
                                 foreach ($pathNames as $pathName) {
                                     $urlForPathName = clone($url);
-                                    $pathName = trim($pathName) . Url::getRewriter()->getSuffix();
-                                    //self::$paths[$url->getDomain()][$articleId][$entry['id']][$articleClangId]['path_names'][] = $urlForPathName->appendPathSegment($pathName)->getUrl();
-                                    $object->pathNames[] = $urlForPathName->appendPathSegment($pathName)->getUrl();
-                                    $object->fullPathNames[] = $urlForPathName->getFullUrl();
+                                    $pathNameParts = explode('|', $pathName);
+                                    $pathNameForUrl = trim($pathNameParts[0]);
+                                    $pathNameForNav = trim($pathNameParts[0]);
+                                    if (count($pathNameParts) == 2) {
+                                        $pathNameForNav = trim($pathNameParts[1]);
+                                    }
+                                    // sicherstellen, dass selbst gesetzte "/" im Pfad erhalten bleiben. (ueber-uns/impressum)
+                                    // normalize macht aus einem "/" > "-"
+                                    $pathSegment =
+                                        str_replace(
+                                            self::$pathPipePlaceholder, '/',
+                                            Url::getRewriter()->normalize(
+                                                str_replace(
+                                                    '/', self::$pathPipePlaceholder,
+                                                    $pathNameForUrl))
+                                            ) . Url::getRewriter()->getSuffix();
+                                    $object->pathNames[$pathNameForNav] = $urlForPathName->appendPathSegment($pathSegment)->getUrl();
+                                    $object->fullPathNames[$pathNameForNav] = $urlForPathName->getFullUrl();
+                                }
+                            }
+
+                            if (isset($table->pathCategories) && $table->pathCategories == '1') {
+                                $articleCategory = \rex_category::get($articleId, $articleClangId);
+                                if ($articleCategory instanceof \rex_category) {
+                                    $categories = $articleCategory->getChildren();
+                                    if (count($categories)) {
+                                        foreach ($categories as $category) {
+                                            $urlForPathCategory = clone($url);
+                                            $pathSegment = Url::getRewriter()->normalize(trim($category->getName())) . Url::getRewriter()->getSuffix();
+                                            $object->pathCategories[$category->getId()] = $urlForPathCategory->appendPathSegment($pathSegment)->getUrl();
+                                            $object->fullPathCategories[$category->getId()] = $urlForPathCategory->getFullUrl();
+                                        }
+                                    }
                                 }
                             }
 
@@ -269,6 +357,10 @@ class Generator
             }
            \rex_file::putCache(self::$pathfile, self::$paths);
         }
+
+        echo '<pre>';
+        print_r(\rex_file::getCache(self::$pathfile));
+        echo '</pre>';
     }
 
     public static function getArticleParams()
@@ -281,8 +373,11 @@ class Generator
                 foreach ($articleIds as $articleId => $ids) {
                     foreach ($ids as $id => $clangIds) {
                         foreach ($clangIds as $clangId => $object) {
-                            if ($currentUrl->getPath() == $object->url || in_array($currentUrl->getPath(), $object->pathNames)) {
+                            if ($currentUrl->getPath() == $object['url'] || in_array($currentUrl->getPath(), $object['pathNames'])) {
                                 return ['article_id' => $articleId, 'clang' => $clangId];
+                            }
+                            if (false !== $categoryId = array_search($currentUrl->getPath(), $object['pathCategories'])) {
+                                return ['article_id' => $categoryId, 'clang' => $clangId];
                             }
                         }
                     }
@@ -322,7 +417,7 @@ class Generator
                 foreach ($articleIds as $articleId => $ids) {
                     foreach ($ids as $id => $clangIds) {
                         foreach ($clangIds as $clangId => $object) {
-                            if ($currentUrl->getPath() == $object->url || in_array($currentUrl->getPath(), $object->pathNames)) {
+                            if ($currentUrl->getPath() == $object['url'] || in_array($currentUrl->getPath(), $object['pathNames']) || in_array($currentUrl->getPath(), $object['pathCategories'])) {
                                 return $id;
                             }
                         }
@@ -343,7 +438,7 @@ class Generator
                 foreach ($articleIds as $articleId => $ids) {
                     foreach ($ids as $id => $clangIds) {
                         foreach ($clangIds as $clangId => $object) {
-                            if ($currentUrl->getPath() == $object->url || in_array($currentUrl->getPath(), $object->pathNames)) {
+                            if ($currentUrl->getPath() == $object['url'] || in_array($currentUrl->getPath(), $object['pathNames']) || in_array($currentUrl->getPath(), $object['pathCategories'])) {
                                 return $object;
                             }
                         }
@@ -354,7 +449,7 @@ class Generator
         return false;
     }
 
-    public static function getPath()
+    public static function getCurrentOwnPath()
     {
         self::ensurePaths();
         $currentUrl = Url::current();
@@ -364,11 +459,30 @@ class Generator
                 foreach ($articleIds as $articleId => $ids) {
                     foreach ($ids as $id => $clangIds) {
                         foreach ($clangIds as $clangId => $object) {
-                            foreach ($object->pathNames as $pathName) {
+                            foreach ($object['pathNames'] as $pathName) {
                                 if ($currentUrl->getPath() == $pathName) {
-                                    return self::stripRewriterSuffix(str_replace($object->url, '', $pathName));
+                                    return self::stripRewriterSuffix(str_replace($object['url'], '', $pathName));
                                 }
                             }
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    public static function getOwnPaths()
+    {
+        self::ensurePaths();
+        $currentUrl = Url::current();
+
+        foreach (self::$paths as $domain => $articleIds) {
+            if ($currentUrl->getDomain() == $domain) {
+                foreach ($articleIds as $articleId => $ids) {
+                    foreach ($ids as $id => $clangIds) {
+                        foreach ($clangIds as $clangId => $object) {
+                            return $object['pathNames'];
                         }
                     }
                 }
@@ -380,7 +494,7 @@ class Generator
     public static function getUrlById($primaryId, $articleId = null, $clangId = null)
     {
         if ((int) $primaryId < 1) {
-            return;
+            return null;
         }
         if (null === $articleId || $articleId == '') {
             $articleId = \rex_article::getCurrentId();
@@ -394,9 +508,27 @@ class Generator
         foreach (self::$paths as $domain => $articleIds) {
             if (isset($articleIds[$articleId][$primaryId][$clangId])) {
                 if ($currentUrl->getDomain() == $domain) {
-                    return $articleIds[$articleId][$primaryId][$clangId]->url;
+                    return $articleIds[$articleId][$primaryId][$clangId]['url'];
                 } else {
-                    return $currentUrl->setHost($domain)->getSchemeAndHttpHost() . $articleIds[$articleId][$primaryId][$clangId]->url;
+                    return $currentUrl->setHost($domain)->getSchemeAndHttpHost() . $articleIds[$articleId][$primaryId][$clangId]['url'];
+                }
+            } else {
+                foreach ($articleIds as $article_Id => $ids) {
+                    foreach ($ids as $id => $clangIds) {
+                        if ($id == $primaryId) {
+                            foreach ($clangIds as $clang_Id => $object) {
+                                if ($clang_Id == $clangId) {
+                                    if (isset($object['pathCategories'][$articleId])) {
+                                        if ($currentUrl->getDomain() == $domain) {
+                                            return $object['pathCategories'][$articleId];
+                                        } else {
+                                            return $currentUrl->setHost($domain)->getSchemeAndHttpHost() . $object['pathCategories'][$articleId];
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -412,7 +544,7 @@ class Generator
                 foreach ($articleIds as $articleId => $ids) {
                     foreach ($ids as $id => $clangIds) {
                         foreach ($clangIds as $clangId => $object) {
-                            if ($object->urlParamKey == $paramKey) {
+                            if ($object['urlParamKey'] == $paramKey) {
                                 return $articleId;
                             }
                         }
@@ -468,7 +600,7 @@ class Generator
     public static function ensurePaths()
     {
         if (empty(self::$paths)) {
-            self::generatePathFile([]);
+            self::readPathFile();
         }
     }
 
