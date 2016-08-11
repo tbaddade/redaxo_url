@@ -53,7 +53,7 @@ rex_extension::register('PACKAGES_INCLUDED', function ($params) {
         return Generator::rewrite($params);
     }, rex_extension::EARLY);
 
-    if (Url::getRewriter()->getSitemapExtensionPoint()) {
+    if (null !== Url::getRewriter() && Url::getRewriter()->getSitemapExtensionPoint()) {
         rex_extension::register(Url::getRewriter()->getSitemapExtensionPoint(), function (rex_extension_point $ep) {
             $sitemap = $ep->getSubject();
             if (is_array($sitemap)) {
