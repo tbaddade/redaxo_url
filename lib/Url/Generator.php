@@ -433,7 +433,7 @@ class Generator
 	public static function getUrlParamKey()
     {
         $data = self::getData();
-        if(key_exists('urlParamKey', $data)) {
+        if($data !== FALSE && key_exists('urlParamKey', $data)) {
         	return $data['urlParamKey'];
         }
         else {
