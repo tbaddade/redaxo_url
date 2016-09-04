@@ -426,6 +426,21 @@ class Generator
         return false;
     }
 
+    /**
+     * Returns the parameter name for rex_getUrl().
+     * @return string Parameter name
+     */
+	public static function getUrlParamKey()
+    {
+        $data = self::getData();
+        if(key_exists('urlParamKey', $data)) {
+        	return $data['urlParamKey'];
+        }
+        else {
+        	return FALSE;
+        }
+    }
+    
     public static function getData()
     {
         self::ensurePaths();
