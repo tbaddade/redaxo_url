@@ -204,6 +204,7 @@ class Generator
 
                     $queryFrom = '';
                     $relationFlag = false;
+                    $relationTable = '';
                     if (isset($table->relationField) && $table->relationField != '' &&
                         isset($result['relation_table']) && $result['relation_table'] != '') {
                         $relationFlag = true;
@@ -282,6 +283,10 @@ class Generator
                             $path = \rex_extension::registerPoint(new \rex_extension_point('URL_GENERATOR_PATH_CREATED', $path, ['article_id' => $articleId, 'clang_id' => $clangId, 'data' => $entry]));
 
                             $object = new \stdClass();
+                            $object->articleId = $articleId;
+                            $object->clangId = $articleClangId;
+                            $object->table = $table;
+                            $object->relationTable = $relationTable;
                             $object->url = $url->appendPathSegment($path)->getUrl();
                             $object->fullUrl = $url->getFullUrl();
                             $object->pathNames = [];
@@ -437,7 +442,7 @@ class Generator
                     foreach ($ids as $id => $clangIds) {
                         foreach ($clangIds as $clangId => $object) {
                             if ($currentUrl->getPath() == $object['url'] || in_array($currentUrl->getPath(), $object['pathNames']) || in_array($currentUrl->getPath(), $object['pathCategories'])) {
-                                return $object;
+                                return (object)$object;
                             }
                         }
                     }
