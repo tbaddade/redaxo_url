@@ -80,6 +80,7 @@ class Generator
             $table->sitemapAdd = $parameters[$databaseAndTable . '_sitemap_add'];
             $table->sitemapFrequency = $parameters[$databaseAndTable . '_sitemap_frequency'];
             $table->sitemapPriority = $parameters[$databaseAndTable . '_sitemap_priority'];
+            $table->sitemapLastmod = $parameters[$databaseAndTable . '_sitemap_lastmod'];
             $table->urlParamKey = $parameters[$databaseAndTable . '_url_param_key'];
         }
         return $table;
@@ -339,6 +340,7 @@ class Generator
                                 $object->sitemap = true;
                                 $object->sitemapFrequency = $table->sitemapFrequency;
                                 $object->sitemapPriority = $table->sitemapPriority;
+                                $object->sitemapLastmod = $table->sitemapLastmod;
                             } else {
                                 $object->sitemap = false;
                             }
@@ -400,7 +402,7 @@ class Generator
                 foreach ($articleIds as $articleId => $ids) {
                     foreach ($ids as $id => $clangIds) {
                         foreach ($clangIds as $clangId => $object) {
-                            $all[] = $object;
+                            $all[] = (object)$object;
                         }
                     }
                 }
@@ -410,10 +412,13 @@ class Generator
         return false;
     }
 
-    public static function getId()
+    public static function getId($url = null)
     {
         self::ensurePaths();
         $currentUrl = Url::current();
+        if ($url) {
+            $currentUrl = Url::parse($url);
+        }
 
         foreach (self::$paths as $domain => $articleIds) {
             if ($currentUrl->getDomain() == $domain) {

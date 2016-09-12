@@ -463,13 +463,26 @@ if ($func == '') {
             $name = $table . '_sitemap_priority';
             $f = $fieldContainer->addGroupedField($group, $type, $name);
             $f->setHeader('<div class="url-grid-item">');
-            $f->setFooter('</div></div>');
+            $f->setFooter('</div>');
             $f->setPrefix('<div class="rex-select-style">');
             $f->setSuffix('</div>');
             $f->setAttribute('disabled', 'true');
             $f->setNotice($this->i18n('url_generate_notice_sitemap_priority'));
             $select = $f->getSelect();
             $select->addOptions(Url::getRewriter()->getSitemapPriority(), true);
+
+            $type = 'select';
+            $name = $table . '_sitemap_lastmod';
+            $f = $fieldContainer->addGroupedField($group, $type, $name);
+            $f->setHeader('<div class="url-grid-item">');
+            $f->setFooter('</div></div>');
+            $f->setPrefix('<div class="rex-select-style">');
+            $f->setSuffix('</div>');
+            $f->setAttribute('disabled', 'true');
+            $f->setNotice($this->i18n('url_generate_notice_sitemap_lastmod'));
+            $select = $f->getSelect();
+            $select->addOption($this->i18n('url_generate_no_selection'), '');
+            $select->addOptions($options, true);
 
 
             $type = 'textarea';

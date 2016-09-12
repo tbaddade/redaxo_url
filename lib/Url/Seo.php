@@ -32,17 +32,17 @@ class Seo
 
     public function getTitleTag()
     {
-        return $this->isUrl() ? '<title>' . htmlspecialchars($this->normalize($this->data['seoTitle'])) . '</title>' : $this->rewriterSeo->{$this->rewriter->getSeoTitleTagMethod()}();
+        return $this->isUrl() ? '<title>' . htmlspecialchars($this->normalize($this->data->seoTitle)) . '</title>' : $this->rewriterSeo->{$this->rewriter->getSeoTitleTagMethod()}();
     }
 
     public function getDescriptionTag()
     {
-        return $this->isUrl() ? '<meta name="description" content="'.htmlspecialchars($this->normalize($this->data['seoDescription'])).'" />' : $this->rewriterSeo->{$this->rewriter->getSeoDescriptionTagMethod()}();
+        return $this->isUrl() ? '<meta name="description" content="'.htmlspecialchars($this->normalize($this->data->seoDescription)).'" />' : $this->rewriterSeo->{$this->rewriter->getSeoDescriptionTagMethod()}();
     }
 
     public function getCanonicalTag()
     {
-        return $this->isUrl() ? '<link rel="canonical" href="' . $this->data['url'] . '" />' : $this->rewriterSeo->{$this->rewriter->getSeoCanonicalTagMethod()}();
+        return $this->isUrl() ? '<link rel="canonical" href="' . $this->data->url . '" />' : $this->rewriterSeo->{$this->rewriter->getSeoCanonicalTagMethod()}();
     }
 
     public function getHreflangTags()
@@ -90,33 +90,48 @@ class Seo
         $all = Generator::getAll();
         if ($all) {
             foreach ($all as $item) {
-                if ($item['sitemap']) {
+                if ($item->sitemap) {
+                    $lastmod = date(DATE_W3C, time());
+                    if ($item->sitemapLastmod != '') {
+                        $id = Generator::getId($item->fullUrl);
+                        $sql = \rex_sql::factory();
+                        $sql->setQuery('SELECT ' . $item->sitemapLastmod . ' AS lastmod FROM ' . $item->table['name'] . ' WHERE ' . $item->table['id'] .' = :id LIMIT 2', ['id' => $id]);
+                        if ($sql->getRows() == 1) {
+                            $timestamp = $sql->getValue('lastmod');
+                            if (strpos($timestamp, '-')) {
+                                // mysql date
+                                $datetime = new \DateTime($timestamp);
+                                $timestamp = $datetime->getTimestamp();
+                            }
+                            $lastmod = date(DATE_W3C, $timestamp);
+                        }
+                    }
                     $sitemap[] =
                         "\n" . '<url>' .
-                        "\n" . '<loc>' . $item['fullUrl'] . '</loc>' .
-                        "\n" . '<lastmod>' . date(DATE_W3C, time()) . '</lastmod>' .
-                        "\n" . '<changefreq>' . $item['sitemapFrequency'] . '</changefreq>' .
-                        "\n" . '<priority>' . $item['sitemapPriority'] . '</priority>' .
+                        "\n" . '<loc>' . $item->fullUrl . '</loc>' .
+                        "\n" . '<lastmod>' . $lastmod . '</lastmod>' .
+                        "\n" . '<changefreq>' . $item->sitemapFrequency . '</changefreq>' .
+                        "\n" . '<priority>' . $item->sitemapPriority . '</priority>' .
                         "\n" . '</url>';
-                    if (count($item['fullPathNames'])) {
-                        foreach ($item['fullPathNames'] as $path) {
+                    if (count($item->fullPathNames)) {
+                        foreach ($item->fullPathNames as $path) {
                             $sitemap[] =
                                 "\n" . '<url>' .
                                 "\n" . '<loc>' . $path . '</loc>' .
-                                "\n" . '<lastmod>' . date(DATE_W3C, time()) . '</lastmod>' .
-                                "\n" . '<changefreq>' . $item['sitemapFrequency'] . '</changefreq>' .
-                                "\n" . '<priority>' . $item['sitemapPriority'] . '</priority>' .
+                                "\n" . '<lastmod>' . $lastmod . '</lastmod>' .
+                                "\n" . '<changefreq>' . $item->sitemapFrequency . '</changefreq>' .
+                                "\n" . '<priority>' . $item->sitemapPriority . '</priority>' .
                                 "\n" . '</url>';
                         }
                     }
-                    if (count($item['fullPathCategories'])) {
-                        foreach ($item['fullPathCategories'] as $path) {
+                    if (count($item->fullPathCategories)) {
+                        foreach ($item->fullPathCategories as $path) {
                             $sitemap[] =
                                 "\n" . '<url>' .
                                 "\n" . '<loc>' . $path . '</loc>' .
-                                "\n" . '<lastmod>' . date(DATE_W3C, time()) . '</lastmod>' .
-                                "\n" . '<changefreq>' . $item['sitemapFrequency'] . '</changefreq>' .
-                                "\n" . '<priority>' . $item['sitemapPriority'] . '</priority>' .
+                                "\n" . '<lastmod>' . $lastmod . '</lastmod>' .
+                                "\n" . '<changefreq>' . $item->sitemapFrequency . '</changefreq>' .
+                                "\n" . '<priority>' . $item->sitemapPriority . '</priority>' .
                                 "\n" . '</url>';
                         }
                     }

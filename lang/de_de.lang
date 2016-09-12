@@ -59,3 +59,5 @@ url_generate_relation_field = Pfade aus einer Relationstabelle bilden
 url_generate_notice_relation_field = Spalte der Relation. Weiter unten die Relationstabelle und Spalten auswählen um die Url zu erweitern
 url_generate_legend_table_relation = Relationstabelle
 url_generate_no_relation_field = Url nicht erweitern
+
+url_generate_notice_sitemap_lastmod = Spalte, in der die letzte Änderung gespeichert wird (Bsp. updatedate)
