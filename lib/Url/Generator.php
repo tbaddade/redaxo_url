@@ -499,7 +499,7 @@ class Generator
         return false;
     }
 
-    public static function getUrlById($primaryId, $articleId = null, $clangId = null)
+    public static function getUrlById($primaryId, $articleId = null, $clangId = null, $returnFullUrl = false)
     {
         if ((int) $primaryId < 1) {
             return null;
@@ -516,6 +516,9 @@ class Generator
         foreach (self::$paths as $domain => $articleIds) {
             if (isset($articleIds[$articleId][$primaryId][$clangId])) {
                 if ($currentUrl->getDomain() == $domain) {
+                    if ($returnFullUrl) {
+                        return $articleIds[$articleId][$primaryId][$clangId]['fullUrl'];
+                    }
                     return $articleIds[$articleId][$primaryId][$clangId]['url'];
                 } else {
                     return $currentUrl->setHost($domain)->getSchemeAndHttpHost() . $articleIds[$articleId][$primaryId][$clangId]['url'];
@@ -540,6 +543,11 @@ class Generator
                 }
             }
         }
+    }
+
+    public static function getFullUrlById($primaryId, $articleId = null, $clangId = null)
+    {
+        return self::getUrlById($primaryId, $articleId, $clangId, true);
     }
 
     public static function getArticleIdByUrlParamKey($paramKey)
