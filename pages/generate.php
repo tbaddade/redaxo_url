@@ -362,6 +362,10 @@ if ($func == '') {
                 $select = $f->getSelect();
                 $select->addOption($this->i18n('url_generate_no_clang_id'), '');
                 $select->addOptions($options, true);
+            } else {
+                $type = 'hidden';
+                $name = $table . '_clang_id';
+                $f = $fieldContainer->addGroupedField($group, $type, $name, rex_clang::getStartId());
             }
 
 
@@ -646,6 +650,10 @@ if ($func == '') {
                 $select = $f->getSelect();
                 $select->addOption($this->i18n('url_generate_no_clang_id'), '');
                 $select->addOptions($options, true);
+            } else {
+                $type = 'hidden';
+                $name = $table . '_clang_id';
+                $f = $fieldContainer->addGroupedField($group, $type, $name, rex_clang::getStartId());
             }
         }
     }
