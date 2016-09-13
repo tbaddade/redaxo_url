@@ -2,7 +2,7 @@
 Url - Changelog
 ================================================================================
 
-Version 1.0.0-beta4
+Version 1.0.0-beta4 - 12.09.2016
 ---------------------------------
 ### Neu
 - Datenbanktabelle wird bei De-Installation gelöscht
