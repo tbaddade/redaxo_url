@@ -365,7 +365,7 @@ if ($func == '') {
             } else {
                 $type = 'hidden';
                 $name = $table . '_clang_id';
-                $f = $fieldContainer->addGroupedField($group, $type, $name, rex_clang::getStartId());
+                $f = $fieldContainer->addGroupedField($group, $type, $name, '');
             }
 
 
@@ -653,7 +653,7 @@ if ($func == '') {
             } else {
                 $type = 'hidden';
                 $name = $table . '_clang_id';
-                $f = $fieldContainer->addGroupedField($group, $type, $name, rex_clang::getStartId());
+                $f = $fieldContainer->addGroupedField($group, $type, $name, '');
             }
         }
     }
