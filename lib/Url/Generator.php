@@ -281,7 +281,18 @@ class Generator
                             $path .= (isset($savePaths[$path])) ? '-' . $entry['id'] : '';
                             $path .= Url::getRewriter()->getSuffix();
 
-                            $path = \rex_extension::registerPoint(new \rex_extension_point('URL_GENERATOR_PATH_CREATED', $path, ['article_id' => $articleId, 'clang_id' => $clangId, 'data' => $entry]));
+                            $url = \rex_extension::registerPoint(new \rex_extension_point('URL_GENERATOR_URL_CREATED', $url, [
+                                'article_id' => $articleId,
+                                'clang_id'   => $clangId,
+                                'table'      => $table,
+                                'data'       => $entry,
+                            ]));
+                            $path = \rex_extension::registerPoint(new \rex_extension_point('URL_GENERATOR_PATH_CREATED', $path, [
+                                'article_id' => $articleId,
+                                'clang_id'   => $clangId,
+                                'table'      => $table,
+                                'data'       => $entry,
+                            ]));
 
                             $object = new \stdClass();
                             $object->articleId = $articleId;
@@ -357,7 +368,7 @@ class Generator
                                 $object->seoDescription = '';
                             }
 
-                            self::$paths[$url->getDomain()][$articleId][$entry['id']][$articleClangId] = $object;
+                            self::$paths[$url->getDomain()][$articleId][$entry['id']][$articleClangId] = (array) $object;
 
                             $savePaths[$path] = '';
                         }
