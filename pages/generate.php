@@ -10,16 +10,16 @@
  */
 
 use \Url\Url;
-use \Url\Rewriter\Rewriter;
 use \Url\Generator;
 
 $id = rex_request('id', 'int');
 $func = rex_request('func', 'string');
 
+$a = [];
 
 if (!function_exists('url_generate_column_article')) {
-
-    function url_generate_column_article($params) {
+    function url_generate_column_article($params)
+    {
         $list = $params['list'];
         $return = '';
 
@@ -34,7 +34,7 @@ if (!function_exists('url_generate_column_article')) {
 
             $tree = $a->getParentTree();
 
-            $levels = array();
+            $levels = [];
             if (count(rex_clang::getAll()) >= 2 && in_array($list->getValue('clang_id'), rex_clang::getAllIds())) {
                 $levels[] = rex_clang::get($list->getValue('clang_id'))->getName();
             }
@@ -49,8 +49,8 @@ if (!function_exists('url_generate_column_article')) {
 }
 
 if (!function_exists('url_generate_column_data')) {
-
-    function url_generate_column_data($params) {
+    function url_generate_column_data($params)
+    {
         $list = $params['list'];
         $return = '';
         $table = $list->getValue('table');
@@ -59,7 +59,7 @@ if (!function_exists('url_generate_column_data')) {
         $search = [];
         $replace = [];
         $dbconfigs = rex::getProperty('db');
-        foreach($dbconfigs as $DBID => $dbconfig) {
+        foreach ($dbconfigs as $DBID => $dbconfig) {
             $search[] = Generator::mergeDatabaseAndTable($DBID, '');
             $replace[] = $dbconfig['name'] . '.';
         }
@@ -147,7 +147,6 @@ if (!function_exists('url_generate_column_data')) {
         $return .= '</dl>';
         return $return;
     }
-
 }
 if ($func == '') {
     $query = '  SELECT      `id`,
@@ -184,7 +183,7 @@ if ($func == '') {
     $list->setColumnFormat('data', 'custom', 'url_generate_column_data');
     $list->addColumn($this->i18n('function'), $this->i18n('edit'));
     $list->setColumnLayout($this->i18n('function'), ['<th class="rex-table-action" colspan="2">###VALUE###</th>', '<td class="rex-table-action">###VALUE###</td>']);
-    $list->setColumnParams($this->i18n('function'), array('func' => 'edit', 'id' => '###id###'));
+    $list->setColumnParams($this->i18n('function'), ['func' => 'edit', 'id' => '###id###']);
 
     $content = $list->get();
 
@@ -194,8 +193,7 @@ if ($func == '') {
     $content = $fragment->parse('core/page/section.php');
 
     echo $content;
-} elseif ($func =='add' || $func == 'edit') {
-
+} elseif ($func == 'add' || $func == 'edit') {
     $title = $func == 'edit' ? $this->i18n('edit') : $this->i18n('add');
 
     $form = rex_form::factory(rex::getTable('url_generate'), '', 'id = ' . $id, 'post', false);
@@ -266,7 +264,7 @@ if ($func == '') {
 
     $fields = [];
     $tables = [];
-    foreach($dbconfigs as $DBID => $dbconfig) {
+    foreach ($dbconfigs as $DBID => $dbconfig) {
         if ($dbconfig['host'] . $dbconfig['login'] . $dbconfig['password'] . $dbconfig['name'] != '') {
             $connection = rex_sql::checkDbConnection(
                 $dbconfig['host'],
@@ -333,7 +331,6 @@ if ($func == '') {
             $select->addOption($this->i18n('url_generate_no_additive'), '');
             $select->addOptions($options, true);
 
-
             $type = 'select';
             $name = $table . '_id';
             $f = $fieldContainer->addGroupedField($group, $type, $name);
@@ -367,7 +364,6 @@ if ($func == '') {
                 $name = $table . '_clang_id';
                 $f = $fieldContainer->addGroupedField($group, $type, $name, '');
             }
-
 
             $type = 'select';
             $name = $table . '_restriction_field';
@@ -409,7 +405,6 @@ if ($func == '') {
             $f->setFooter('</div><p class="help-block">' . $this->i18n('url_generate_notice_url_param_key') . '</p></div>');
             $f->setAttribute('disabled', 'true');
             $f->setLabel($this->i18n('url_generate_url_param_key'));
-
 
             $type = 'select';
             $name = $table . '_seo_title';
@@ -488,7 +483,6 @@ if ($func == '') {
             $select->addOption($this->i18n('url_generate_no_selection'), '');
             $select->addOptions($options, true);
 
-
             $type = 'textarea';
             $name = $table . '_path_names';
             $f = $fieldContainer->addGroupedField($group, $type, $name);
@@ -496,7 +490,6 @@ if ($func == '') {
             $f->setAttribute('disabled', 'true');
             $f->setLabel($this->i18n('url_generate_path_names'));
             $f->setNotice($this->i18n('url_generate_notice_path_names'));
-
 
             $type = 'select';
             $name = $table . '_path_categories';
@@ -507,7 +500,6 @@ if ($func == '') {
             $f->setNotice($this->i18n('url_generate_path_categories_notice'));
             $select = $f->getSelect();
             $select->addOptions(['0' => $this->i18n('no'), '1' => $this->i18n('yes')]);
-
 
             $type = 'select';
             $name = $table . '_relation_field';
@@ -535,7 +527,6 @@ if ($func == '') {
     $field->setNotice($this->i18n('url_generate_relation_insert_notice'));
     $select = $field->getSelect();
     $select->addOptions(['before' => $this->i18n('before'), 'after' => $this->i18n('after')]);
-
 
     $field = $form->addSelectField('relation_table');
     $field->setPrefix('<div class="rex-select-style">');
@@ -621,7 +612,6 @@ if ($func == '') {
             $select->addOption($this->i18n('url_generate_no_additive'), '');
             $select->addOptions($options, true);
 
-
             $type = 'select';
             $name = $table . '_id';
             $f = $fieldContainer->addGroupedField($group, $type, $name);
@@ -671,9 +661,8 @@ if ($func == '') {
     echo $content;
 }
 
-
 if ($func == 'add' || $func == 'edit') {
-?>
+    ?>
     <script type="text/javascript">
         (function($) {
             var counter = 0;
@@ -692,6 +681,7 @@ if ($func == 'add' || $func == 'edit') {
 
     </script>
 <?php
+
 }
 ?>
 <style>
