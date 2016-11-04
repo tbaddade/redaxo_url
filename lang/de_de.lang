@@ -20,6 +20,7 @@ url_generate_notice_path_names = ohne <code>/</code> am Anfang und Ende<br />Der
 url_generate_notice_restriction = Hiermit kann das erstellen der Urls für den obigen Artikel eingeschränkt werden. Hilfreich bei Relationen mit einer anderen Tabelle. News können zum Bsp. in mehrere Kategorien aufgeteilt werden.
 url_generate_notice_seo_title = Spalte aus der der Titel erzeugt wird
 url_generate_notice_seo_description = Spalte aus der die Description erzeugt wird
+url_generate_notice_seo_img = Spalte aus der das Bild genommen wird
 url_generate_notice_sitemap_add = Urls in die Sitemap.xml aufnehmen?
 url_generate_notice_sitemap_frequency = Frequenz
 url_generate_notice_sitemap_priority = Wichtigkeit
