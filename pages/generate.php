@@ -424,11 +424,24 @@ if ($func == '') {
             $name = $table . '_seo_description';
             $f = $fieldContainer->addGroupedField($group, $type, $name);
             $f->setHeader('<div class="url-grid-item">');
-            $f->setFooter('</div></div>');
+            $f->setFooter('</div>');
             $f->setPrefix('<div class="rex-select-style">');
             $f->setSuffix('</div>');
             $f->setAttribute('disabled', 'true');
             $f->setNotice($this->i18n('url_generate_notice_seo_description'));
+            $select = $f->getSelect();
+            $select->addOption($this->i18n('url_generate_no_selection'), '');
+            $select->addOptions($options, true);
+
+            $type = 'select';
+            $name = $table . '_seo_img';
+            $f = $fieldContainer->addGroupedField($group, $type, $name);
+            $f->setHeader('<div class="url-grid-item">');
+            $f->setFooter('</div></div>');
+            $f->setPrefix('<div class="rex-select-style">');
+            $f->setSuffix('</div>');
+            $f->setAttribute('disabled', 'true');
+            $f->setNotice($this->i18n('url_generate_notice_seo_img'));
             $select = $f->getSelect();
             $select->addOption($this->i18n('url_generate_no_selection'), '');
             $select->addOptions($options, true);
