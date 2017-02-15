@@ -142,7 +142,7 @@ class Generator
                 if ($article instanceof \rex_article) {
                     $table = self::getTableObject($result['table'], $result['table_parameters']);
 
-                    $queryWhere = '';
+                    $queryWhere = "WHERE ". $table->name . '.' . $table->field_1 ." IS NOT NULL AND ". $table->name . '.' . $table->field_1 ." != ''";
                     if ($table->restrictionField != '' && $table->restrictionValue != '' && in_array($table->restrictionOperator, self::getRestrictionOperators())) {
                         switch ($table->restrictionOperator) {
                             case 'FIND_IN_SET':
@@ -174,11 +174,11 @@ class Generator
 
                         switch ($table->restrictionOperator) {
                             case 'FIND_IN_SET':
-                                $queryWhere = ' WHERE ' . $table->restrictionOperator . ' (' . $table->restrictionValue . ', ' . $table->name . '.' . $table->restrictionField . ')';
+                                $queryWhere .= ' AND ' . $table->restrictionOperator . ' (' . $table->restrictionValue . ', ' . $table->name . '.' . $table->restrictionField . ')';
                                 break;
 
                             default:
-                                $queryWhere = ' WHERE ' . $table->name . '.' . $table->restrictionField . ' ' . $table->restrictionOperator . ' ' . $table->restrictionValue;
+                                $queryWhere .= ' AND ' . $table->name . '.' . $table->restrictionField . ' ' . $table->restrictionOperator . ' ' . $table->restrictionValue;
                                 break;
                         }
                     }
