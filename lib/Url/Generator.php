@@ -360,7 +360,7 @@ class Generator
 
                             $urlParamKey = (trim($table->urlParamKey) == '') ? self::$pathsNoUrlParamKey : $table->urlParamKey;
 
-                            self::$paths[$url->getDomain()][$articleId][$urlParamKey][$entry['id']][$articleClangId] = $object;
+                            self::$paths[$url->getDomain()][$articleId][$urlParamKey][$entry['id']][$articleClangId] = json_decode(json_encode($object), true);
 
                             $savePaths[$path] = '';
                         }
