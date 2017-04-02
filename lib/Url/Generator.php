@@ -617,7 +617,6 @@ class Generator
                 if ((int) $value > 0) {
                     $articleIdFound = self::getArticleIdByUrlParamKey($key);
                     if ($articleIdFound) {
-                        $articleId = $articleIdFound;
                         $primaryId = (int) $value;
                         $urlParamKey = $key;
                         unset($params['params'][$key]);
