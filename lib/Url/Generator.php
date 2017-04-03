@@ -213,6 +213,9 @@ class Generator
                         $relationTable = self::getTableObject($result['relation_table'], $result['relation_table_parameters'], true);
 
                         $queryFrom = 'LEFT JOIN ' . $relationTable->name . ' ON ' . $table->name . '.' . $table->relationField . ' = ' . $relationTable->name . '.' . $relationTable->id;
+	                    if (count(\rex_clang::getAll()) >= 2 && $clangId == '0' && $table->clang_id != '' && $relationTable->clang_id != '') {
+	                    	$queryFrom .= ' AND '. $table->name . '.' . $table->clang_id . ' = ' . $relationTable->name . '.' . $relationTable->clang_id;
+	                    }
 
                         $querySelect[] = $relationTable->name . '.' . $relationTable->id . ' AS relation_id';
                         if (count(\rex_clang::getAll()) >= 2 && $clangId == '0' && $relationTable->clang_id != '') {
