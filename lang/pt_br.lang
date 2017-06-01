@@ -1,0 +1,63 @@
+url = Url
+url_title = Url
+
+url_article = Produto
+url_article_language = Idioma do produto
+url_data = Dados
+url_generate = Gerar Urls
+url_generate_article_clang_ids = Todas os idiomas
+url_generate_error_article = Escolher produto
+url_generate_error_table = Escolher tabela
+url_generate_legend_article = Produto usado para output
+url_generate_legend_table = Tabela para gerar Urls
+url_generate_no_additive = Sem adicional
+url_generate_no_clang_id = Nenhuma coluna de idiomas disponíveis
+url_generate_notice_article_clang_ids = Se "todas os idiomas" estiver ativo, uma coluna para o idioma deve ser selecionada. Caso contrário, nenhuma idioma poderá ser registrado.
+url_generate_notice_id = Coluna com ID único correspondente
+url_generate_notice_clang_id = Coluna com ID do Clang único correspondente
+url_generate_notice_name = Coluna para gerar o URL
+url_generate_notice_path_names = sem <code>/</code> no início e no final<br /> O produto é exibido também quando os caminhos são anexados ao final do URL. <br />Se um "|" e um título são adicionados ao final, isso mais tarde pode ser usado como um item de menu (Ex: informações pessoais | Informações pessoais)
+url_generate_notice_restriction = Aqui pode ser limitada a criação de URLs para o artigo acima. Útil nas relações com outra tabela. Novas entradas podem ser divididas para ex. Em diversas categorias.
+url_generate_notice_seo_title = Coluna para o Título
+url_generate_notice_seo_description = Coluna para a descrição
+url_generate_notice_sitemap_add = Anexar as URLs ao sitemap.xml?
+url_generate_notice_sitemap_frequency = Frequência
+url_generate_notice_sitemap_priority = Prioridade
+url_generate_notice_url_param_key = Não é mais necessário o ID do produto acima selecionado para a utilização do rex_getUrl. Assim, em vez de usar o <br /><code>rex_getUrl(4, '', ['id' => 5])</code>, você deve usar <code>rex_getUrl('', '', ['news-id' => 5])</code>.
+url_generate_restriction = Restrição
+url_generate_no_restriction = Sem restrições
+url_generate_no_selection = Nenhuma seleção
+url_generate_paths = Caminhos adicionais para a URL
+url_generate_path_names = Anexar caminhos adicionais a URL
+url_generate_path_names_short = adicionar caminhos
+url_generate_path_children = Categorias infantis podem ser adicionadas a URL
+url_generate_seo = SEO
+url_generate_sitemap = Sitemap
+url_generate_url_param_key = Parêmetros para rex_getUrl()
+url_generate_url_param_key_short = Chamada URL
+url_id = Id
+url_language = Idioma
+url_no_table_selected = Nenhuma tabela selecioanda
+url_table = Tabela
+
+
+url_after = Depois
+url_before = antes
+
+url_generate_relation_insert = Posição
+url_generate_relation_insert_notice = Aonde devem ser adicionados os caminhos para a URL?
+
+url_generate_path_own = caminhos próprios
+url_generate_path_categories = Subcategorias
+url_generate_path_categories_append = Anexar subcategorias?
+url_generate_path_categories_notice = Se disponível, as subcategorias podem ser adicionadas a URL?
+
+url_generate_path_relation = Relação
+url_generate_path_relation_table = Tabela
+
+url_generate_relation_field = Criar caminhos através da relação da tabela
+url_generate_notice_relation_field = Coluna da relação. Especifique as colunas da tabela abaixo relacionada, de acordo com as quais deseja expandir as URLs
+url_generate_legend_table_relation = Tabela da relação
+url_generate_no_relation_field = Não expandir a URL
+
+url_generate_notice_sitemap_lastmod = Coluna que contem a data de atualização (últimas aleterações)
