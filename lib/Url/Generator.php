@@ -68,8 +68,13 @@ class Generator
         $table->field_2 = $parameters[$databaseAndTable . '_field_2'];
         $table->field_3 = $parameters[$databaseAndTable . '_field_3'];
         $table->id = $parameters[$databaseAndTable . '_id'];
-        $table->clang_id = $parameters[$databaseAndTable . '_clang_id'];
-
+        if(isset($parameters[$databaseAndTable . '_clang_id'])) {
+        	$table->clang_id = $parameters[$databaseAndTable . '_clang_id'];
+        }
+        else {
+			$table->clang_id = 0;
+        }
+        
         if (!$relationTable) {
             $table->relationField = $parameters[$databaseAndTable . '_relation_field'];
             $table->restrictionField = $parameters[$databaseAndTable . '_restriction_field'];
