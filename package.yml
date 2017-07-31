@@ -13,6 +13,8 @@ page:
             title: 'translate:generate'
 
 requires:
-    redaxo: '^5.0'
+    redaxo: ^5.3.0
+    packages:
+        yrewrite: ^2.2.0
 
 #load: late
