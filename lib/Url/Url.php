@@ -600,7 +600,7 @@ class Url
      * @param string $basepath
      * @return string
      */
-    static public function buildAbsolutePath($relative_path, $basepath) {
+    public static function buildAbsolutePath($relative_path, $basepath) {
         $basedir = static::dirname($basepath);
         if ($basedir == '.' || $basedir == '/' || $basedir == '\\' || $basedir == DIRECTORY_SEPARATOR) {
             $basedir = '';
@@ -612,7 +612,7 @@ class Url
      * @param string $path
      * @return string
      */
-    static public function normalizePath($path)
+    public static function normalizePath($path)
     {
         $path = preg_replace('|/\./|', '/', $path);   // entferne /./
         $path = preg_replace('|^\./|', '', $path);    // entferne ./ am Anfang
@@ -628,7 +628,7 @@ class Url
      * @param $path
      * @return string
      */
-    static public function filename($path)
+    public static function filename($path)
     {
         if (substr($path, -1) == self::PATH_SEGMENT_SEPARATOR) {
             return '';
@@ -637,7 +637,7 @@ class Url
         }
     }
 
-    static public function dirname($path)
+    public static function dirname($path)
     {
         if (substr($path, -1) == self::PATH_SEGMENT_SEPARATOR) {
             return substr($path, 0, -1);
@@ -650,7 +650,7 @@ class Url
         }
     }
 
-    static public function current()
+    public static function current()
     {
         $secure = (! empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? true : false;
         $scheme = substr(strtolower($_SERVER['SERVER_PROTOCOL']), 0, strpos(strtolower($_SERVER['SERVER_PROTOCOL']), '/')) . (($secure) ? 's' : '');
@@ -659,7 +659,7 @@ class Url
     }
 
 
-    static public function previous()
+    public static function previous()
     {
         $referer = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
 
@@ -676,9 +676,10 @@ class Url
 
     /**
      * @param string $url
-     * @return Url
+     *
+     * @return static
      */
-    static public function parse($url)
+    public static function parse($url)
     {
         return new static($url);
     }
