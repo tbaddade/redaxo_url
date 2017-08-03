@@ -574,7 +574,7 @@ class Generator
         return self::getUrlById($primaryId, $articleId, $clangId, true);
     }
 
-    public static function getArticleIdByUrlParamKey($paramKey)
+    public static function getArticleIdByUrlParamKey($paramKey, $paramValue)
     {
         self::ensurePaths();
         $currentUrl = Url::current();
@@ -583,7 +583,7 @@ class Generator
             if ($currentUrl->getDomain() == $domain) {
                 foreach ($articleIds as $articleId => $urlParamKeys) {
                     foreach ($urlParamKeys as $urlParamKey => $ids) {
-                        if ($urlParamKey == $paramKey) {
+                        if ($urlParamKey == $paramKey && isset($ids[$paramValue])) {
                             return $articleId;
                         }
                     }
@@ -615,7 +615,7 @@ class Generator
         } elseif (count($params['params']) > 0) {
             foreach ($params['params'] as $key => $value) {
                 if ((int) $value > 0) {
-                    $articleIdFound = self::getArticleIdByUrlParamKey($key);
+                    $articleIdFound = self::getArticleIdByUrlParamKey($key, (int)$value);
                     if ($articleIdFound) {
                         $articleId = $articleIdFound;
                         $primaryId = (int) $value;
