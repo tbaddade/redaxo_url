@@ -79,6 +79,7 @@ class Generator
             $table->pathCategories = $parameters[$databaseAndTable . '_path_categories'];
             $table->seoTitle = $parameters[$databaseAndTable . '_seo_title'];
             $table->seoDescription = $parameters[$databaseAndTable . '_seo_description'];
+            $table->seoImg = $parameters[$databaseAndTable . '_seo_img'];
             $table->sitemapAdd = $parameters[$databaseAndTable . '_sitemap_add'];
             $table->sitemapFrequency = $parameters[$databaseAndTable . '_sitemap_frequency'];
             $table->sitemapPriority = $parameters[$databaseAndTable . '_sitemap_priority'];
@@ -202,6 +203,9 @@ class Generator
                     }
                     if (isset($table->seoDescription) && $table->seoDescription != '') {
                         $querySelect[] = $table->name . '.' . $table->seoDescription . ' AS seo_description';
+                    }
+                    if (isset($table->seoImg) && $table->seoImg != '') {
+                        $querySelect[] = $table->name . '.' . $table->seoImg . ' AS seo_img';
                     }
 
                     $queryFrom = '';
@@ -356,6 +360,12 @@ class Generator
                                 $object->seoDescription = $entry['seo_description'];
                             } else {
                                 $object->seoDescription = '';
+                            }
+
+                            if (isset($entry['seo_img'])) {
+                                $object->seoImg = $entry['seo_img'];
+                            } else {
+                                $object->seoImg = '';
                             }
 
                             $urlParamKey = (trim($table->urlParamKey) == '') ? self::$pathsNoUrlParamKey : $table->urlParamKey;
