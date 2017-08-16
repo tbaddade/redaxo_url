@@ -109,6 +109,14 @@ class Yrewrite extends Rewriter
     /**
      * @return string
      */
+    public function getFullPath($path)
+    {
+        return \rex_yrewrite::getFullPath($path);
+    }
+
+    /**
+     * @return string
+     */
     public function getSuffix()
     {
         $scheme = \rex_yrewrite::getScheme();
