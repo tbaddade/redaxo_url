@@ -71,11 +71,6 @@ abstract class Rewriter
     /**
      * @return string
      */
-    abstract function getFullPath($path);
-
-    /**
-     * @return string
-     */
     abstract function getSuffix();
 
     /**

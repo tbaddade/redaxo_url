@@ -32,32 +32,17 @@ class Seo
 
     public function getTitleTag()
     {
-        return $this->isUrl() ? '<title>' . htmlspecialchars($this->getTitle()) . '</title>' : $this->rewriterSeo->{$this->rewriter->getSeoTitleTagMethod()}();
-    }
-
-    public function getTitle()
-    {
-        return $this->normalize($this->data->seoTitle);
+        return $this->isUrl() ? '<title>' . htmlspecialchars($this->normalize($this->data->seoTitle)) . '</title>' : $this->rewriterSeo->{$this->rewriter->getSeoTitleTagMethod()}();
     }
 
     public function getDescriptionTag()
     {
-        return $this->isUrl() ? '<meta name="description" content="' . htmlspecialchars($this->getDescription()) . '" />' : $this->rewriterSeo->{$this->rewriter->getSeoDescriptionTagMethod()}();
+        return $this->isUrl() ? '<meta name="description" content="'.htmlspecialchars($this->normalize($this->data->seoDescription)).'" />' : $this->rewriterSeo->{$this->rewriter->getSeoDescriptionTagMethod()}();
     }
 
-    public function getDescription()
+    public function getCanonicalTag()
     {
-        return $this->normalize($this->data->seoDescription);
-    }
-
-    public function getCanonicalUrlTag()
-    {
-        return $this->isUrl() ? '<link rel="canonical" href="' . $this->getCanonicalUrl() . '" />' : $this->rewriterSeo->{$this->rewriter->getSeoCanonicalTagMethod()}();
-    }
-
-    public function getCanonicalUrl()
-    {
-        return $this->rewriter->getFullPath(ltrim($this->data->url, "/"));
+        return $this->isUrl() ? '<link rel="canonical" href="' . $this->data->url . '" />' : $this->rewriterSeo->{$this->rewriter->getSeoCanonicalTagMethod()}();
     }
 
     public function getHreflangTags()
@@ -87,11 +72,6 @@ class Seo
     public function getRobotsTag()
     {
         return $this->rewriterSeo->{$this->rewriter->getSeoRobotsTagMethod()}();
-    }
-
-    public function getImg()
-    {print_r($this->data);
-        return $this->data->img;
     }
 
     protected function isUrl()
