@@ -122,6 +122,8 @@ class Generator
 
     public static function generatePathFile($params)
     {
+        $query_big = 'SET SQL_BIG_SELECTS = 1';
+        \rex_sql::factory()->setQuery($query_big);
         $query = '  SELECT      `id`,
                                 `article_id`,
                                 `clang_id`,
