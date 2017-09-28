@@ -87,7 +87,7 @@ if (!function_exists('url_generate_column_data')) {
                                                 '/', Generator::$pathSlashPlaceholder,
                                                 $pathNameForUrl))
                                         );
-                    $url_paths .= Generator::appendRewriterSuffix($url . $pathSegment) . '<br />';
+                    $url_paths .= Generator::buildUrl($url, [$pathSegment]) . '<br />';
                 }
             }
         }
@@ -98,7 +98,7 @@ if (!function_exists('url_generate_column_data')) {
                 if (count($categories)) {
                     $url_paths .= '<b><small>' . rex_i18n::msg('url_generate_path_categories') . '</small></b><br />';
                     foreach ($categories as $category) {
-                        $url_paths .= Generator::appendRewriterSuffix($url . Url::getRewriter()->normalize(trim($category->getName()))) . '<br />';
+                        $url_paths .= Generator::buildUrl($url, [trim($category->getName())]) . '<br />';
                     }
                 }
             }
@@ -266,15 +266,16 @@ if ($func == '') {
     $tables = [];
     foreach ($dbconfigs as $DBID => $dbconfig) {
         if ($dbconfig['host'] . $dbconfig['login'] . $dbconfig['password'] . $dbconfig['name'] != '') {
-            $connection = rex_sql::checkDbConnection(
-                $dbconfig['host'],
-                $dbconfig['login'],
-                $dbconfig['password'],
-                $dbconfig['name']
-            );
-            if ($connection === true) {
-                $tables[$DBID] = rex_sql::showTables($DBID);
-            }
+            //$connection = rex_sql::checkDbConnection(
+            //    $dbconfig['host'],
+            //    $dbconfig['login'],
+            //    $dbconfig['password'],
+            //    $dbconfig['name']
+            //);
+            //if ($connection === true) {
+            //    $tables[$DBID] = rex_sql::showTables($DBID);
+            //}
+            $tables[$DBID] = rex_sql::showTables($DBID);
         }
     }
 
