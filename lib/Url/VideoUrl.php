@@ -106,7 +106,7 @@ class VideoUrl extends Url
 	 */
 	public function getVimeoEmbedUrl()
 	{
-		$url = 'http://player.vimeo.com/video/' . $this->getVimeoId() . '?byline=0&amp;portrait=0';
+		$url = 'https://player.vimeo.com/video/' . $this->getVimeoId() . '?byline=0&amp;portrait=0';
 		if ($this->autoPlay) {
 		    $url .= '&amp;autoplay=1';
         }
@@ -144,7 +144,7 @@ class VideoUrl extends Url
 	 */
 	public function getYoutubeEmbedUrl()
 	{
-		$url = 'http://youtube.com/embed/' . $this->getYoutubeId();
+		$url = 'https://youtube.com/embed/' . $this->getYoutubeId();
 		if ($this->autoPlay) {
 		    $url .= '?autoplay=1';
         }
@@ -176,7 +176,7 @@ class VideoUrl extends Url
 	 */
 	public function getYoutubeThumbnailUrl()
 	{
-        return 'http://img.youtube.com/vi/' . $this->getYoutubeId(). '/0.jpg';
+        return 'https://img.youtube.com/vi/' . $this->getYoutubeId(). '/0.jpg';
 	}
 
 
