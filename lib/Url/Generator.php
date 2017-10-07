@@ -104,7 +104,10 @@ class Generator
         if ($rewriterSuffix === null || $rewriterSuffix === '') {
             return $url;
         }
-        return substr($url, 0, (strlen($rewriterSuffix) * -1));
+        if (substr($url, (strlen($rewriterSuffix) * -1)) == $rewriterSuffix) {
+            return substr($url, 0, (strlen($rewriterSuffix) * -1));
+        }
+        return $url;
     }
 
     public static function buildUrl($url, $fields = [])
