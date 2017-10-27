@@ -16,21 +16,47 @@ class VideoUrl extends Url
 
     public $aspectRatio = '16:9';
     public $autoPlay = false;
+    public $fullscreen = true;
+    public $related = false;
 
     /**
      * Returns a embed code.
      *
-     * @return string
+     * @return string the embed url
      */
     public function getEmbedCode()
     {
-        return '<div class="embed-responsive aspect-ratio-'.str_replace(':', 'by', $this->aspectRatio).'"><iframe src="'.$this->getEmbedUrl().'"></iframe></div>';
+        $attributes = [
+            'src' => $this->getEmbedUrl(),
+        ];
+        if ($this->fullscreen) {
+            $attributes['allowfullscreen'] = 'allowfullscreen';
+        }
+
+        return '<div class="embed-responsive aspect-ratio-'.str_replace(':', 'by', $this->aspectRatio).'"><iframe '.\rex_string::buildAttributes($attributes).'></iframe></div>';
     }
 
     /**
-     * Returns a embed url.
+     * Returns a embed code.
      *
-     * @return null|string
+     * @return string the embed url
+     */
+    public function getPlayerCode()
+    {
+        $attributes = [
+            'class' => 'js-player',
+            'data-type' => $this->getService(),
+            'data-video-id' => $this->getId(),
+        ];
+
+        return '<div'.\rex_string::buildAttributes($attributes).'></div>';
+    }
+
+
+    /**
+     * Builds a embed url from a video id.
+     *
+     * @return string the embed url
      */
     public function getEmbedUrl()
     {
@@ -39,13 +65,12 @@ class VideoUrl extends Url
         } elseif ($this->isYoutube()) {
             return $this->getYoutubeEmbedUrl();
         }
+
         return null;
     }
 
     /*
-     * Returns the video id.
-     *
-     * @return null|string
+     * @return null|string Null on failure, the video's id on success
      */
     public function getId()
     {
@@ -54,24 +79,22 @@ class VideoUrl extends Url
         } elseif ($this->isYoutube()) {
             return $this->getYoutubeId();
         }
+
         return null;
     }
 
     /*
-     * Returns the last element of the url path
-     *
-     * @return string
+     * @return string The last element of the url path
      */
     protected function getIdFromUrlPath()
     {
         $pathParts = explode('/', $this->getPath());
+
         return end($pathParts);
     }
 
     /**
-     * Returns the Service in lowercase
-     *
-     * @return null|string
+     * @return null|string Null on failure to match, the service's name on success
      */
     public function getService()
     {
@@ -86,9 +109,9 @@ class VideoUrl extends Url
     }
 
     /**
-     * Returns the thumbnail url from the service.
+     * Get a thumbnail url from a video id.
      *
-     * @return null|string
+     * @return null|string the thumbnail url
      */
     public function getThumbnailUrl()
     {
@@ -97,27 +120,33 @@ class VideoUrl extends Url
         } elseif ($this->isYoutube()) {
             return $this->getYoutubeThumbnailUrl();
         }
+
         return null;
     }
 
     /**
-     * Returns a Vimeo embed url.
+     * Builds a Vimeo embed url from a video id.
      *
-     * @return string
+     * @return string The url's id
      */
     public function getVimeoEmbedUrl()
     {
-        $url = 'https://player.vimeo.com/video/'.$this->getVimeoId().'?byline=0&amp;portrait=0';
+        $params = [
+            'byline' => '0',
+            'portrait' => '0',
+        ];
         if ($this->autoPlay) {
-            $url .= '&amp;autoplay=1';
+            $params['autoplay'] = '1';
         }
-        return $url;
+        $params = count($params) ? '?'.\rex_string::buildQuery($params) : '';
+
+        return 'https://player.vimeo.com/video/'.$this->getVimeoId().$params;
     }
 
     /**
-     * Returns a Vimeo video id.
+     * Parses various vimeo urls and returns video identifier.
      *
-     * @return string
+     * @return string The url's id
      */
     public function getVimeoId()
     {
@@ -125,9 +154,9 @@ class VideoUrl extends Url
     }
 
     /**
-     * Returns the Vimeo thumbnail url.
+     * Get a Vimeo thumbnail url from a video id.
      *
-     * @return null|string
+     * @return null|string The thumbnail url
      */
     public function getVimeoThumbnailUrl()
     {
@@ -135,30 +164,38 @@ class VideoUrl extends Url
         if (isset($data[0])) {
             return $data[0]['thumbnail_large'];
         }
+
         return null;
     }
 
     /**
-     * Returns a Youtube embed url.
+     * Builds a Youtube embed url from a video id.
      *
      * @return string The url's id
      */
     public function getYoutubeEmbedUrl()
     {
-        $url = 'https://youtube.com/embed/'.$this->getYoutubeId();
+        $params = [];
+
         if ($this->autoPlay) {
-            $url .= '?autoplay=1';
+            $params['autoplay'] = '1';
         }
-        return $url;
+
+        $params['rel'] = $this->related ? '1' : '0';
+
+        $params = count($params) ? '?'.\rex_string::buildQuery($params) : '';
+
+        return 'https://youtube.com/embed/'.$this->getYoutubeId().$params;
     }
 
     /**
-     * Returns a Youtube video id.
+     * Parses various youtube urls and returns video identifier.
      *
-     * @return string
+     * @return string the url's id
      */
     public function getYoutubeId()
     {
+        $url = $this->getUrl();
         $urlParamKeys = ['v', 'vi'];
 
         foreach ($urlParamKeys as $urlParamKey) {
@@ -171,9 +208,9 @@ class VideoUrl extends Url
     }
 
     /**
-     * Returns the Youtube thumbnail url.
+     * Get a Youtube thumbnail url from a video id.
      *
-     * @return string
+     * @return string The thumbnail url
      */
     public function getYoutubeThumbnailUrl()
     {
@@ -218,6 +255,28 @@ class VideoUrl extends Url
     public function setAutoPlay($autoPlay = true)
     {
         $this->autoPlay = $autoPlay;
+    }
+
+
+    /**
+     * @param $fullscreen bool
+     *
+     * @throws \rex_exception
+     */
+    public function setFullscreen($fullscreen = true)
+    {
+        $this->fullscreen = $fullscreen;
+    }
+
+
+    /**
+     * @param $related bool
+     *
+     * @throws \rex_exception
+     */
+    public function setRelated($related = true)
+    {
+        $this->related = $related;
     }
 
 }
