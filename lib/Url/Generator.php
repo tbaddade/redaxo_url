@@ -284,7 +284,10 @@ class Generator
                             if (count(\rex_clang::getAll()) >= 2 && $clangId == '0' && $table->clang_id != '') {
                                 $articleClangId = $entry['clang_id'];
                             }
-                            $articleUrl = Url::getRewriter()->getFullUrl($articleId, $articleClangId);
+                            else if(count(\rex_clang::getAll()) == 1 && $clangId != \rex_clang::getStartId()) {
+                            	$articleClangId = \rex_clang::getStartId();
+                            }
+                           $articleUrl = Url::getRewriter()->getFullUrl($articleId, $articleClangId);
                             $articleUrl = self::stripRewriterSuffix($articleUrl) . '/';
                             $url = Url::parse($articleUrl);
 
