@@ -4,6 +4,12 @@ Url - Changelog
 
 # Changelog
 
+Version 1.0.1 - 06.11.2017
+---------------------------------
+### Bugfixes
+- Hreflangs nur für aktive Sprache ausgeben (@DanielWeitenauer)
+- Sprach Id in Relationstabellen wurden nicht beachtet (@TobiasKrais)
+
 Version 1.0.0 - 27.10.2017
 ---------------------------------
 ### Neu
