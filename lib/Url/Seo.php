@@ -67,7 +67,7 @@ class Seo
         if ($this->isUrl()) {
             $return = '';
             $hrefs = [];
-            foreach (\rex_clang::getAll() as $clang) {
+            foreach (\rex_clang::getAll(true) as $clang) {
                 if ($clang->getId() == \rex_clang::getCurrentId()) {
                     continue;
                 }

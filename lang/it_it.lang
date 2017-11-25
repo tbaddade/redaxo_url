@@ -1,0 +1,63 @@
+url = Url
+url_title = Url
+
+url_article = Articolo
+url_article_language = Lingua articolo
+url_data = Dati
+url_generate = Generare url
+url_generate_article_clang_ids = Tutte le lingue
+url_generate_error_article = Seleziona articolo
+url_generate_error_table = Seleziona tabella
+url_generate_legend_article = In quale articolo avviene l'output
+url_generate_legend_table = 
+url_generate_no_additive = nessun aggiunzione
+url_generate_no_clang_id = 
+url_generate_notice_article_clang_ids = 
+url_generate_notice_id = 
+url_generate_notice_clang_id = 
+url_generate_notice_name = 
+url_generate_notice_path_names = 
+url_generate_notice_restriction = 
+url_generate_notice_seo_title = 
+url_generate_notice_seo_description = 
+url_generate_notice_sitemap_add = 
+url_generate_notice_sitemap_frequency = Frequenza
+url_generate_notice_sitemap_priority = Priorità
+url_generate_notice_url_param_key = 
+url_generate_restriction = Restrizione
+url_generate_no_restriction = Nessuna restrizione
+url_generate_no_selection = Nessuna selezione
+url_generate_paths = 
+url_generate_path_names = 
+url_generate_path_names_short = ult. percorsi
+url_generate_path_children = 
+url_generate_seo = Seo
+url_generate_sitemap = Sitemap
+url_generate_url_param_key = 
+url_generate_url_param_key_short = Chiamata Url
+url_id = Id
+url_language = Lingua
+url_no_table_selected = nessuna tabella specificata
+url_table = Tabella
+
+
+url_after = dietro
+url_before = davanti
+
+url_generate_relation_insert = Posizione
+url_generate_relation_insert_notice = 
+
+url_generate_path_own = percorso customizzato
+url_generate_path_categories = Sottocategorie
+url_generate_path_categories_append = Aggiungere sottocategorie?
+url_generate_path_categories_notice = 
+
+url_generate_path_relation = Relazione
+url_generate_path_relation_table = Tabelle
+
+url_generate_relation_field = 
+url_generate_notice_relation_field = 
+url_generate_legend_table_relation = Tabelle di relazione
+url_generate_no_relation_field = Non estendere l'Url
+
+url_generate_notice_sitemap_lastmod = 

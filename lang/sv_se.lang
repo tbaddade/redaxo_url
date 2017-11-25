@@ -1,0 +1,64 @@
+url = URL
+url_title = URL
+
+url_article = Artikel
+url_article_language = Artikelns språk
+url_data = Data
+url_generate = Skapa URLs
+url_generate_article_clang_ids = alla språk
+url_generate_error_article = Välj artikel
+url_generate_error_table = Välj tabell
+url_generate_legend_article = I vilken artikel ska det visas
+url_generate_legend_table = Ur vilken tabell ska URL-adresserna genereras
+url_generate_no_additive = inget tillägg
+url_generate_no_clang_id = Ingen kolumn för språk hittades
+url_generate_notice_article_clang_ids = Om "alla språk" är aktiv måste en kolumn för språk anges. Annars kan posten inte associeras med ett språk.
+url_generate_notice_id = Kolumn med motsvarande unika ID
+url_generate_notice_clang_id = Kolumn med motsvarande unika Clang Id
+url_generate_notice_name = Kolumn för att generera URL-adressen från
+url_generate_notice_path_names = Utan <code> / </ code> i början och slutet <br /> Artikeln visas även när de här banorna läggs till i slutet av webbadressen. <br /> Om en "|" och en titel läggs till i slutet, kan den senare användas som menyalternativ (Ex: om-oss | Om oss)
+url_generate_notice_restriction = Med detta kan genereringen av webbadresserna för ovanstående artikel begränsas. Användbar när du skapar relationer mellan tabeller. Till exempel kan nyhetsposter delas upp i olika kategorier genom att ställa in dessa begränsningar i enlighet därmed.
+url_generate_notice_seo_title = Kolumn att använda för SEO-titeln
+url_generate_notice_seo_description = Kolumn att använda för SEO-beskrivningen
+url_generate_notice_seo_image = Kolumn från vilken bilden tas
+url_generate_notice_sitemap_add = Lägg till webbadresser till sitemap.xml?
+url_generate_notice_sitemap_frequency = Frekvens
+url_generate_notice_sitemap_priority = Prioritet
+url_generate_notice_url_param_key = När du använder rex_getUrl behöver du inte längre lägga till artikeln Id från den valda artikeln ovan. I stället för <br /> <code> rex_getUrl (4, '', ['id' => 5]) </ code> kan du använda <code> rex_getUrl ('', '', ['news-id' => 5]) </ code>
+url_generate_restriction = Begränsning
+url_generate_no_restriction = Inga begränsningar
+url_generate_no_selection = Inget val
+url_generate_paths = Ytterligare sökvägar för webbadressen
+url_generate_path_names = Lägg till anpassade sökvägar till webbadressen
+url_generate_path_names_short = add. paths
+url_generate_path_children = Underkategorier kan läggas till webbadressen
+url_generate_seo = SEO
+url_generate_sitemap = Sitemap
+url_generate_url_param_key = Parametrar för rex_getUrl()
+url_generate_url_param_key_short = URL call
+url_id = ID
+url_language = Språk
+url_no_table_selected = Ingen tabell utvalt
+url_table = Tabell
+
+
+url_after = efter
+url_before = före
+
+url_generate_relation_insert = Position
+url_generate_relation_insert_notice = Var ska sökvägar läggas till URL-adressen
+
+url_generate_path_own = Egna sökvägar
+url_generate_path_categories = Underkategorier
+url_generate_path_categories_append = Bifoga underkategorier?
+url_generate_path_categories_notice = Om tillgänglig, kan underkategorier läggas till webbadressen?
+
+url_generate_path_relation = Relation
+url_generate_path_relation_table = Tabell
+
+url_generate_relation_field = Bygg sökvägar ur relationaltabell
+url_generate_notice_relation_field = Relationskolumn. Ange kolumnerna i relationstabellen nedan för att expandera URL-adressen i enlighet med detta
+url_generate_legend_table_relation = Relationstabell
+url_generate_no_relation_field = Expandera inte URL
+
+url_generate_notice_sitemap_lastmod = Kolumn innehåller update-datumet (senaste ändringarna)

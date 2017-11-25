@@ -92,16 +92,19 @@ class Generator
     public static function appendRewriterSuffix($url)
     {
         $rewriterSuffix = Url::getRewriter()->getSuffix();
-        if ($rewriterSuffix !== null) {
-            $url .= $rewriterSuffix;
+        if ($rewriterSuffix === null || $rewriterSuffix === '') {
+            return $url;
         }
-        return $url;
+        return $url . $rewriterSuffix;
     }
 
     public static function stripRewriterSuffix($url)
     {
         $rewriterSuffix = Url::getRewriter()->getSuffix();
-        if ($rewriterSuffix !== null) {
+        if ($rewriterSuffix === null || $rewriterSuffix === '') {
+            return $url;
+        }
+        if (substr($url, (strlen($rewriterSuffix) * -1)) == $rewriterSuffix) {
             return substr($url, 0, (strlen($rewriterSuffix) * -1));
         }
         return $url;
@@ -122,6 +125,8 @@ class Generator
 
     public static function generatePathFile($params)
     {
+        $query_big = 'SET SQL_BIG_SELECTS = 1';
+        \rex_sql::factory()->setQuery($query_big);
         $query = '  SELECT      `id`,
                                 `article_id`,
                                 `clang_id`,
@@ -217,6 +222,9 @@ class Generator
                         $relationTable = self::getTableObject($result['relation_table'], $result['relation_table_parameters'], true);
 
                         $queryFrom = 'LEFT JOIN ' . $relationTable->name . ' ON ' . $table->name . '.' . $table->relationField . ' = ' . $relationTable->name . '.' . $relationTable->id;
+	                    if (count(\rex_clang::getAll()) >= 2 && $clangId == '0' && $table->clang_id != '' && $relationTable->clang_id != '') {
+	                    	$queryFrom .= ' AND '. $table->name . '.' . $table->clang_id . ' = ' . $relationTable->name . '.' . $relationTable->clang_id;
+	                    }
 
                         $querySelect[] = $relationTable->name . '.' . $relationTable->id . ' AS relation_id';
                         if (count(\rex_clang::getAll()) >= 2 && $clangId == '0' && $relationTable->clang_id != '') {

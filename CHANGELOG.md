@@ -4,6 +4,25 @@ Url - Changelog
 
 # Changelog
 
+Version 1.0.1 - 06.11.2017
+---------------------------------
+### Bugfixes
+- Hreflangs nur für aktive Sprache ausgeben (@DanielWeitenauer)
+- Sprach Id in Relationstabellen wurden nicht beachtet (@TobiasKrais)
+
+Version 1.0.0 - 27.10.2017
+---------------------------------
+### Neu
+- Parser für Video Urls
+- Update italienisches Sprachfile (@lexplatt)
+- Update schwedisches Sprachfile (@interweave-media)
+- SEO Auswahl eines Bildfeldes (@ynamite)
+- neue SEO Methoden, die nur das Value liefern (@ynamite)
+
+### Bugfixes
+- leerer Suffix wurde nicht unterstützt
+- Problem auf Strato Servern beseitigt (@TobiasKrais)
+
 Version 1.0.0-beta5 - 31.07.2017
 ---------------------------------
 ### Neu
