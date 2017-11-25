@@ -83,6 +83,14 @@ class Yrewrite extends Rewriter
     /**
      * @return string
      */
+    public function getSeoCanonicalUrlMethod()
+    {
+        return 'getCanonicalUrl';
+    }
+
+    /**
+     * @return string
+     */
     public function getSeoHreflangTagsMethod()
     {
         return 'getHreflangTags';

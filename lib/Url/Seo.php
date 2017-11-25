@@ -59,7 +59,7 @@ class Seo
 
     public function getCanonicalUrl()
     {
-        return $this->rewriter->getFullPath(ltrim($this->data->url, "/"));
+        return $this->isUrl() ? $this->rewriter->getFullPath(ltrim($this->data->url, "/")) : $this->rewriterSeo->{$this->rewriter->getSeoCanonicalUrlMethod()}();
     }
 
     public function getHreflangTags()
