@@ -62,6 +62,15 @@ if ($newsDataId > 0) {
 }
 ?>
 ```
+#### Weitere Parameter
+Weitere Parameter können über die Funktion getData geholt werden
+
+```php
+<?php
+$urldata = UrlGenerator::getData();
+dump($urldata);
+?>
+```
 
 
 ### Installation
