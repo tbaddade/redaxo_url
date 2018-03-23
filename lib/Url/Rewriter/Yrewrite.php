@@ -10,7 +10,7 @@
  */
 namespace Url\Rewriter;
 
-use Url\Generator;
+use Url\UrlManager;
 
 class Yrewrite extends Rewriter
 {
@@ -20,7 +20,7 @@ class Yrewrite extends Rewriter
     public function articleIdNotFound()
     {
         \rex_extension::register('YREWRITE_PREPARE', function (\rex_extension_point $ep) {
-            return Generator::getArticleParams();
+            return UrlManager::getArticleParams();
         }, \rex_extension::EARLY);
     }
 
@@ -99,6 +99,9 @@ class Yrewrite extends Rewriter
 
 
     /**
+     * @param int $article_id
+     * @param int $clang_id
+     *
      * @return string
      */
     public function getFullUrl($article_id, $clang_id)
@@ -107,6 +110,8 @@ class Yrewrite extends Rewriter
     }
 
     /**
+     * @param string $path
+     *
      * @return string
      */
     public function getFullPath($path)
@@ -121,6 +126,25 @@ class Yrewrite extends Rewriter
     {
         $scheme = \rex_yrewrite::getScheme();
         return $scheme->getSuffix();
+    }
+
+    /**
+     * @param string $domain
+     *
+     * @return string
+     */
+    public function getSchemeByDomain($domain)
+    {
+        $domain = \rex_yrewrite::getDomainByName($domain);
+        return $domain->getScheme();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isHttps()
+    {
+        return \rex_yrewrite::isHttps();
     }
 
     /**

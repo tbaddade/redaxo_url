@@ -1,63 +1,75 @@
 url = Url
 url_title = Url
 
-url_article = Article
-url_article_language = Article language
-url_data = Data
-url_generate = Generate URLs
-url_generate_article_clang_ids = All languages
-url_generate_error_article = Choose article
-url_generate_error_table = Choose table
-url_generate_legend_article = Article used for output
-url_generate_legend_table = Table from which to generate URLs
-url_generate_no_additive = no supplement
-url_generate_no_clang_id = no column for languages found
-url_generate_notice_article_clang_ids = if "all languages" is active a column for languages must be specified. Otherwise the record cannot be associated with a language.
-url_generate_notice_id = Column with the corresponding unique Id
-url_generate_notice_clang_id = Column with the corresponding unique Clang Id
-url_generate_notice_name = Column to generate the URL from
-url_generate_notice_path_names = without <code>/</code> at the start and end<br />The article is displayed even when these paths are appended to the end of the URL. <br />If a "|" and a title are added to the end, this can later be used as a menu item (Ex: about-us | About us)
-url_generate_notice_restriction = With this the generation of the URLs for the above article can be restricted. Useful when creating relations between tables. For instance, news entries can be split up into different categories by setting these restrictions accordingly.
-url_generate_notice_seo_title = Column to use for the SEO title
-url_generate_notice_seo_description = Column to use for the SEO description
-url_generate_notice_sitemap_add = Append URLs to sitemap.xml?
-url_generate_notice_sitemap_frequency = Frequency
-url_generate_notice_sitemap_priority = Priority
-url_generate_notice_url_param_key = When using rex_getUrl you no longer have to add the article Id from the chosen article above. So instead of <br /><code>rex_getUrl(4, '', ['id' => 5])</code> you can use <code>rex_getUrl('', '', ['news-id' => 5])</code>
-url_generate_restriction = Restriction
-url_generate_no_restriction = No restriction
-url_generate_no_selection = No selection
-url_generate_paths = additional paths for the URL
-url_generate_path_names = append custom paths to the URL
-url_generate_path_names_short = add. paths
-url_generate_path_children = Child categories can be added to the URL
-url_generate_seo = SEO
-url_generate_sitemap = Sitemap
-url_generate_url_param_key = Parameters for rex_getUrl()
-url_generate_url_param_key_short = URL call
-url_id = ID
-url_language = Language
-url_no_table_selected = no table specified
-url_table = Table
-
-
 url_after = after
 url_before = before
+url_id = ID
+url_language = Language
 
-url_generate_relation_insert = Position
-url_generate_relation_insert_notice = Where should the paths be added to the URL
+url_generator_profiles = Profile
+url_generator_urls = Urls
 
-url_generate_path_own = custom paths
-url_generate_path_categories = Subcategories
-url_generate_path_categories_append = Append subcategories
-url_generate_path_categories_notice = If available, can subcategories be appended to the URL?
+url_generator = Generate URLs
+url_generator_article = Article
+url_generator_article_clang = Article language
+url_generator_article_clang_notice = if "all languages" is active a column for languages must be specified (<b>{0}</b>). Otherwise the record cannot be associated with a language.
+url_generator_article_clang_option_all = All languages
+url_generator_article_error = Choose article
+url_generator_article_legend = Article used for output
+url_generator_clang_id_notice = Column with the corresponding unique Clang Id
+url_generator_data = Data
+url_generator_id_notice = Column with the corresponding unique Id
+url_generator_identify_record =
+url_generator_namespace = Namespace
+url_generator_namespace_error =
+url_generator_namespace_notice = Parameters for rex_getUrl()
+url_generator_namespace_short = URL call
+url_generator_no_additive = no supplement
+url_generator_no_clang_id = no column for languages found
+url_generator_no_relation_column = Don't augment the URL
+url_generator_no_restriction = No restriction
+url_generator_no_selection = No selection
+url_generator_append_structure_categories = Subcategories
+url_generator_append_structure_categories_append = Append subcategories
+url_generator_append_structure_categories_notice = If available, can subcategories be appended to the URL?
+url_generator_path_children = Child categories can be added to the URL
+url_generator_append_user_path = append custom paths to the URL
+url_generator_append_user_path_notice = without <code>/</code> at the start and end<br />The article is displayed even when these paths are appended to the end of the URL. <br />If a "=" and a title are added to the end, this can later be used as a menu item (Ex: about-us = About us)
+url_generator_append_user_path_short = add. paths
+url_generator_path_user = custom paths
+url_generator_path_relation = Relation
+url_generator_path_relation_table = Table
+url_generator_paths = additional paths for the URL
+url_generator_relation = Relation {0}
+url_generator_relation_column =
+url_generator_relation_column_notice = Specify the columns from the relation table below to augment the URL accordingly
+url_generator_relation_field = Build paths out of relation table
+url_generator_relation_paths =
+url_generator_relation_position = Position
+url_generator_relation_position_eg_code =
+url_generator_relation_position_eg_label =
+url_generator_relation_position_in_url =
+url_generator_relation_position_notice = Where should the paths be added to the URL
+url_generator_relation_position_notice__2 =
+url_generator_restriction = Restriction
+url_generator_restriction_notice = With this the generation of the URLs for the above article can be restricted. Useful when creating relations between tables. For instance, news entries can be split up into different categories by setting these restrictions accordingly.
+url_generator_seo = SEO
+url_generator_seo_description_notice = Column to use for the SEO description
+url_generator_seo_image_notice =
+url_generator_seo_title_notice = Column to use for the SEO title
+url_generator_sitemap = Sitemap
+url_generator_sitemap_add_notice = Append URLs to sitemap.xml?
+url_generator_sitemap_frequency_notice = Frequency
+url_generator_sitemap_priority_notice = Priority
+url_generator_structure_article = Article used for output
+url_generator_table = Table
+url_generator_table_error = Choose table
+url_generator_table_legend = Table from which to generate URLs
+url_generator_table_not_selected = no table specified
+url_generator_table_relation_legend = Relationtable {0}
+url_generator_sitemap_lastmod_notice = Column containing the update date (last changes)
+url_generator_url_notice = Column to generate the URL from
 
-url_generate_path_relation = Relation
-url_generate_path_relation_table = Table
 
-url_generate_relation_field = Build paths out of relation table
-url_generate_notice_relation_field = Relation column. Specify the columns from the relation table below to augment the URL accordingly
-url_generate_legend_table_relation = Relationtable
-url_generate_no_relation_field = Don't augment the URL
-
-url_generate_notice_sitemap_lastmod = Column containing the update date (last changes)
+// Löschen
+url_generate_notice_url_param_key = When using rex_getUrl you no longer have to add the article Id from the chosen article above. So instead of <br /><code>rex_getUrl(4, '', ['id' => 5])</code> you can use <code>rex_getUrl('', '', ['news-id' => 5])</code>

@@ -64,11 +64,16 @@ abstract class Rewriter
 
 
     /**
+     * @param int $article_id
+     * @param int $clang_id
+     *
      * @return string
      */
     abstract function getFullUrl($article_id, $clang_id);
 
     /**
+     * @param string $path
+     *
      * @return string
      */
     abstract function getFullPath($path);
@@ -79,6 +84,20 @@ abstract class Rewriter
     abstract function getSuffix();
 
     /**
+     * @param string $domain
+     *
+     * @return string
+     */
+    abstract function getSchemeByDomain($domain);
+
+    /**
+     * @return bool
+     */
+    abstract function isHttps();
+
+    /**
+     * @param string $string
+     *
      * @return string
      */
     abstract function normalize($string);

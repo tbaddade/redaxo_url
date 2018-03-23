@@ -9,12 +9,20 @@ page:
     pjax: false
     icon: rex-icon fa fa-anchor
     subpages:
-        generate:
-            title: 'translate:generate'
+        generator:
+            title: 'translate:generator'
+            subpages:
+                profile:
+                    title: 'translate:url_generator_profiles'
+                url:
+                    title: 'translate:url_generator_urls_generated'
 
 requires:
-    redaxo: ^5.3.0
+    redaxo: ^5.4.0
     packages:
         yrewrite: ^2.2.0
+    php:
+        extensions: [intl]
+        version: ^7.0
 
 #load: late

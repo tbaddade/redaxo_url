@@ -9,21 +9,46 @@
  * file that was distributed with this source code.
  */
 
+\rex_sql_table::get(
+    \rex::getTable('url_generator_profile'))
+    ->ensurePrimaryIdColumn()
+    ->ensureColumn(new \rex_sql_column('namespace', 'VARCHAR(255)'))
+    ->ensureColumn(new \rex_sql_column('article_id', 'INT(11)'))
+    ->ensureColumn(new \rex_sql_column('clang_id', 'INT(11)', false, 1))
+    ->ensureColumn(new \rex_sql_column('table_name', 'VARCHAR(255)'))
+    ->ensureColumn(new \rex_sql_column('table_parameters', 'TEXT', true))
+    ->ensureColumn(new \rex_sql_column('relation_1_table_name', 'VARCHAR(255)'))
+    ->ensureColumn(new \rex_sql_column('relation_1_table_parameters', 'TEXT', true))
+    ->ensureColumn(new \rex_sql_column('relation_2_table_name', 'VARCHAR(255)'))
+    ->ensureColumn(new \rex_sql_column('relation_2_table_parameters', 'TEXT', true))
+    ->ensureColumn(new \rex_sql_column('relation_3_table_name', 'VARCHAR(255)'))
+    ->ensureColumn(new \rex_sql_column('relation_3_table_parameters', 'TEXT', true))
 
-$sql = rex_sql::factory();
-$sql->setQuery('CREATE TABLE IF NOT EXISTS `' . rex::getTable('url_generate') . '` (
-    `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-    `article_id` INT(11) NOT NULL,
-    `clang_id` INT(11) NOT NULL DEFAULT 1,
-    `url` TEXT NOT NULL,
-    `table` VARCHAR(255) NOT NULL,
-    `table_parameters` TEXT NOT NULL,
-    `relation_table` VARCHAR(255) NOT NULL,
-    `relation_table_parameters` TEXT NOT NULL,
-    `relation_insert` VARCHAR(255) NOT NULL,
-    `createdate` INT(11) NOT NULL,
-    `createuser` VARCHAR(255) NOT NULL,
-    `updatedate` INT(11) NOT NULL,
-    `updateuser` VARCHAR(255) NOT NULL,
-    PRIMARY KEY (`id`)
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;');
+    ->ensureColumn(new \rex_sql_column('createdate', 'DATETIME'))
+    ->ensureColumn(new \rex_sql_column('createuser', 'VARCHAR(255)'))
+    ->ensureColumn(new \rex_sql_column('updatedate', 'DATETIME'))
+    ->ensureColumn(new \rex_sql_column('updateuser', 'VARCHAR(255)'))
+
+    ->ensureIndex(new \rex_sql_index('namespace', ['namespace', 'article_id', 'clang_id'], \rex_sql_index::UNIQUE))
+    ->ensure();
+
+\rex_sql_table::get(
+    \rex::getTable('url_generator_url'))
+    ->ensurePrimaryIdColumn()
+    ->ensureColumn(new \rex_sql_column('profile_id', 'INT(11)'))
+    ->ensureColumn(new \rex_sql_column('article_id', 'INT(11)'))
+    ->ensureColumn(new \rex_sql_column('clang_id', 'INT(11)'))
+    ->ensureColumn(new \rex_sql_column('data_id', 'INT(11)'))
+    ->ensureColumn(new \rex_sql_column('is_user_path', 'TINYINT(1)', false, '0'))
+    ->ensureColumn(new \rex_sql_column('is_structure', 'TINYINT(1)', false, '0'))
+    ->ensureColumn(new \rex_sql_column('url', 'VARCHAR(255)'))
+    ->ensureColumn(new \rex_sql_column('sitemap', 'TINYINT(1)', false, '0'))
+    ->ensureColumn(new \rex_sql_column('lastmod', 'VARCHAR(255)'))
+    ->ensureColumn(new \rex_sql_column('seo', 'TEXT'))
+    ->ensureColumn(new \rex_sql_column('createdate', 'DATETIME'))
+    ->ensureColumn(new \rex_sql_column('createuser', 'VARCHAR(255)'))
+    ->ensureColumn(new \rex_sql_column('updatedate', 'DATETIME'))
+    ->ensureColumn(new \rex_sql_column('updateuser', 'VARCHAR(255)'))
+
+    ->ensureIndex(new \rex_sql_index('url', ['url'], \rex_sql_index::UNIQUE))
+    ->ensure();

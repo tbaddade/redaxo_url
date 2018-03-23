@@ -1,64 +1,80 @@
 url = Url
 url_title = Url
 
-url_article = Artikel
-url_article_language = Sprache des Artikels
-url_data = Daten
-url_generate = Urls generieren
-url_generate_article_clang_ids = alle Sprachen
-url_generate_error_article = Artikel wählen
-url_generate_error_table = Tabelle wählen
-url_generate_legend_article = In welchem Artikel erfolgt die Ausgabe
-url_generate_legend_table = Aus welcher Tabelle werden die Urls erstellt
-url_generate_no_additive = kein Zusatz
-url_generate_no_clang_id = keine Spalte für Sprachen vorhanden
-url_generate_notice_article_clang_ids = wenn "alle Sprachen" ausgewählt, dann muss eine Spalte für die Sprache ausgewählt werden. Ansonsten kann der Datensatz keiner Sprache zugeordnet werden.
-url_generate_notice_id = Spalte der dazugehörigen eindeutigen Id
-url_generate_notice_clang_id = Spalte der dazugehörigen eindeutigen Clang Id
-url_generate_notice_name = Spalten aus der die Url erzeugt wird
-url_generate_notice_path_names = ohne <code>/</code> am Anfang und Ende<br />Der Artikel erscheint auch, wenn diese Pfade an der Url hängen. <br />Notiert man hinter einem "|" einen Titel, so kann dieser später als Menüpunkt dienen (Bsp.: ueber-uns | Über uns)
-url_generate_notice_restriction = Hiermit kann das erstellen der Urls für den obigen Artikel eingeschränkt werden. Hilfreich bei Relationen mit einer anderen Tabelle. News können zum Bsp. in mehrere Kategorien aufgeteilt werden.
-url_generate_notice_seo_title = Spalte aus der der Titel erzeugt wird
-url_generate_notice_seo_description = Spalte aus der die Description erzeugt wird
-url_generate_notice_seo_image = Spalte aus der das Bild genommen wird
-url_generate_notice_sitemap_add = Urls in die Sitemap.xml aufnehmen?
-url_generate_notice_sitemap_frequency = Frequenz
-url_generate_notice_sitemap_priority = Wichtigkeit
-url_generate_notice_url_param_key = Man benötigt beim Benutzen von rex_getUrl nicht mehr die Artikel-Id vom oben ausgewählten Artikel. Aus<br /><code>rex_getUrl(4, '', ['id' => 5])</code> wird <code>rex_getUrl('', '', ['news-id' => 5])</code>
-url_generate_restriction = Einschränkung
-url_generate_no_restriction = Keine Einschränkung
-url_generate_no_selection = Keine Auswahl
-url_generate_paths = zusätzliche Pfade für die Url
-url_generate_path_names = eigene Pfade an die Url hängen
-url_generate_path_names_short = zus. Pfade
-url_generate_path_children = Kindkategorien können an die Url gehangen werden
-url_generate_seo = Seo
-url_generate_sitemap = Sitemap
-url_generate_url_param_key = Parameter für rex_getUrl()
-url_generate_url_param_key_short = Url Aufruf
-url_id = Id
-url_language = Sprache
-url_no_table_selected = keine Tabelle ausgewählt
-url_table = Tabelle
-
-
 url_after = dahinter
 url_before = davor
+url_id = Id
+url_language = Sprache
 
-url_generate_relation_insert = Position
-url_generate_relation_insert_notice = Wo sollen die Pfade in der Url eingefügt werden?
+url_generator_profiles = Profile
+url_generator_urls_generated = generierte Urls
 
-url_generate_path_own = eigene Pfade
-url_generate_path_categories = Unterkategorien
-url_generate_path_categories_append = Unterkategorien anhängen?
-url_generate_path_categories_notice = Sofern vorhanden, können Unterkategorien an die Url gehangen werden?
+url_generator = Urls generieren
+url_generator_article = Artikel
+url_generator_article_clang = Sprache des Artikels zuweisen, da diese nicht über die Linkmap gesetzt werden kann
+url_generator_article_clang_notice = wenn "alle Sprachen" ausgewählt, dann muss eine Spalte für die Sprache bei <b>{0}</b> ausgewählt werden. Ansonsten kann der Datensatz keiner Sprache zugeordnet werden.
+url_generator_article_clang_option_all = alle Sprachen
+url_generator_article_error = Artikel wählen
+url_generator_article_legend = In welchem Artikel erfolgt die Ausgabe
+url_generator_clang_id_notice = Spalte der dazugehörigen eindeutigen Clang Id
+url_generator_data = Daten
+url_generator_id_notice = Spalte der dazugehörigen eindeutigen Id
+url_generator_identify_record = Datensatz identifizieren
+url_generator_namespace = Namensraum
+url_generator_namespace_error = Eindeutigen Namensraum/Parameter vergeben
+url_generator_namespace_notice = Parameter für rex_getUrl()
+url_generator_namespace_short = Url Aufruf
+url_generator_no_additive = kein Zusatz
+url_generator_no_clang_id = keine Spalte für Sprachen vorhanden
+url_generator_no_relation_column = Url nicht erweitern
+url_generator_no_restriction = Keine Einschränkung
+url_generator_no_selection = Keine Auswahl
+url_generator_append_structure_categories = Unterkategorien
+url_generator_append_structure_categories_append = Unterkategorien anhängen?
+url_generator_append_structure_categories_notice = Sofern vorhanden, können Unterkategorien an die Url gehangen werden?
+url_generator_path_children = Kindkategorien können an die Url gehangen werden
+url_generator_append_user_path = eigene Pfade an die Url hängen
+url_generator_append_user_path_notice = ohne <code>/</code> am Anfang und Ende<br />Der Artikel erscheint auch, wenn diese Pfade an der Url hängen. <br />Notiert man hinter einem "=" einen Titel, so kann dieser später als Menüpunkt dienen (Bsp.: ueber-uns = Über uns)
+url_generator_append_user_path_short = zus. Pfade
+url_generator_path_own = eigene Pfade
+url_generator_path_relation = Relation
+url_generator_path_relation_table = Tabelle
+url_generator_paths = zusätzliche Pfade für die Url
+url_generator_relation = Relation {0}
+url_generator_relation_column = Spalte der Relation {0}
+url_generator_relation_column_notice = Weiter unten die Relationstabelle und Spalten auswählen um die Url zu erweitern
+url_generator_relation_field = Pfade aus einer Relationstabelle bilden
+url_generator_relation_paths = zusätzliche Pfade aus Relationen bilden
+url_generator_relation_position = Position
+url_generator_relation_position_eg_code = <code>/<b>column-1/column-2</b>/relation-1-dahinter/</code><br /><code>/relation-1-davor/<b>column-1/column-2</b>/</code><br /><code>/relation-1-davor/<b>column-1/column-2</b>/relation-2-dahinter/</code><br /><code>/relation-1-davor/relation-2-davor/<b>column-1/column-2</b>/relation-3-dahinter/</code><br /><code>/relation-1-davor/relation-3-davor/<b>column-1/column-2</b>/relation-2-dahinter/</code><br /><code>/relation-3-davor/<b>column-1/column-2</b>/relation-1-dahinter/relation-2-dahinter/</code>
+url_generator_relation_position_eg_label = Beispiel
+url_generator_relation_position_in_url = Position in der Url
+url_generator_relation_position_notice = Wo sollen die Pfade in der Url eingefügt werden?
+url_generator_relation_position_notice__2 = Ausgehend von der oben definierten Url.
+url_generator_restriction = Einschränkung
+url_generator_restriction_notice = Hiermit kann das erstellen der Urls für den obigen Artikel eingeschränkt werden. Hilfreich bei Relationen mit einer anderen Tabelle. News können zum Bsp. in mehrere Kategorien aufgeteilt werden.
+url_generator_seo = Seo
+url_generator_seo_description_notice = Spalte aus der die Description erzeugt wird
+url_generator_seo_image_notice = Spalte aus der das Bild genommen wird
+url_generator_seo_title_notice = Spalte aus der der Titel erzeugt wird
+url_generator_sitemap = Sitemap
+url_generator_sitemap_add_notice = Urls in die Sitemap.xml aufnehmen?
+url_generator_sitemap_frequency_notice = Frequenz
+url_generator_sitemap_lastmod_notice = Spalte, in der die letzte Änderung gespeichert wird (Bsp. updatedate)
+url_generator_sitemap_priority_notice = Wichtigkeit
+url_generator_structure_article = In welchem Artikel erfolgt die Ausgabe
+url_generator_table = Tabelle
+url_generator_table_error = Tabelle wählen
+url_generator_table_legend = Aus welcher Tabelle werden die Urls erstellt
+url_generator_table_not_selected = keine Tabelle ausgewählt
+url_generator_table_relation_legend = Relationstabelle {0}
+url_generator_url_notice = Spalten aus der die Url erzeugt wird
 
-url_generate_path_relation = Relation
-url_generate_path_relation_table = Tabelle
 
-url_generate_relation_field = Pfade aus einer Relationstabelle bilden
-url_generate_notice_relation_field = Spalte der Relation. Weiter unten die Relationstabelle und Spalten auswählen um die Url zu erweitern
-url_generate_legend_table_relation = Relationstabelle
-url_generate_no_relation_field = Url nicht erweitern
 
-url_generate_notice_sitemap_lastmod = Spalte, in der die letzte Änderung gespeichert wird (Bsp. updatedate)
+
+
+
+
+// Löschen
+url_generate_notice_url_param_key = Man benötigt beim Benutzen von rex_getUrl nicht mehr die Artikel-Id vom oben ausgewählten Artikel. Aus<br /><code>rex_getUrl(4, '', ['id' => 5])</code> wird <code>rex_getUrl('', '', ['news-id' => 5])</code>

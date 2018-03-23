@@ -8,8 +8,8 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Url;
 
+namespace Url;
 
 class Seo
 {
@@ -20,67 +20,80 @@ class Seo
 
     private $rewriterSeo;
 
-    private $dataId;
+    private $urlData;
 
     public function __construct()
     {
+        $this->urlData = UrlManager::getData();
         $this->rewriter = Url::getRewriter();
         $this->rewriterSeo = $this->rewriter->getSeoInstance();
-        $this->data = Generator::getData();
-        $this->dataId = Generator::getId();
-    }
-
-    public function getTitleTag()
-    {
-        return $this->isUrl() ? '<title>' . htmlspecialchars($this->getTitle()) . '</title>' : $this->rewriterSeo->{$this->rewriter->getSeoTitleTagMethod()}();
     }
 
     public function getTitle()
     {
         $title = $this->rewriterSeo->getTitle();
+        if ($this->isUrl() && $this->urlData->getSeoTitle()) {
+            $title = $this->urlData->getSeoTitle().' - '.$title;
+        }
 
-        return $this->data->seoTitle ? $this->normalize($this->data->seoTitle . ' - ' .$title) : $this->normalize($title);
+        return $this->normalize($title);
     }
 
-    public function getDescriptionTag()
+    public function getTitleTag()
     {
-        return $this->isUrl() ? '<meta name="description" content="' . htmlspecialchars($this->getDescription()) . '" />' : $this->rewriterSeo->{$this->rewriter->getSeoDescriptionTagMethod()}();
+        if ($this->isUrl()) {
+            return '<title>'.htmlspecialchars($this->getTitle()).'</title>';
+        }
+        return $this->rewriterSeo->{$this->rewriter->getSeoTitleTagMethod()}();
     }
 
     public function getDescription()
     {
-        return $this->normalize($this->data->seoDescription);
+        $description = $this->rewriterSeo->getDescription();
+        if ($this->isUrl() && $this->urlData->getSeoDescription()) {
+            $description = $this->urlData->getSeoDescription();
+        }
+
+        return $this->normalize($description);
     }
 
-    public function getCanonicalUrlTag()
+    public function getDescriptionTag()
     {
-        return $this->isUrl() ? '<link rel="canonical" href="' . $this->getCanonicalUrl() . '" />' : $this->rewriterSeo->{$this->rewriter->getSeoCanonicalTagMethod()}();
+        if ($this->isUrl()) {
+            return '<meta name="description" content="'.htmlspecialchars($this->getDescription()).'" />';
+        }
+        return $this->rewriterSeo->{$this->rewriter->getSeoDescriptionTagMethod()}();
     }
 
     public function getCanonicalUrl()
     {
-        return $this->rewriter->getFullPath(ltrim($this->data->url, "/"));
+        $url = $this->urlData->getUrl();
+        $url->withSolvedScheme();
+        return $url->getSchemeAndHttpHost().$url->getPath();
+    }
+
+    public function getCanonicalUrlTag()
+    {
+        if ($this->isUrl()) {
+            return '<link rel="canonical" href="'.$this->getCanonicalUrl().'" />';
+        }
+        return $this->rewriterSeo->{$this->rewriter->getSeoCanonicalTagMethod()}();
     }
 
     public function getHreflangTags()
     {
         if ($this->isUrl()) {
-            $return = '';
-            $hrefs = [];
-            foreach (\rex_clang::getAll(true) as $clang) {
-                if ($clang->getId() == \rex_clang::getCurrentId()) {
-                    continue;
-                }
+            $items = $this->urlData->getHreflangUrls(\rex_clang::getAllIds(true));
 
-                $hrefs[$clang->getCode()] = Generator::getUrlById($this->dataId, '', $clang->getId());
-            }
-
-            if (count($hrefs)) {
-                foreach ($hrefs as $code => $url) {
-                    $return .= '<link rel="alternate" hreflang="' . $code . '" href="' . $url . '" />';
+            if ($items) {
+                $metas = [];
+                foreach ($items as $item) {
+                    $url = $item->getUrl();
+                    $url->withSolvedScheme();
+                    $metas[] = '<link rel="alternate" hreflang="'.\rex_clang::get($item->getClangId())->getCode().'" href="'.$url.'" />';
                 }
+                return implode("\n", $metas);
             }
-            return $return;
         }
 
         return $this->rewriterSeo->{$this->rewriter->getSeoHreflangTagsMethod()}();
@@ -91,76 +104,53 @@ class Seo
         return $this->rewriterSeo->{$this->rewriter->getSeoRobotsTagMethod()}();
     }
 
-    public function getImg()
-    { 
-        return $this->data->img;
-    }
-
-    protected function isUrl()
+    public function getImage()
     {
-        return ($this->dataId > 0);
-    }
-
-    protected function normalize($string)
-    {
-        return str_replace(["\n", "\r"], [' ',''], $string);
+        return $this->urlData->getSeoImage();
     }
 
     public static function getSitemap()
     {
+        $profiles = Profile::getAll();
+        if (!$profiles) {
+            return [];
+        }
+
         $sitemap = [];
-        $all = Generator::getAll();
-        if ($all) {
-            foreach ($all as $item) {
-                if ($item->sitemap) {
-                    $lastmod = date(DATE_W3C, time());
-                    if ($item->sitemapLastmod != '') {
-                        $id = Generator::getId($item->fullUrl);
-                        $sql = \rex_sql::factory();
-                        $sql->setQuery('SELECT ' . $item->sitemapLastmod . ' AS lastmod FROM ' . $item->table['name'] . ' WHERE ' . $item->table['id'] .' = :id LIMIT 2', ['id' => $id]);
-                        if ($sql->getRows() == 1) {
-                            $timestamp = $sql->getValue('lastmod');
-                            if (strpos($timestamp, '-')) {
-                                // mysql date
-                                $datetime = new \DateTime($timestamp);
-                                $timestamp = $datetime->getTimestamp();
-                            }
-                            $lastmod = date(DATE_W3C, $timestamp);
-                        }
-                    }
-                    $sitemap[] =
-                        "\n" . '<url>' .
-                        "\n" . '<loc>' . $item->fullUrl . '</loc>' .
-                        "\n" . '<lastmod>' . $lastmod . '</lastmod>' .
-                        "\n" . '<changefreq>' . $item->sitemapFrequency . '</changefreq>' .
-                        "\n" . '<priority>' . $item->sitemapPriority . '</priority>' .
-                        "\n" . '</url>';
-                    if (count($item->fullPathNames)) {
-                        foreach ($item->fullPathNames as $path) {
-                            $sitemap[] =
-                                "\n" . '<url>' .
-                                "\n" . '<loc>' . $path . '</loc>' .
-                                "\n" . '<lastmod>' . $lastmod . '</lastmod>' .
-                                "\n" . '<changefreq>' . $item->sitemapFrequency . '</changefreq>' .
-                                "\n" . '<priority>' . $item->sitemapPriority . '</priority>' .
-                                "\n" . '</url>';
-                        }
-                    }
-                    if (count($item->fullPathCategories)) {
-                        foreach ($item->fullPathCategories as $path) {
-                            $sitemap[] =
-                                "\n" . '<url>' .
-                                "\n" . '<loc>' . $path . '</loc>' .
-                                "\n" . '<lastmod>' . $lastmod . '</lastmod>' .
-                                "\n" . '<changefreq>' . $item->sitemapFrequency . '</changefreq>' .
-                                "\n" . '<priority>' . $item->sitemapPriority . '</priority>' .
-                                "\n" . '</url>';
-                        }
-                    }
-                }
+        foreach ($profiles as $profile) {
+            if (!$profile->inSitemap()) {
+                continue;
+            }
+
+            $profileUrls = $profile->getUrls();
+            if(!$profileUrls) {
+                continue;
+            }
+
+            foreach ($profileUrls as $profileUrl) {
+                $url = $profileUrl->getUrl();
+                $url->withSolvedScheme();
+
+                $sitemap[] =
+                    "\n".'<url>'.
+                    "\n".'<loc>'.$url->getSchemeAndHttpHost().$url->getPath().'</loc>'.
+                    "\n".'<lastmod>'.$profileUrl->getLastmod().'</lastmod>'.
+                    "\n".'<changefreq>'.$profile->getSitemapFrequency().'</changefreq>'.
+                    "\n".'<priority>'.$profile->getSitemapPriority().'</priority>'.
+                    "\n".'</url>';
             }
         }
 
         return $sitemap;
+    }
+
+    protected function isUrl()
+    {
+        return $this->urlData instanceof UrlManager;
+    }
+
+    protected function normalize($string)
+    {
+        return str_replace(["\n", "\r"], [' ', ''], $string);
     }
 }
