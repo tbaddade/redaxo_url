@@ -12,9 +12,9 @@ page:
         generator:
             title: 'translate:generator'
             subpages:
-                profile:
+                profiles:
                     title: 'translate:url_generator_profiles'
-                url:
+                urls:
                     title: 'translate:url_generator_urls_generated'
 
 requires:
