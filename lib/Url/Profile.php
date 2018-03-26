@@ -408,6 +408,7 @@ class Profile
 
         $urlObjects = [];
         $urlObjects[] = [
+            'article_id' => $articleId,
             'object' => $url,
             'user_path' => false,
             'structure' => false,
@@ -427,6 +428,7 @@ class Profile
                         $urlCategory = clone $url;
                         $urlCategory->appendPathSegments([$category->getName()]);
                         $urlObjects[] = [
+                            'article_id' => $category->getId(),
                             'object' => $urlCategory,
                             'user_path' => false,
                             'structure' => true,
@@ -445,6 +447,7 @@ class Profile
                 $urlUserPath = clone $url;
                 $urlUserPath->appendPathSegments(explode('/', trim($userPathParts[0])));
                 $urlObjects[] = [
+                    'article_id' => $articleId,
                     'object' => $urlUserPath,
                     'user_path' => true,
                     'structure' => false,
@@ -460,7 +463,7 @@ class Profile
             $urlAsString = $urlInstance->__toString();
 
             $manager = UrlManagerSql::factory();
-            $manager->setArticleId($articleId);
+            $manager->setArticleId($urlObject['article_id']);
             $manager->setClangId($clangId);
             $manager->setDataId($dataset->getId());
             $manager->setProfileId($this->getId());
