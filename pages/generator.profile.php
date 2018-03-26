@@ -310,188 +310,6 @@ if ($func == '') {
             $group = $table;
             $options = $columns;
 
-            for ($i = 1; $i <= Profile::SEGMENT_PART_COUNT; $i ++) {
-
-                if ($i > 1) {
-                    $type = 'select';
-                    $name = 'column_segment_part_' . $i . '_separator';
-                    /* @var $f rex_form_select_element */
-                    $f = $fieldContainer->addGroupedField($group, $type, $name);
-                    $f->setHeader('<div class="addoff-grid-item text-center text-large" data-addoff-size="1">');
-                    $f->setFooter('</div>');
-                    $f->setPrefix('<div class="rex-select-style">');
-                    $f->setSuffix('</div>');
-                    $f->setAttribute('disabled', 'true');
-                    $select = $f->getSelect();
-                    $select->addOptions(Profile::getSegmentPartSeparators());
-                }
-
-                $type = 'select';
-                $name = 'column_segment_part_' . $i;
-                /* @var $f rex_form_select_element */
-                $f = $fieldContainer->addGroupedField($group, $type, $name);
-
-                // $prependHeader = '<div class="addoff-grid-item text-center text-large" data-addoff-size="1"><b>/</b></div>';
-                $prependHeader = '';
-                if ($i == 1) {
-                    $prependHeader = '
-                    <hr class="addoff-hr" />
-                    <div class="addoff-grid">
-                        <div class="addoff-grid-item" data-addoff-size="2">
-                            <label>' . $this->i18n('url') . '</label>
-                            <p class="help-block">' . $this->i18n('url_generator_url_notice') . '</p>
-                        </div>
-                    ';
-                }
-                $f->setHeader($prependHeader . '
-                        <div class="addoff-grid-item" data-addoff-size="2">');
-
-                $appendFooter = ($i == Profile::SEGMENT_PART_COUNT) ? '</div>' : '';
-                $f->setFooter('
-                        </div>' . $appendFooter);
-                $f->setPrefix('<div class="rex-select-style">');
-                $f->setSuffix('</div>');
-                $f->setAttribute('disabled', 'true');
-                $select = $f->getSelect();
-                if ($i > 1) {
-                    $select->addOption($this->i18n('url_generator_no_additive'), '');
-                }
-                $select->addOptions($options, true);
-            }
-
-
-            for ($i = 1; $i <= Profile::RELATION_COUNT; $i++) {
-
-                $prependHeader = '';
-                if ($i == 1) {
-                    $prependHeader = '
-                    <hr class="addoff-hr">
-                    <div class="addoff-grid">
-                        <div class="addoff-grid-item" data-addoff-size="2">
-                            <label>' . $this->i18n('url_generator_relation_paths') . '</label>
-                            <p class="help-block">' . $this->i18n('url_generator_relation_column_notice') . '</p>
-                            <p class="help-block">' . $this->i18n('url_generator_relation_position_in_url') . '<br />' . $this->i18n('url_generator_relation_position_notice') . ' ' . $this->i18n('url_generator_relation_position_notice__2') . '</p>
-                        </div>
-                        <div class="addoff-grid-item" data-addoff-size="10">
-                            <div class="addoff-grid">
-                                <div class="addoff-grid-item" data-addoff-size="2of10" data-addoff-shift="1of10">
-                                    <p class="help-block">' . $this->i18n('url_generator_relation_column', '') . '</p>
-                                </div>
-                                <div class="addoff-grid-item" data-addoff-size="2of10">
-                                    <p class="help-block">' . $this->i18n('url_generator_relation_position_in_url') . '</p>
-                                </div>
-                            </div>';
-                }
-
-                $type = 'select';
-                $name = 'relation_' . $i . '_column';
-                /* @var $f rex_form_select_element */
-                $f = $fieldContainer->addGroupedField($group, $type, $name);
-                $f->setHeader(
-                        $prependHeader . '
-                            <div class="addoff-grid">
-                                <div class="addoff-grid-item" data-addoff-size="1of10"><label>' . $this->i18n('url_generator_relation', $i) . '</label></div>
-                                <div class="addoff-grid-item" data-addoff-size="2of10">');
-                $f->setFooter('
-                                </div>');
-                $f->setPrefix('<div class="rex-select-style js-change-relation-' . $i . '-select">');
-                $f->setSuffix('</div>');
-                $f->setAttribute('disabled', 'true');
-                // $f->setNotice($this->i18n('url_generator_relation_column_notice'));
-                $select = $f->getSelect();
-                $select->addOption($this->i18n('url_generator_no_relation_column'), '');
-                $select->addOptions($options, true);
-
-                $type = 'select';
-                $name = 'relation_' . $i . '_position';
-                /* @var $f rex_form_select_element */
-                $f = $fieldContainer->addGroupedField($group, $type, $name);
-                $f->setHeader('
-                                <div class="addoff-grid-item" data-addoff-size="2of10">');
-                $appendFooter = '';
-                if ($i == Profile::RELATION_COUNT) {
-                    $appendFooter = '
-                            <div class="addoff-grid">
-                                <div class="addoff-grid-item" data-addoff-size="1of10">
-                                    <p class="help-block">' . $this->i18n('url_generator_relation_position_eg_label', '') . '</p>
-                                </div>
-                                <div class="addoff-grid-item" data-addoff-size="4of10">
-                                    <p class="help-block">' . $this->i18n('url_generator_relation_position_eg_code') . '</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>';
-                }
-                $f->setFooter('
-                                </div>
-                            </div>' . $appendFooter);
-                $f->setPrefix('<div class="rex-select-style">');
-                $f->setSuffix('</div>');
-                $f->setAttribute('disabled', 'true');
-                // $f->setNotice($this->i18n('url_generator_relation_position_notice'));
-                $select = $f->getSelect();
-                $select->addOptions(['BEFORE' => $this->i18n('before'), 'AFTER' => $this->i18n('after')]);
-
-            }
-
-            // $type = 'select';
-            // $name = 'relation_2_column';
-            // /* @var $f rex_form_select_element */
-            // $f = $fieldContainer->addGroupedField($group, $type, $name);
-            // $f->setHeader('
-            //         <div class="addoff-grid-item text-center text-large" data-addoff-size="1"><br /><b>/</b></div>
-            //         <div class="addoff-grid-item" data-addoff-size="2">');
-            // $f->setPrefix('<label>' . $this->i18n('url_generator_relation_column', '2') . '</label><div class="rex-select-style js-change-relation-2-select">');
-            // $f->setSuffix('</div>');
-            // $f->setAttribute('disabled', 'true');
-            // $f->setNotice($this->i18n('url_generator_relation_column_notice'));
-            // $select = $f->getSelect();
-            // $select->addOption($this->i18n('url_generator_no_relation_column'), '');
-            // $select->addOptions($options, true);
-            //
-            // $type = 'select';
-            // $name = 'relation_2_position';
-            // /* @var $f rex_form_select_element */
-            // $f = $fieldContainer->addGroupedField($group, $type, $name);
-            // $f->setFooter('
-            //         </div>');
-            // $f->setPrefix('<div class="rex-select-style">');
-            // $f->setSuffix('</div>');
-            // $f->setAttribute('disabled', 'true');
-            // $f->setNotice($this->i18n('url_generator_relation_position_notice'));
-            // $select = $f->getSelect();
-            // $select->addOptions(['BEFORE' => $this->i18n('before'), 'AFTER' => $this->i18n('after')]);
-            //
-            // $type = 'select';
-            // $name = 'relation_3_column';
-            // /* @var $f rex_form_select_element */
-            // $f = $fieldContainer->addGroupedField($group, $type, $name);
-            // $f->setHeader('
-            //         <div class="addoff-grid-item text-center text-large" data-addoff-size="1"><br /><b>/</b></div>
-            //         <div class="addoff-grid-item" data-addoff-size="2">');
-            // $f->setPrefix('<label>' . $this->i18n('url_generator_relation_column', '3') . '</label><div class="rex-select-style js-change-relation-3-select">');
-            // $f->setSuffix('</div>');
-            // $f->setAttribute('disabled', 'true');
-            // $f->setNotice($this->i18n('url_generator_relation_column_notice'));
-            // $select = $f->getSelect();
-            // $select->addOption($this->i18n('url_generator_no_relation_column'), '');
-            // $select->addOptions($options, true);
-            //
-            // $type = 'select';
-            // $name = 'relation_3_position';
-            // /* @var $f rex_form_select_element */
-            // $f = $fieldContainer->addGroupedField($group, $type, $name);
-            // $f->setFooter('
-            //         </div>
-            //     </div>');
-            // $f->setPrefix('<div class="rex-select-style">');
-            // $f->setSuffix('</div>');
-            // $f->setAttribute('disabled', 'true');
-            // $f->setNotice($this->i18n('url_generator_relation_position_notice'));
-            // $select = $f->getSelect();
-            // $select->addOptions(['BEFORE' => $this->i18n('before'), 'AFTER' => $this->i18n('after')]);
-
-
 
             $type = 'select';
             $name = 'column_id';
@@ -614,6 +432,131 @@ if ($func == '') {
                                 </div>
                             </div>' . $appendFooter);
                 $f->setAttribute('disabled', 'true');
+            }
+
+
+            for ($i = 1; $i <= Profile::SEGMENT_PART_COUNT; $i ++) {
+
+                if ($i > 1) {
+                    $type = 'select';
+                    $name = 'column_segment_part_' . $i . '_separator';
+                    /* @var $f rex_form_select_element */
+                    $f = $fieldContainer->addGroupedField($group, $type, $name);
+                    $f->setHeader('<div class="addoff-grid-item text-center text-large" data-addoff-size="1">');
+                    $f->setFooter('</div>');
+                    $f->setPrefix('<div class="rex-select-style">');
+                    $f->setSuffix('</div>');
+                    $f->setAttribute('disabled', 'true');
+                    $select = $f->getSelect();
+                    $select->addOptions(Profile::getSegmentPartSeparators());
+                }
+
+                $type = 'select';
+                $name = 'column_segment_part_' . $i;
+                /* @var $f rex_form_select_element */
+                $f = $fieldContainer->addGroupedField($group, $type, $name);
+
+                // $prependHeader = '<div class="addoff-grid-item text-center text-large" data-addoff-size="1"><b>/</b></div>';
+                $prependHeader = '';
+                if ($i == 1) {
+                    $prependHeader = '
+                    <hr class="addoff-hr" />
+                    <div class="addoff-grid">
+                        <div class="addoff-grid-item" data-addoff-size="2">
+                            <label>' . $this->i18n('url') . '</label>
+                            <p class="help-block">' . $this->i18n('url_generator_url_notice') . '</p>
+                        </div>
+                    ';
+                }
+                $f->setHeader($prependHeader . '
+                        <div class="addoff-grid-item" data-addoff-size="2">');
+
+                $appendFooter = ($i == Profile::SEGMENT_PART_COUNT) ? '</div>' : '';
+                $f->setFooter('
+                        </div>' . $appendFooter);
+                $f->setPrefix('<div class="rex-select-style">');
+                $f->setSuffix('</div>');
+                $f->setAttribute('disabled', 'true');
+                $select = $f->getSelect();
+                if ($i > 1) {
+                    $select->addOption($this->i18n('url_generator_no_additive'), '');
+                }
+                $select->addOptions($options, true);
+            }
+
+
+            for ($i = 1; $i <= Profile::RELATION_COUNT; $i++) {
+
+                $prependHeader = '';
+                if ($i == 1) {
+                    $prependHeader = '
+                    <hr class="addoff-hr">
+                    <div class="addoff-grid">
+                        <div class="addoff-grid-item" data-addoff-size="2">
+                            <label>' . $this->i18n('url_generator_relation_paths') . '</label>
+                            <p class="help-block">' . $this->i18n('url_generator_relation_column_notice') . '</p>
+                            <p class="help-block">' . $this->i18n('url_generator_relation_position_in_url') . '<br />' . $this->i18n('url_generator_relation_position_notice') . ' ' . $this->i18n('url_generator_relation_position_notice__2') . '</p>
+                        </div>
+                        <div class="addoff-grid-item" data-addoff-size="10">
+                            <div class="addoff-grid">
+                                <div class="addoff-grid-item" data-addoff-size="2of10" data-addoff-shift="1of10">
+                                    <p class="help-block">' . $this->i18n('url_generator_relation_column', '') . '</p>
+                                </div>
+                                <div class="addoff-grid-item" data-addoff-size="2of10">
+                                    <p class="help-block">' . $this->i18n('url_generator_relation_position_in_url') . '</p>
+                                </div>
+                            </div>';
+                }
+
+                $type = 'select';
+                $name = 'relation_' . $i . '_column';
+                /* @var $f rex_form_select_element */
+                $f = $fieldContainer->addGroupedField($group, $type, $name);
+                $f->setHeader(
+                        $prependHeader . '
+                            <div class="addoff-grid">
+                                <div class="addoff-grid-item" data-addoff-size="1of10"><label>' . $this->i18n('url_generator_relation', $i) . '</label></div>
+                                <div class="addoff-grid-item" data-addoff-size="2of10">');
+                $f->setFooter('
+                                </div>');
+                $f->setPrefix('<div class="rex-select-style js-change-relation-' . $i . '-select">');
+                $f->setSuffix('</div>');
+                $f->setAttribute('disabled', 'true');
+                // $f->setNotice($this->i18n('url_generator_relation_column_notice'));
+                $select = $f->getSelect();
+                $select->addOption($this->i18n('url_generator_no_relation_column'), '');
+                $select->addOptions($options, true);
+
+                $type = 'select';
+                $name = 'relation_' . $i . '_position';
+                /* @var $f rex_form_select_element */
+                $f = $fieldContainer->addGroupedField($group, $type, $name);
+                $f->setHeader('
+                                <div class="addoff-grid-item" data-addoff-size="2of10">');
+                $appendFooter = '';
+                if ($i == Profile::RELATION_COUNT) {
+                    $appendFooter = '
+                            <div class="addoff-grid">
+                                <div class="addoff-grid-item" data-addoff-size="1of10">
+                                    <p class="help-block">' . $this->i18n('url_generator_relation_position_eg_label', '') . '</p>
+                                </div>
+                                <div class="addoff-grid-item" data-addoff-size="4of10">
+                                    <p class="help-block">' . $this->i18n('url_generator_relation_position_eg_code') . '</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>';
+                }
+                $f->setFooter('
+                                </div>
+                            </div>' . $appendFooter);
+                $f->setPrefix('<div class="rex-select-style">');
+                $f->setSuffix('</div>');
+                $f->setAttribute('disabled', 'true');
+                // $f->setNotice($this->i18n('url_generator_relation_position_notice'));
+                $select = $f->getSelect();
+                $select->addOptions(['BEFORE' => $this->i18n('before'), 'AFTER' => $this->i18n('after')]);
+
             }
 
 
@@ -833,6 +776,53 @@ if ($func == '') {
                 $group = $table;
                 $options = $columns;
 
+
+                $type = 'select';
+                $name = 'column_id';
+                /* @var $f rex_form_select_element */
+                $f = $fieldContainer->addGroupedField($group, $type, $name);
+                $f->setHeader('
+                    <hr class="addoff-hr" />
+                    <div class="addoff-grid">
+                        <div class="addoff-grid-item" data-addoff-size="2">
+                            <label>' . $this->i18n('url_generator_identify_record') . '</label>
+                        </div>
+                        <div class="addoff-grid-item" data-addoff-size="3">');
+                $f->setFooter('
+                        </div>');
+                $f->setPrefix('<div class="rex-select-style">');
+                $f->setSuffix('</div>');
+                $f->setAttribute('disabled', 'true');
+                $f->setNotice($this->i18n('url_generator_id_notice'));
+                $select = $f->getSelect();
+                $select->addOptions($options, true);
+
+                if (count(rex_clang::getAll()) >= 2) {
+                    $type = 'select';
+                    $name = 'column_clang_id';
+                    /* @var $f rex_form_select_element */
+                    $f = $fieldContainer->addGroupedField($group, $type, $name);
+                    $f->setHeader('
+                            <div class="addoff-grid-item" data-addoff-size="3">');
+                    $f->setFooter('
+                            </div>
+                        </div>');
+                    $f->setPrefix('<div class="rex-select-style">');
+                    $f->setSuffix('</div>');
+                    $f->setAttribute('disabled', 'true');
+                    $f->setNotice($this->i18n('url_generator_clang_id_notice'));
+                    $select = $f->getSelect();
+                    $select->addOption($this->i18n('url_generator_no_clang_id'), '');
+                    $select->addOptions($options, true);
+                } else {
+                    $f->setFooter('
+                        </div>');
+
+                    $type = 'hidden';
+                    $name = 'column_clang_id';
+                    $f = $fieldContainer->addGroupedField($group, $type, $name, '');
+                }
+
                 for ($j = 1; $j <= Profile::SEGMENT_PART_COUNT; $j ++) {
 
                     if ($j > 1) {
@@ -880,53 +870,6 @@ if ($func == '') {
                         $select->addOption($this->i18n('url_generator_no_additive'), '');
                     }
                     $select->addOptions($options, true);
-                }
-
-
-                $type = 'select';
-                $name = 'column_id';
-                /* @var $f rex_form_select_element */
-                $f = $fieldContainer->addGroupedField($group, $type, $name);
-                $f->setHeader('
-                    <hr class="addoff-hr" />
-                    <div class="addoff-grid">
-                        <div class="addoff-grid-item" data-addoff-size="2">
-                            <label>' . $this->i18n('url_generator_identify_record') . '</label>
-                        </div>
-                        <div class="addoff-grid-item" data-addoff-size="3">');
-                $f->setFooter('
-                        </div>');
-                $f->setPrefix('<div class="rex-select-style">');
-                $f->setSuffix('</div>');
-                $f->setAttribute('disabled', 'true');
-                $f->setNotice($this->i18n('url_generator_id_notice'));
-                $select = $f->getSelect();
-                $select->addOptions($options, true);
-
-                if (count(rex_clang::getAll()) >= 2) {
-                    $type = 'select';
-                    $name = 'column_clang_id';
-                    /* @var $f rex_form_select_element */
-                    $f = $fieldContainer->addGroupedField($group, $type, $name);
-                    $f->setHeader('
-                            <div class="addoff-grid-item" data-addoff-size="3">');
-                    $f->setFooter('
-                            </div>
-                        </div>');
-                    $f->setPrefix('<div class="rex-select-style">');
-                    $f->setSuffix('</div>');
-                    $f->setAttribute('disabled', 'true');
-                    $f->setNotice($this->i18n('url_generator_clang_id_notice'));
-                    $select = $f->getSelect();
-                    $select->addOption($this->i18n('url_generator_no_clang_id'), '');
-                    $select->addOptions($options, true);
-                } else {
-                    $f->setFooter('
-                        </div>');
-
-                    $type = 'hidden';
-                    $name = 'column_clang_id';
-                    $f = $fieldContainer->addGroupedField($group, $type, $name, '');
                 }
             }
         }
