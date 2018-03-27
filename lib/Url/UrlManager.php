@@ -104,17 +104,30 @@ class UrlManager
 
     public function getSeoDescription()
     {
-        return $this->getSeo()['description'];
+        return $this->getSeoValue('description');
     }
 
     public function getSeoImage()
     {
-        return $this->getSeo()['image'];
+        return $this->getSeoValue('image');
     }
 
     public function getSeoTitle()
     {
-        return $this->getSeo()['title'];
+        return $this->getSeoValue('title');
+    }
+
+    public function getSeoValue($key)
+    {
+        if (empty($key)) {
+            throw new \rex_exception('Parameter key must not be empty!');
+        }
+
+        if (!isset($this->getSeo()[$key])) {
+            return null;
+        }
+
+        return $this->getSeo()[$key];
     }
 
     /**
