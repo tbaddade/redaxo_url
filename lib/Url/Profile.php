@@ -460,15 +460,26 @@ class Profile
         foreach ($urlObjects as $urlObject) {
             /* @var $urlInstance \Url */
             $urlInstance = $urlObject['object'];
-            $urlAsString = $urlInstance->__toString();
 
+            $urlObject['clang_id'] = $clangId;
+            $urlObject['data_id'] = $dataset->getId();
+            $urlObject['profile_id'] = $this->getId();
+            $urlObject['sitemap'] = $this->sitemap;
+
+            $urlInstance = \rex_extension::registerPoint(new \rex_extension_point('URL_MANAGER_PRE_SAVE', $urlInstance, $urlObject));
+
+            if (!$urlInstance) {
+                return;
+            }
+
+            $urlAsString = $urlInstance->__toString();
             $manager = UrlManagerSql::factory();
             $manager->setArticleId($urlObject['article_id']);
-            $manager->setClangId($clangId);
-            $manager->setDataId($dataset->getId());
-            $manager->setProfileId($this->getId());
+            $manager->setClangId($urlObject['clang_id']);
+            $manager->setDataId($urlObject['data_id']);
+            $manager->setProfileId($urlObject['profile_id']);
             $manager->setSeo($urlObject['seo']);
-            $manager->setSitemap($this->sitemap);
+            $manager->setSitemap($urlObject['sitemap']);
             $manager->setStructure($urlObject['structure']);
             $manager->setUrl($urlAsString);
             $manager->setUserPath($urlObject['user_path']);
