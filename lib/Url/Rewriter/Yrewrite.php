@@ -136,6 +136,9 @@ class Yrewrite extends Rewriter
     public function getSchemeByDomain($domain)
     {
         $domain = \rex_yrewrite::getDomainByName($domain);
+        if (!$domain) {
+            return null;
+        }
         return $domain->getScheme();
     }
 
