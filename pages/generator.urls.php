@@ -18,9 +18,9 @@ $func = rex_request('func', 'string');
 $a = [];
 
 if ($func == '') {
-    $query = '  SELECT      `p`.`namespace`,
+    $query = '  SELECT      `u`.`profile_id`,
+                            `p`.`namespace`,
                             `p`.`table_name`,
-                            `u`.`profile_id`,
                             `u`.`article_id`,
                             `u`.`clang_id`,
                             `u`.`data_id`,
@@ -42,9 +42,19 @@ if ($func == '') {
 
     $list->setColumnLabel('namespace', $this->i18n('url_generator_namespace'));
     $list->setColumnLabel('table_name', $this->i18n('url_generator_table'));
+    $list->setColumnLabel('data_id', $this->i18n('url_data_id'));
+    $list->setColumnLabel('profile_id', $this->i18n('url_generator_profile'));
     $list->setColumnLabel('article_id', $this->i18n('url_generator_article'));
     $list->setColumnLabel('clang_id', $this->i18n('url_language'));
     $list->setColumnLabel('url', $this->i18n('url'));
+
+    $list->setColumnFormat('url', 'custom', function($params) {
+        $value = $params['list']->getValue('url');
+        $url = Url::get($value);
+        $url->withSolvedScheme();
+
+        return sprintf('<a href="%s" target="_blank">%s</a>', $url, $value);
+    });
 
     $content = $list->get();
 

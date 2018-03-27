@@ -3,10 +3,12 @@ url_title = Url
 
 url_after = after
 url_before = before
+url_data_id = Dataset Id
 url_id = ID
 url_language = Language
 
-url_generator_profiles = Profile
+url_generator_profile = Profile
+url_generator_profiles = Profiles
 url_generator_urls = Urls
 
 url_generator = Generate URLs

@@ -3,10 +3,12 @@ url_title = URL
 
 url_after = efter
 url_before = före
+url_data_id =
 url_id = ID
 url_language = Språk
 
-url_generator_profiles = Profiler
+url_generator_profile =
+url_generator_profiles =
 url_generator_urls = Urls
 
 url_generator = Skapa URLs

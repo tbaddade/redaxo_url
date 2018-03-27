@@ -3,9 +3,11 @@ url_title = Url
 
 url_after = dahinter
 url_before = davor
+url_data_id = Datensatz Id
 url_id = Id
 url_language = Sprache
 
+url_generator_profile = Profil
 url_generator_profiles = Profile
 url_generator_urls_generated = generierte Urls
 
