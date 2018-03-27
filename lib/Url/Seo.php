@@ -36,6 +36,12 @@ class Seo
             $title = $this->urlData->getSeoTitle().' - '.$title;
         }
 
+        $title = \rex_extension::registerPoint(new \rex_extension_point('URL_SEO_TITLE', $title));
+
+        if (!$title) {
+            return '';
+        }
+
         return $this->normalize($title);
     }
 
@@ -52,6 +58,12 @@ class Seo
         $description = $this->rewriterSeo->getDescription();
         if ($this->isUrl() && $this->urlData->getSeoDescription()) {
             $description = $this->urlData->getSeoDescription();
+        }
+
+        $description = \rex_extension::registerPoint(new \rex_extension_point('URL_SEO_DESCRIPTION', $description));
+
+        if (!$description) {
+            return '';
         }
 
         return $this->normalize($description);
