@@ -16,139 +16,114 @@ class Profile
     const TABLE_NAME = 'url_generator_profile';
 
     /**
-     * Number of possible relations
+     * Number of possible relations.
      */
     const ALIAS = 'data';
 
     /**
-     * Separator
+     * Separator.
      */
     const COLUMN_PATH_SEPARATOR = '/';
 
     /**
      * Number of possible segments parts in the url
-     * /part1-part2-part3/
+     * /part1-part2-part3/.
      */
     const SEGMENT_PART_COUNT = 3;
 
     /**
-     * Number of possible relations
+     * Number of possible relations.
      */
     const RELATION_COUNT = 3;
 
     /**
-     * Prefix
+     * Prefix.
      */
     const RELATION_PREFIX = 'relation_';
 
     /**
-     * Number of possible restrictions
+     * Number of possible restrictions.
      */
     const RESTRICTION_COUNT = 3;
 
     /**
-     * Prefix
+     * Prefix.
      */
     const RESTRICTION_PREFIX = 'restriction_';
 
+    private static $cacheLoaded = false;
+    private static $profiles = [];
 
     /**
-     * Original table values
+     * Original table values.
      */
-    protected $values;
+    // protected $values;
 
+    // protected $segmentParts;
+    //
+    // protected $appendStructureCategories = false;
+    // protected $appendUserPaths;
+
+    // protected $sitemap = false;
+    // protected $sitemapFrequency;
+    // protected $sitemapPriority;
+    //
+    // protected $dbId;
+    // protected $tableName;
+
+    private $append_structure_categories;
+    private $append_user_paths;
+    private $article_id;
+    private $clang_id;
+    private $createdate;
+    private $createuser;
+    private $id;
+    private $namespace;
 
     /** @var $relations ProfileRelation[] */
-    protected $relations = [];
+    private $relations = [];
 
     /** @var $restrictions ProfileRestriction[] */
-    protected $restrictions = [];
+    private $restrictions = [];
 
-    protected $segmentParts;
+    private $segment_part_separators;
+    private $sitemap_add = false;
+    private $sitemap_frequency;
+    private $sitemap_priority;
+    private $table;
+    private $updatedate;
+    private $updateuser;
 
-    protected $appendStructureCategories = false;
-    protected $appendUserPaths;
-    protected $sitemap = false;
-    protected $sitemapFrequency;
-    protected $sitemapPriority;
-
-    protected $dbId;
-    protected $tableName;
-
-    public function __construct($values)
+    public function __construct()
     {
-        $this->values = $values;
-
-        if ($this->getValue('table_parameters')) {
-            $this->setValue('table_parameters', json_decode($this->values['table_parameters'], true));
-        }
-
-        $group = Database::split($this->getValue('table_name'));
-        $this->dbId = $group[0];
-        $this->tableName = $group[1];
-
-        for ($index = 1; $index <= self::RELATION_COUNT; $index++) {
-            $relationColumnName = $this->getValue(self::RELATION_PREFIX . $index . '_column');
-            $relationTableParams = $this->getValue(self::RELATION_PREFIX . $index . '_table_parameters');
-
-            if ($relationColumnName && $relationColumnName != '' && $relationTableParams) {
-                $relationTableParams = json_decode($relationTableParams, true);
-                $relationTableName = $this->getValue(self::RELATION_PREFIX . $index . '_table_name');
-
-                $segmentPosition = strtoupper($this->getValue(self::RELATION_PREFIX . $index . '_position'));
-                $segmentPosition = $segmentPosition == 'BEFORE' ? $segmentPosition : 'AFTER';
-
-                $relation = new ProfileRelation($index, $relationColumnName, $segmentPosition, $relationTableName, $relationTableParams);
-                if ($relation->isValid()) {
-                    $this->relations[] = $relation;
-                }
-            }
-        }
-
-        for ($index = 1; $index <= self::RESTRICTION_COUNT; $index++) {
-            $restrictionColumnName = $this->getValue(self::RESTRICTION_PREFIX . $index . '_column');
-            $restrictionComparisonOperator = $this->getValue(self::RESTRICTION_PREFIX . $index . '_comparison_operator');
-            $restrictionValue = trim($this->getValue(self::RESTRICTION_PREFIX . $index . '_value'));
-            $restrictionOperator = $this->getValue(self::RESTRICTION_PREFIX . $index . '_logical_operator');
-
-            if ($restrictionColumnName && $restrictionColumnName != '' && $restrictionValue && $restrictionValue != '') {
-                $restriction = new ProfileRestriction($index, $restrictionColumnName, $restrictionComparisonOperator, $restrictionValue, $restrictionOperator);
-                if ($restriction->isValid()) {
-                    $this->restrictions[] = $restriction;
-                }
-            }
-        }
-
-        for ($index = 1; $index <= self::SEGMENT_PART_COUNT; $index++) {
-            $columnName = $this->getValue('column_segment_part_' . $index);
-            if ($columnName && $columnName != '') {
-                $separator = $this->getValue('column_segment_part_' . $index . '_separator');
-                $separator = ($separator && $separator != '') ? $separator : null;
-                $this->segmentParts[$index] = ['column_name' => $columnName, 'separator' => $separator];
-            }
-        }
-
-
-        if (trim($this->getValue('append_user_paths')) != '') {
-            $this->appendUserPaths = trim($this->getValue('append_user_paths'));
-        }
-
-        if ($this->getValue('append_structure_categories') === '1') {
-            $this->appendStructureCategories = true;
-        }
-
-        if ($this->getValue('sitemap_add') === '1') {
-            $this->sitemap = true;
-        }
-
-        $this->sitemapFrequency = $this->getValue('sitemap_frequency');
-        $this->sitemapPriority = $this->getValue('sitemap_priority');
     }
 
+    public function normalize()
+    {
+        for ($index = 1; $index <= self::RELATION_COUNT; ++$index) {
+            if ($this->getColumnName(self::RELATION_PREFIX.$index) == '' || !isset($this->table['relations'][$index]['table']['name'])) {
+                unset($this->table['relations'][$index]);
+            }
+        }
+        foreach ($this->table['relations'] as $index => $values) {
+            $this->relations[] = new ProfileRelation($index, $values);
+        }
+
+        for ($index = 1; $index <= self::RESTRICTION_COUNT; ++$index) {
+            if ($this->getColumnName(self::RESTRICTION_PREFIX.$index) == '' || $this->table['restrictions'][$index]['value'] == '') {
+                unset($this->table['restrictions'][$index]);
+            }
+        }
+
+        // Ist keine Sprache des Strukturartikels ausgewählt (alle Sprachen) wird null gesetzt und die Sprache muss über die Datentabelle ermittelt werden.
+        if ((int) $this->clang_id < 1) {
+            $this->clang_id = null;
+        }
+    }
 
     public function getArticleId()
     {
-        return $this->getValue('article_id');
+        return $this->article_id;
     }
 
     /*
@@ -156,63 +131,23 @@ class Profile
      */
     public function getArticleClangId()
     {
-        // Sprache vom Struktur Artikel zurückgeben
-        // bei einer Sprache wird 1 zurückgegeben
-        $clang_id = (int)$this->getValue('clang_id');
-        if ($clang_id > 0) {
-            return $clang_id;
-        }
-        // Ansonsten null und die Sprache muss über die Datentabelle ermittelt werden.
-        return null;
+        return $this->clang_id;
     }
 
     public function getId()
     {
-        return $this->getValue('id');
+        return (int) $this->id;
     }
 
     public function getNamespace()
     {
-        return $this->getValue('namespace');
-    }
-
-    public function getValue($key)
-    {
-        $value = isset($this->values[$key]) ? $this->values[$key] : null;
-        if ($value) {
-            return $value;
-        }
-        return $this->getTableParam($key);
-    }
-
-    public function setValue($key, $value)
-    {
-        $this->values[$key] = $value;
-    }
-
-    public function getTableParams()
-    {
-        return $this->getValue('table_parameters');
-    }
-
-    public function getTableParam($key)
-    {
-        $params = $this->getTableParams();
-        return isset($params[$key]) ? $params[$key] : null;
+        return $this->namespace;
     }
 
     public function hasRelations()
     {
         return count($this->getRelations());
     }
-
-    // public function getRelation($number)
-    // {
-    //     if (isset($this->relations[$number])) {
-    //         return $this->relations[$number];
-    //     }
-    //     return null;
-    // }
 
     public function getRelations()
     {
@@ -226,17 +161,31 @@ class Profile
 
     public function getRestrictions()
     {
-        return $this->restrictions;
+        return $this->table['restrictions'];
     }
 
-    public function getSegmentPart($index)
+    /**
+     * @return array
+     */
+    public function getSegmentPartSeparators()
     {
-        return isset($this->getSegmentParts()[$index]) ? $this->getSegmentParts()[$index] : null;
+        return $this->segment_part_separators;
     }
 
-    public function getSegmentParts()
+    /**
+     * @return bool
+     */
+    public function appendStructureCategories()
     {
-        return $this->segmentParts;
+        return (bool) $this->append_structure_categories;
+    }
+
+    /**
+     * @return string
+     */
+    public function appendUserPaths()
+    {
+        return $this->append_user_paths;
     }
 
     /**
@@ -244,117 +193,57 @@ class Profile
      */
     public function inSitemap()
     {
-        return $this->sitemap;
+        return (bool) $this->sitemap_add;
     }
 
     public function getSitemapFrequency()
     {
-        return $this->sitemapFrequency;
+        return $this->sitemap_frequency;
     }
 
     public function getSitemapPriority()
     {
-        return $this->sitemapPriority;
+        return $this->sitemap_priority;
+    }
+
+    public function getDatabaseId()
+    {
+        return $this->table['dbid'];
     }
 
     public function getTableName()
     {
-        return $this->tableName;
+        return $this->table['name'];
     }
 
-    protected function getDataItem($primaryColumnName, $primaryId)
+    public function getColumnName($column)
     {
-        $query = $this->buildQuery();
-        $query->where(self::ALIAS . '.' . $primaryColumnName, $primaryId);
-        // $items = \rex_sql::factory()->setDebug()->getArray($query->getQuery(), $query->getParams());
-        return $query->find();
+        return $this->table['column_names'][$column];
     }
 
-    protected function getDataItems()
+    public function getColumnNameWithAlias($column, $backtick = false)
     {
-        $query = $this->buildQuery();
-        // $items = \rex_sql::factory()->setDebug()->getArray($query->getQuery(), $query->getParams());
-        return $query->find();
+        $format = '%s.%s';
+        if ($backtick) {
+            $format = '`%s`.`%s`';
+        }
+        return sprintf($format, self::ALIAS, $this->getColumnName($column));
     }
 
-    protected function buildQuery()
+    public function buildUrls()
     {
-        $query = \rex_yform_manager_query::get($this->getTableName());
-        $query->alias(self::ALIAS);
-
-        // Reset, "alias.*" löschen
-        $query->resetSelect();
-
-        // Order erzwingen für nicht YForm-Tabellen
-        $query->orderBy(self::ALIAS . '_id');
-
-        $query->select(self::ALIAS . '.' . $this->getValue('column_id'), 'id');
-        $query->select(self::ALIAS . '.' . $this->getValue('column_id'), self::ALIAS . '_id');
-        if (null === $this->getArticleClangId() && $this->getValue('column_clang_id') != '') {
-            $query->select(self::ALIAS . '.' . $this->getValue('column_clang_id'), self::ALIAS . '_clang_id');
+        $items = $this->getDatasets();
+        foreach ($items as $item) {
+            $this->createAndSaveUrls($item);
         }
-
-        if (count($this->getSegmentParts())) {
-            // $query->selectRaw('CONCAT(' .
-            //     implode(', "' . self::COLUMN_PATH_SEPARATOR . '", ', array_map(
-            //         function ($field) {
-            //             return self::ALIAS . '.' . $field;
-            //         }, $this->getSource()->getSegmentPartColumnNames())
-            //     ) . ')',
-            //     self::ALIAS . '_segment_part'
-            // );
-
-            foreach ($this->getSegmentParts() as $index => $segmentPart) {
-                $query->select(self::ALIAS . '.' . $segmentPart['column_name'], self::ALIAS . '_segment_part_' . $index);
-            }
-        }
-
-        if ($this->getValue('column_seo_title') != '') {
-            $query->select(self::ALIAS . '.' . $this->getValue('column_seo_title'), self::ALIAS . '_seo_title');
-        }
-        if ($this->getValue('column_seo_description') != '') {
-            $query->select(self::ALIAS . '.' . $this->getValue('column_seo_description'), self::ALIAS . '_seo_description');
-        }
-        if ($this->getValue('column_seo_image') != '') {
-            $query->select(self::ALIAS . '.' . $this->getValue('column_seo_image'), self::ALIAS . '_seo_image');
-        }
-        if ($this->getValue('column_sitemap_lastmod') != '') {
-            $query->select(self::ALIAS . '.' . $this->getValue('column_sitemap_lastmod'), self::ALIAS . '_sitemap_lastmod');
-        }
-
-        $firstSegmentPart = $this->getSegmentPart(1);
-        $query->where(self::ALIAS . '.' . $firstSegmentPart['column_name'], '', '!=');
-        $query->whereRaw(self::ALIAS . '.' . $firstSegmentPart['column_name'] . ' IS NOT NULL');
-
-
-        if ($this->hasRestrictions()) {
-            $where = [];
-            foreach ($this->getRestrictions() as $index => $restriction) {
-                if (!empty($where)) {
-                    $where[] = $restriction->getWhereOperator();
-                }
-                $where[] = $restriction->getWhere();
-            }
-            $query->whereRaw(implode(' ', $where));
-        }
-
-        if ($this->hasRelations()) {
-            foreach ($this->getRelations() as $relation) {
-                $query = $relation->completeQuery($query, $this->getArticleClangId(), $this->getValue('column_clang_id'));
-            }
-        }
-
-        return $query;
     }
 
-    protected function concatColumns($columns)
+    public function buildUrlsByDatasetId($datasetId, $datasetColumnName)
     {
-        return implode('', array_map(
-            function ($column) {
-                $separator = $column['separator'] === null ? '' : $column['separator'];
-                return $separator . Url::getRewriter()->normalize($column['value']);
-            }, $columns)
-        );
+        $items = $this->getDataset($datasetColumnName, $datasetId);
+        foreach ($items as $item) {
+            $this->createAndSaveUrls($item);
+        }
     }
 
     /**
@@ -366,8 +255,8 @@ class Profile
     {
         $articleId = $this->getArticleId();
         $clangId = $this->getArticleClangId();
-        if (null === $clangId && $this->getValue('column_clang_id') != '') {
-            $clangId = $dataset->getValue(self::ALIAS . '_clang_id');
+        if (null === $clangId && $this->getColumnName('clang_id') != '') {
+            $clangId = $dataset->getValue(self::ALIAS.'_clang_id');
         }
 
         $url = new Url(Url::getRewriter()->getFullUrl($articleId, $clangId));
@@ -376,32 +265,38 @@ class Profile
 
         $dataPath = new Url('');
 
-        $columnValues = [];
-        foreach ($this->getSegmentParts() as $index => $segmentPart) {
-            $columnValues[] = ['value' => $dataset->getValue(self::ALIAS . '_segment_part_' . $index), 'separator' => ($segmentPart['separator'])];
+        $concatSegmentParts = '';
+        for ($index = 1; $index <= self::SEGMENT_PART_COUNT; ++$index) {
+            if ($dataset->hasValue(self::ALIAS.'_segment_part_'.$index)) {
+                $concatSegmentParts .= $this->getSegmentPartSeparators()[$index] ?? '';
+                $concatSegmentParts .= Url::getRewriter()->normalize($dataset->getValue(self::ALIAS.'_segment_part_'.$index));
+            }
         }
-        $dataPath->appendPathSegments(explode('/', $this->concatColumns($columnValues)));
-
+        $dataPath->appendPathSegments(explode('/', $concatSegmentParts));
 
         if ($this->hasRelations()) {
-            $beforeColumnValues = [];
-            $afterColumnValues = [];
+            $append = [];
+            $prepend = [];
             foreach ($this->getRelations() as $relation) {
-                $columnValues = [];
-                foreach ($relation->getSegmentParts() as $index => $segmentPart) {
-                    $columnValues[] = ['value' => $dataset->getValue($relation->getAlias() . '_segment_part_' . $index), 'separator' => ($segmentPart['separator'])];
+                $concatSegmentParts = '';
+                for ($index = 1; $index <= self::SEGMENT_PART_COUNT; ++$index) {
+                    if ($dataset->hasValue($relation->getAlias().'_segment_part_'.$index)) {
+                        $concatSegmentParts .= $this->getSegmentPartSeparators()[$index] ?? '';
+                        $concatSegmentParts .= Url::getRewriter()->normalize($dataset->getValue($relation->getAlias().'_segment_part_'.$index));
+                    }
                 }
                 if ($relation->getSegmentPosition() === 'BEFORE') {
-                    $beforeColumnValues = array_merge($beforeColumnValues, explode('/', $this->concatColumns($columnValues)));
+                    $prepend = array_merge($prepend, explode('/', $concatSegmentParts));
                 } else {
-                    $afterColumnValues = array_merge($afterColumnValues, explode('/', $this->concatColumns($columnValues)));
+                    $append = array_merge($append, explode('/', $concatSegmentParts));
                 }
             }
-            if (count($beforeColumnValues)) {
-                $dataPath->prependPathSegments($beforeColumnValues);
+
+            if ($prepend) {
+                $dataPath->prependPathSegments($prepend);
             }
-            if (count($afterColumnValues)) {
-                $dataPath->appendPathSegments($afterColumnValues);
+            if ($append) {
+                $dataPath->appendPathSegments($append);
             }
         }
         $url->appendPathSegments($dataPath->getSegments());
@@ -413,13 +308,13 @@ class Profile
             'user_path' => false,
             'structure' => false,
             'seo' => [
-                'title' => ($dataset->hasValue(self::ALIAS . '_seo_title') ? $dataset->getValue(self::ALIAS . '_seo_title') : false),
-                'description' => ($dataset->hasValue(self::ALIAS . '_seo_description') ? $dataset->getValue(self::ALIAS . '_seo_description') : false),
-                'image' => ($dataset->hasValue(self::ALIAS . '_seo_image') ? $dataset->getValue(self::ALIAS . '_seo_image') : false),
+                'title' => $dataset->hasValue(self::ALIAS.'_seo_title') ? $dataset->getValue(self::ALIAS.'_seo_title') : false,
+                'description' => $dataset->hasValue(self::ALIAS.'_seo_description') ? $dataset->getValue(self::ALIAS.'_seo_description') : false,
+                'image' => $dataset->hasValue(self::ALIAS.'_seo_image') ? $dataset->getValue(self::ALIAS.'_seo_image') : false,
             ],
         ];
 
-        if ($this->appendStructureCategories) {
+        if ($this->appendStructureCategories()) {
             $articleCategory = \rex_category::get($articleId, $clangId);
             if ($articleCategory) {
                 $categories = $articleCategory->getChildren();
@@ -439,8 +334,8 @@ class Profile
             }
         }
 
-        if ($this->appendUserPaths) {
-            $userPaths = explode("\n", $this->appendUserPaths);
+        if ($this->appendUserPaths()) {
+            $userPaths = explode("\n", $this->appendUserPaths());
             foreach ($userPaths as $userPathLine) {
                 $userPathParts = explode('=', $userPathLine);
 
@@ -456,7 +351,6 @@ class Profile
             }
         }
 
-
         foreach ($urlObjects as $urlObject) {
             /* @var $urlInstance \Url */
             $urlInstance = $urlObject['object'];
@@ -464,7 +358,7 @@ class Profile
             $urlObject['clang_id'] = $clangId;
             $urlObject['data_id'] = $dataset->getId();
             $urlObject['profile_id'] = $this->getId();
-            $urlObject['sitemap'] = $this->sitemap;
+            $urlObject['sitemap'] = $this->inSitemap();
 
             $urlInstance = \rex_extension::registerPoint(new \rex_extension_point('URL_MANAGER_PRE_SAVE', $urlInstance, $urlObject));
 
@@ -485,8 +379,8 @@ class Profile
             $manager->setUserPath($urlObject['user_path']);
 
             $manager->setLastmod();
-            if ($dataset->hasValue(self::ALIAS . '_sitemap_lastmod')) {
-                $manager->setLastmod($dataset->getValue(self::ALIAS . '_sitemap_lastmod'));
+            if ($dataset->hasValue(self::ALIAS.'_sitemap_lastmod')) {
+                $manager->setLastmod($dataset->getValue(self::ALIAS.'_sitemap_lastmod'));
             }
 
             if (!$manager->save()) {
@@ -495,182 +389,222 @@ class Profile
         }
     }
 
-    public function buildUrls()
-    {
-        $items = $this->getDataItems();
-        foreach ($items as $item) {
-            $this->createAndSaveUrls($item);
-        }
-    }
-
-    public function buildDatasetUrls($datasetId, $datasetColumnName)
-    {
-        $items = $this->getDataItem($datasetColumnName, $datasetId);
-        foreach ($items as $item) {
-            $this->createAndSaveUrls($item);
-        }
-    }
-
-
     public function deleteUrls()
     {
-        UrlManagerSql::deleteByProfile($this);
+        UrlManagerSql::deleteByProfileId($this->getId());
         return $this;
     }
 
-    public function deleteDatasetUrls($datasetId)
+    public function deleteUrlsByDatasetId($datasetId)
     {
-        UrlManagerSql::deleteByProfileWithDatasetId($this, $datasetId);
+        UrlManagerSql::deleteByProfileIdAndDatasetId($this->getId(), $datasetId);
         return $this;
     }
-
 
     /**
      * @return null|UrlManager[]
      */
     public function getUrls()
     {
-        return UrlManager::getUrlsByProfile($this);
+        return UrlManager::getUrlsByProfileId($this->getId());
     }
 
     /**
-     * @param int $id
+     * Returns the profile object for the given id.
      *
-     * @return null|static
+     * @param int $id Profile id
+     *
+     * @return self
      */
     public static function get($id)
     {
-        $sql = \rex_sql::factory();
-        // $sql->setDebug();
-        $sql->setTable(\rex::getTable(self::TABLE_NAME));
-        $sql->setWhere('id = ?', [$id]);
-        $sql->select();
-        if ($sql->getRows() == 1) {
-            $instance = new self($sql->getArray()[0]);
-            return $instance;
+        if (self::exists($id)) {
+            return self::$profiles[$id];
         }
-
         return null;
     }
 
     /**
-     * @return null|Profile[]
+     * Returns an array of all profiles.
+     *
+     * @return self[]
      */
     public static function getAll()
     {
-        $sql = \rex_sql::factory();
-        // $sql->setDebug();
-        $sql->setTable(\rex::getTable(self::TABLE_NAME));
-        $sql->select();
-        if ($sql->getRows() >= 1) {
-            $instances = [];
-            foreach ($sql->getArray() as $item) {
-                $instances[] = new self($item);
-            }
-            return $instances;
-        }
-
-        return null;
+        self::checkCache();
+        return self::$profiles;
     }
 
     /**
+     * Returns an array of all profiles for the given articleId and clangId.
+     *
      * @param int $articleId
      * @param int $clangId
      *
-     * @return null|static[]
+     * @return self[]
      */
     public static function getByArticleId($articleId, $clangId)
     {
-        $clangId = (int)$clangId;
-        $sql = \rex_sql::factory();
-        // $sql->setDebug();
-        $sql->setTable(\rex::getTable(self::TABLE_NAME));
-        $sql->setWhere('article_id = ? AND clang_id = ?', [$articleId, $clangId]);
-        $sql->select();
+        self::checkCache();
 
-        if ($sql->getRows() < 1) {
-            // Profile können mit clang_id=0 gespeichert werden, falls der Artikel für alle Sprachen gelten soll
-            // ExtensionPoints aus der Struktur übergeben immer eine clang_id >= 1 und so würden die Profile nicht gefunden
-            $sql->setTable(\rex::getTable(self::TABLE_NAME));
-            $sql->setWhere('article_id = ?', [$articleId]);
-            $sql->select();
-        }
-
-        if ($sql->getRows() >= 1) {
-            $instances = [];
-            foreach ($sql->getArray() as $item) {
-                $instances[] = new self($item);
-            }
-            return $instances;
-        }
-
-        return null;
+        return array_filter(self::$profiles, function (self $profile) use ($articleId, $clangId) {
+            // Profile können mit clang_id=0 (via normalize null) gespeichert werden, falls der Artikel für alle Sprachen gelten soll
+            // ExtensionPoints aus der Struktur übergeben aber immer eine clang_id >= 1 und so würden die Profile nicht gefunden
+            return
+                ($articleId == $profile->getArticleId() && $clangId == $profile->getArticleClangId())
+                || ($articleId == $profile->getArticleId() && null === $profile->getArticleClangId())
+            ;
+        });
     }
 
     /**
+     * Returns an array of all profiles for the given namespace.
+     *
      * @param string $namespace
      *
-     * @return null|static[]
+     * @return self[]
      */
     public static function getByNamespace($namespace)
     {
-        $sql = \rex_sql::factory();
-        // $sql->setDebug();
-        $sql->setTable(\rex::getTable(self::TABLE_NAME));
-        $sql->setWhere('namespace = ?', [$sql->escape($namespace)]);
-        $sql->select();
+        self::checkCache();
 
-        if ($sql->getRows() >= 1) {
-            $instances = [];
-            foreach ($sql->getArray() as $item) {
-                $instances[] = new self($item);
-            }
-            return $instances;
-        }
-
-        return null;
+        return array_filter(self::$profiles, function (self $profile) use ($namespace) {
+            return $namespace == $profile->getNamespace();
+        });
     }
-
 
     /**
-     * @param string $tableName
+     * Returns an array of all profiles for the given tableName and databaseId.
      *
-     * @return null|static[]
+     * @param string $tableName
+     * @param int    $dbId
+     *
+     * @return self[]
      */
-    public static function getByTableName($tableName)
+    public static function getByTableName($tableName, $dbId = 1)
     {
-        // $clangId = (int)$clangId;
-        $sql = \rex_sql::factory();
-        // $sql->setDebug();
-        $sql->setTable(\rex::getTable(self::TABLE_NAME));
+        self::checkCache();
 
-        $where = [];
-        $whereParams = [];
-        $dbConfigs = Database::getAll();
-        foreach ($dbConfigs as $dbId => $dbConfig) {
-            $where[] = 'table_name = ?';
-            $whereParams[] = $sql->escape(Database::merge($dbId, $tableName));
-        }
-        $sql->setWhere(implode(' OR ', $where), $whereParams);
-        $sql->select();
-
-        if ($sql->getRows() >= 1) {
-            $instances = [];
-            foreach ($sql->getArray() as $item) {
-                $instances[] = new self($item);
-            }
-            return $instances;
-        }
-
-        return null;
+        return array_filter(self::$profiles, function (self $profile) use ($tableName, $dbId) {
+            return $tableName == $profile->getTableName() && $dbId == $profile->getDatabaseId();
+        });
     }
 
-
-    public static function getSegmentPartSeparators()
+    /**
+     * Checks if the given profile exists.
+     *
+     * @param int $id Profile id
+     *
+     * @return bool
+     */
+    public static function exists($id)
     {
-        return [
-            '/' => '/',
-            '-' => '-',
-        ];
+        self::checkCache();
+        return isset(self::$profiles[$id]);
+    }
+
+    protected function getDataset($primaryColumnName, $primaryId)
+    {
+        $query = $this->buildQuery();
+        $query->where($this->getColumnNameWithAlias($primaryColumnName), $primaryId);
+        // $items = \rex_sql::factory()->setDebug()->getArray($query->getQuery(), $query->getParams());
+        return $query->find();
+    }
+
+    protected function getDatasets()
+    {
+        $query = $this->buildQuery();
+        // $items = \rex_sql::factory()->setDebug()->getArray($query->getQuery(), $query->getParams());
+        return $query->find();
+    }
+
+    protected function buildQuery()
+    {
+        $query = \rex_yform_manager_query::get($this->getTableName());
+        $query->alias(self::ALIAS);
+
+        // Reset, "alias.*" löschen
+        $query->resetSelect();
+
+        // Order erzwingen für nicht YForm-Tabellen
+        $query->orderBy(self::ALIAS.'_id');
+
+        $query->select($this->getColumnNameWithAlias('id'), 'id');
+        $query->select($this->getColumnNameWithAlias('id'), self::ALIAS.'_id');
+        if (null === $this->getArticleClangId() && $this->getColumnName('clang_id') != '') {
+            $query->select($this->getColumnNameWithAlias('clang_id'), self::ALIAS.'_clang_id');
+        }
+
+        $columns = ['seo_description', 'seo_image', 'sitemap_lastmod', 'seo_title'];
+        for ($index = 1; $index <= self::SEGMENT_PART_COUNT; ++$index) {
+            $columns[] = 'segment_part_'.$index;
+        }
+
+        foreach ($columns as $column) {
+            if ($this->getColumnName($column) != '') {
+                $query->select($this->getColumnNameWithAlias($column), self::ALIAS.'_'.$column);
+            }
+        }
+
+        $query->where($this->getColumnNameWithAlias('segment_part_1'), '', '!=');
+        $query->whereRaw($this->getColumnNameWithAlias('segment_part_1', true).' IS NOT NULL');
+
+        if ($this->hasRestrictions()) {
+            $where = [];
+            foreach ($this->getRestrictions() as $index => $values) {
+                $restriction = new ProfileRestriction(
+                    $index,
+                    $this->getColumnNameWithAlias('restriction_'.$index),
+                    $values['comparison_operator'],
+                    $values['value'],
+                    ($values['logical_operator'] ?? '')
+                );
+
+                if (!empty($where)) {
+                    $where[] = $restriction->getWhereOperator();
+                }
+                $where[] = $restriction->getWhere();
+            }
+            $query->whereRaw(implode(' ', $where));
+        }
+
+        if ($this->hasRelations()) {
+            foreach ($this->getRelations() as $relation) {
+                $query = $relation->completeQuery(
+                    $query,
+                    $this->getColumnNameWithAlias('relation_'.$relation->getIndex()),
+                    $this->getArticleClangId(),
+                    $this->getColumnNameWithAlias('clang_id')
+                );
+            }
+        }
+        return $query;
+    }
+
+    /**
+     * Loads the cache if not already loaded.
+     */
+    private static function checkCache()
+    {
+        if (self::$cacheLoaded) {
+            return;
+        }
+
+        $file = \rex_path::addonCache('url', 'profiles.cache');
+        if (!file_exists($file)) {
+            Cache::generateProfiles();
+        }
+        foreach (\rex_file::getCache($file) as $id => $data) {
+            $profile = new self();
+
+            foreach ($data as $key => $value) {
+                $profile->$key = $value;
+            }
+
+            $profile->normalize();
+
+            self::$profiles[$id] = $profile;
+        }
+        self::$cacheLoaded = true;
     }
 }

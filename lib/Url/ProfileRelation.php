@@ -13,139 +13,82 @@ namespace Url;
 
 class ProfileRelation
 {
-    protected $index;
+    private $index;
+    private $position;
+    private $segment_part_separators;
+    private $table;
 
-    protected $alias;
-    protected $prefix;
 
-    /** @var $profile Profile */
-    protected $profile;
-
-    protected $sourceColumnName;
-    protected $dbId;
-    protected $tableName;
-    protected $tableParameters;
-    protected $segmentPosition;
-
-    protected $clangIdColumnName;
-    protected $idColumnName;
-    protected $segmentParts = [];
-
-    public function __construct($index, $columnName, $segmentPosition, $mergedTableName, $tableParams)
+    public function __construct($index, $values)
     {
         $this->index = $index;
-        $this->alias = Profile::RELATION_PREFIX . $this->index;
-        $this->prefix = $this->alias . '_';
-
-        $this->segmentPosition = $segmentPosition;
-        $this->sourceColumnName = $columnName;
-
-        $group = Database::split($mergedTableName);
-        $this->dbId = $group[1];
-        $this->tableName = $group[2];
-
-        $this->tableParameters = $tableParams;
-
-        $this->idColumnName = $this->getValue('column_id');
-        $this->clangIdColumnName = $this->getValue('column_clang_id');
-
-        for ($index = 1; $index <= Profile::SEGMENT_PART_COUNT; $index++) {
-            $columnName = $this->getValue('column_segment_part_' . $index);
-            if ($columnName && $columnName != '') {
-                $separator = $this->getValue('column_segment_part_' . $index . '_separator');
-                $separator = ($separator && $separator != '') ? $separator : null;
-                $this->segmentParts[$index] = ['column_name' => $columnName, 'separator' => $separator];
-            }
-        }
+        $this->position = $values['position'];
+        $this->segment_part_separators = $values['segment_part_separators'];
+        $this->table = $values['table'];
     }
 
-    public function isValid()
+    public function getDatabaseId()
     {
-        return $this->getTableName() != '' && $this->getSourceColumnName() != '' && $this->getIdColumnName() != '';
-    }
-
-    public function getAlias()
-    {
-        return $this->alias;
-    }
-
-    public function getClangIdColumnName()
-    {
-        return $this->clangIdColumnName;
-    }
-
-    public function getDBId()
-    {
-        return $this->dbId;
-    }
-
-    public function getIdColumnName()
-    {
-        return $this->idColumnName;
-    }
-
-    public function getSegmentParts()
-    {
-        return $this->segmentParts;
-    }
-
-    public function getSegmentPosition()
-    {
-        return $this->segmentPosition;
-    }
-
-    public function getSourceColumnName()
-    {
-        return $this->sourceColumnName;
+        return $this->table['dbid'];
     }
 
     public function getTableName()
     {
-        return $this->tableName;
+        return $this->table['name'];
     }
 
-    public function getTableParams()
+    public function getColumnName($column)
     {
-        return $this->tableParameters;
+        return $this->table['column_names'][$column];
     }
 
-    public function getTableParam($key)
+    public function getColumnNameWithAlias($column)
     {
-        $params = $this->getTableParams();
-        return isset($params[$key]) ? $params[$key] : null;
+        return $this->getAlias() . '.' . $this->getColumnName($column);
     }
 
-    public function getValue($key)
+    public function getAlias()
     {
-        return $this->getTableParam($key);
+        return Profile::RELATION_PREFIX . $this->index;
+    }
+
+    public function getIndex()
+    {
+        return $this->index;
+    }
+
+    public function getSegmentPosition()
+    {
+        return $this->position;
     }
 
 
-    public function completeQuery(\rex_yform_manager_query $query, $articleClangId, $clangIdColumnName)
+    public function completeQuery(\rex_yform_manager_query $query, $sourceRelationColumnName, $sourceClangColumnName, $structureArticleClangId)
     {
-        $joinTyp = 'LEFT';
-        $joinTable = $this->getTableName();
-        $joinAlias = $this->alias;
-        $joinCondition = Profile::ALIAS . '.' . $this->getSourceColumnName() . ' = ' . $joinAlias . '.' . $this->getIdColumnName();
+        $joinCondition = $sourceRelationColumnName . ' = ' . $this->getColumnNameWithAlias('id');
 
-        if (null === $articleClangId && $clangIdColumnName != '' && $this->getClangIdColumnName() != '') {
-            $joinCondition .= ' AND ' . Profile::ALIAS . '.' . $clangIdColumnName . ' = ' .  $joinAlias . '.' . $this->getClangIdColumnName();
+        if (null === $structureArticleClangId && $sourceClangColumnName != '' && $this->getColumnName('clang_id') != '') {
+            $joinCondition .= ' AND ' . $sourceClangColumnName . ' = ' .  $this->getColumnNameWithAlias('clang_id');
         }
 
-        $query->joinRaw($joinTyp, $joinTable, $joinAlias, $joinCondition);
-        $query->select($joinAlias . '.' . $this->getIdColumnName(), $this->prefix . 'id');
+        $query->joinRaw('LEFT', $this->getTableName(), $this->getAlias(), $joinCondition);
+        $query->select($this->getColumnNameWithAlias('id'), $this->getAlias() . '_id');
 
-        if (null === $articleClangId && $this->getClangIdColumnName() != '') {
-            $query->select($joinAlias . '.' . $this->getClangIdColumnName(), $this->prefix . 'clang_id');
+        if (null === $structureArticleClangId && $this->getColumnName('clang_id') != '') {
+            $query->select($this->getColumnNameWithAlias('clang_id'), $this->getAlias() . '_clang_id');
         }
 
-        if (count($this->getSegmentParts())) {
-            foreach ($this->getSegmentParts() as $index => $columnName) {
-                $query->select($joinAlias . '.' . $columnName['column_name'], $this->prefix . 'segment_part_' . $index);
+        $columns = [];
+        for ($index = 1; $index <= Profile::SEGMENT_PART_COUNT; $index++) {
+            $columns[] = 'segment_part_' . $index;
+        }
+
+        foreach ($columns as $column) {
+            if ($this->getColumnName($column) != '') {
+                $query->select($this->getColumnNameWithAlias($column), $this->getAlias() . '_' . $column);
             }
         }
 
         return $query;
     }
-
 }

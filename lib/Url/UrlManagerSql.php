@@ -141,23 +141,23 @@ class UrlManagerSql
     }
 
     /**
-     * @param Profile $profile
+     * @param int $profileId
      */
-    public static function deleteByProfile(Profile $profile)
+    public static function deleteByProfileId($profileId)
     {
         $sql = self::factory();
-        $sql->sql->setWhere('profile_id = ?', [$profile->getId()]);
+        $sql->sql->setWhere('profile_id = ?', [$profileId]);
         $sql->sql->delete();
     }
 
     /**
-     * @param Profile $profile
+     * @param int $profileId
      * @param int     $datasetId
      */
-    public static function deleteByProfileWithDatasetId(Profile $profile, $datasetId)
+    public static function deleteByProfileIdAndDatasetId($profileId, $datasetId)
     {
         $sql = self::factory();
-        $sql->sql->setWhere('profile_id = ? AND data_id = ?', [$profile->getId(), $datasetId]);
+        $sql->sql->setWhere('profile_id = ? AND data_id = ?', [$profileId, $datasetId]);
         $sql->sql->delete();
     }
 
@@ -221,7 +221,7 @@ class UrlManagerSql
     /**
      * @return array
      */
-    public static function getByUrl()
+    public static function getFromCurrentUrl()
     {
         $currentUrl = Url::getCurrent();
         $currentUrl->withScheme('');

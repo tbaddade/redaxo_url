@@ -448,7 +448,7 @@ if ($func == '') {
                     $f->setSuffix('</div>');
                     $f->setAttribute('disabled', 'true');
                     $select = $f->getSelect();
-                    $select->addOptions(Profile::getSegmentPartSeparators());
+                    $select->addOptions(UrlManager::getSegmentPartSeparators());
                 }
 
                 $type = 'select';
@@ -836,7 +836,7 @@ if ($func == '') {
                         $f->setSuffix('</div>');
                         $f->setAttribute('disabled', 'true');
                         $select = $f->getSelect();
-                        $select->addOptions(Profile::getSegmentPartSeparators());
+                        $select->addOptions(UrlManager::getSegmentPartSeparators());
                     }
 
                     $type = 'select';

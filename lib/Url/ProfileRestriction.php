@@ -18,30 +18,30 @@ class ProfileRestriction
     protected $alias;
     protected $prefix;
 
-    protected $sourceColumnName;
+    protected $columnName;
 
     protected $comparisonOperator;
     protected $logicalOperator = 'AND';
     protected $value;
 
-    public function __construct($index, $columnName, $comparisonOperator, $value, $operator)
+    public function __construct($index, $columnName, $comparisonOperator, $value, $logicalOperator)
     {
         $this->index = $index;
         $this->alias = Profile::RESTRICTION_PREFIX . $this->index;
         $this->prefix = $this->alias . '_';
 
-        $this->sourceColumnName = $columnName;
+        $this->columnName = $columnName;
         $this->comparisonOperator = $comparisonOperator;
-        $this->value = $value;
+        $this->value = trim($value);
 
-        if ($operator && $operator != '') {
-            $this->logicalOperator = $operator;
+        if ($logicalOperator && $logicalOperator != '') {
+            $this->logicalOperator = $logicalOperator;
         }
     }
 
     public function isValid()
     {
-        return $this->sourceColumnName != ''
+        return $this->columnName != ''
             && $this->value != ''
             && isset(Database::getComparisonOperators()[$this->comparisonOperator])
             && isset(Database::getLogicalOperators()[$this->logicalOperator]);
@@ -49,10 +49,8 @@ class ProfileRestriction
 
     public function getWhere()
     {
-        $column = $this->sourceColumnName;
-        $operator = $this->comparisonOperator;
-        $value = trim($this->value);
-        switch ($operator) {
+        $value = $this->value;
+        switch ($this->comparisonOperator) {
             case 'FIND_IN_SET':
                 break;
             case 'IN':
@@ -79,13 +77,13 @@ class ProfileRestriction
                 break;
         }
 
-        switch ($operator) {
+        switch ($this->comparisonOperator) {
             case 'FIND_IN_SET':
-                $where = sprintf('%s (%s, %s.%s)', $operator, $value, Profile::ALIAS, $column);
+                $where = sprintf('%s (%s, %s)', $this->comparisonOperator, $value, $this->columnName);
                 break;
 
             default:
-                $where = sprintf('%s.%s %s %s', Profile::ALIAS, $column, $operator, $value);
+                $where = sprintf('%s %s %s', $this->columnName, $this->comparisonOperator, $value);
                 break;
         }
 

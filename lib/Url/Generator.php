@@ -49,8 +49,8 @@ class Generator
                 $profiles = Profile::getByTableName($this->manager->getDatasetTableName());
                 if ($profiles) {
                     foreach ($profiles as $profile) {
-                        $profile->deleteDatasetUrls($this->manager->getDatasetPrimaryId());
-                        $profile->buildDatasetUrls($this->manager->getDatasetPrimaryId(), $this->manager->getDatasetPrimaryColumnName());
+                        $profile->deleteUrlsByDatasetId($this->manager->getDatasetPrimaryId());
+                        $profile->buildUrlsByDatasetId($this->manager->getDatasetPrimaryId(), $this->manager->getDatasetPrimaryColumnName());
                     }
                 }
                 break;

@@ -163,13 +163,13 @@ class UrlManager
     }
 
     /**
-     * @param Profile $profile
+     * @param int $profileId
      *
      * @return null|UrlManager[]
      */
-    public static function getUrlsByProfile(Profile $profile)
+    public static function getUrlsByProfileId($profileId)
     {
-        $items = UrlManagerSql::getByProfileId($profile->getId());
+        $items = UrlManagerSql::getByProfileId($profileId);
 
         if (!$items) {
             return null;
@@ -206,7 +206,7 @@ class UrlManager
      */
     public static function getArticleParams()
     {
-        $items = UrlManagerSql::getByUrl();
+        $items = UrlManagerSql::getFromCurrentUrl();
 
         if (count($items) != 1) {
             return null;
@@ -221,7 +221,7 @@ class UrlManager
      */
     public static function getData()
     {
-        $items = UrlManagerSql::getByUrl();
+        $items = UrlManagerSql::getFromCurrentUrl();
 
         if (count($items) != 1) {
             return null;
@@ -262,7 +262,12 @@ class UrlManager
 
                 $url = self::getOriginalUrlForDataset($profile, (int) $urlParamValue, $clangId);
                 if (!$url) {
-                    continue;
+                    $profile->buildDatasetUrls($urlParamValue, \rex_sql_table::get($profile->getTableName())->getPrimaryKey()[0]);
+
+                    $url = self::getOriginalUrlForDataset($profile, (int) $urlParamValue, $clangId);
+                    if (!$url) {
+                        continue;
+                    }
                 }
 
                 $dataset = $url->getUrl();
@@ -283,5 +288,14 @@ class UrlManager
             }
         }
         return null;
+    }
+
+
+    public static function getSegmentPartSeparators()
+    {
+        return [
+            '/' => '/',
+            '-' => '-',
+        ];
     }
 }
