@@ -3,13 +3,13 @@ url_title = URL
 
 url_after = efter
 url_before = före
-url_data_id =
+url_data_id = Dataset Id
 url_id = ID
 url_language = Språk
 
-url_generator_profile =
-url_generator_profiles =
-url_generator_urls = Urls
+url_generator_profile = Profil
+url_generator_profiles = Profiler
+url_generator_urls_generated = genererade URLs
 
 url_generator = Skapa URLs
 url_generator_article = Artikel
@@ -21,9 +21,9 @@ url_generator_article_legend = I vilken artikel ska det visas
 url_generator_clang_id_notice = Kolumn med motsvarande unika Clang Id
 url_generator_data = Data
 url_generator_id_notice = Kolumn med motsvarande unika ID
-url_generator_identify_record =
-url_generator_namespace =
-url_generator_namespace_error =
+url_generator_identify_record = Identifiera data
+url_generator_namespace = Namespace
+url_generator_namespace_error = Tilldela unika namespace / parametrar
 url_generator_namespace_notice = Parametrar för rex_getUrl()
 url_generator_namespace_short = URL call
 url_generator_no_additive = inget tillägg
@@ -38,21 +38,21 @@ url_generator_path_children = Underkategorier kan läggas till webbadressen
 url_generator_append_user_path = Lägg till anpassade sökvägar till webbadressen
 url_generator_append_user_path_notice = Utan <code> / </ code> i början och slutet <br /> Artikeln visas även när de här banorna läggs till i slutet av webbadressen. <br /> Om en "=" och en titel läggs till i slutet, kan den senare användas som menyalternativ (Ex: om-oss = Om oss)
 url_generator_append_user_path_short = add. paths
-url_generator_path_user = Egna sökvägar
+url_generator_path_own = egna banor
 url_generator_path_relation = Relation
 url_generator_path_relation_table = Tabell
 url_generator_paths = Ytterligare sökvägar för webbadressen
 url_generator_relation = Relation {0}
-url_generator_relation_column =
+url_generator_relation_column = Kolumn av relation {0}
 url_generator_relation_column_notice = Ange kolumnerna i relationstabellen nedan för att expandera URL-adressen i enlighet med detta
 url_generator_relation_field = Bygg sökvägar ur relationaltabell
-url_generator_relation_paths =
+url_generator_relation_paths = bilda ytterligare banor från relationerna
 url_generator_relation_position = Position
-url_generator_relation_position_eg_code =
-url_generator_relation_position_eg_label =
-url_generator_relation_position_in_url =
+url_generator_relation_position_eg_code = <code> / <b> kolumn-1 / kolumn-2 </ b> / relation-1-bak / </ code> <br /> <code> / relation-1-före / <b> kolumn 1 / kolumn 2 </ b> / </ code> <br /> <code> / relation-1-before / <b> kolumn-1 / kolumn-2 </ b> / relation-2-bak / </ code > <br /> <code> / relation-1-före / relation-2-före / <b> kolumn-1 / kolumn-2 </ b> / relation-3-bak / </ code> <br /> <code> / relation-1-före / relation-3-före / <b> kolumn-1 / kolumn-2 </ b> / relation-2-bak / </ code> <br /> <code> / relation -3-före / <b> kolonn-halv-kolonn förhållande-2 bakom det </ b> / relation-en bakom / / </ code>
+url_generator_relation_position_eg_label = Exempel
+url_generator_relation_position_in_url = Position i URL
 url_generator_relation_position_notice = Var ska sökvägar läggas till URL-adressen
-url_generator_relation_position_notice__2 =
+url_generator_relation_position_notice__2 = Utgående från ovan definerade URL
 url_generator_restriction = Begränsning
 url_generator_restriction_notice = Med detta kan genereringen av webbadresserna för ovanstående artikel begränsas. Användbar när du skapar relationer mellan tabeller. Till exempel kan nyhetsposter delas upp i olika kategorier genom att ställa in dessa begränsningar i enlighet därmed.
 url_generator_seo = SEO
@@ -71,6 +71,11 @@ url_generator_table_legend = Ur vilken tabell ska URL-adresserna genereras
 url_generator_table_not_selected = Ingen tabell utvalt
 url_generator_table_relation_legend = Relationstabell {0}
 url_generator_url_notice = Kolumn för att generera URL-adressen från
+
+
+
+
+
 
 
 // Löschen
