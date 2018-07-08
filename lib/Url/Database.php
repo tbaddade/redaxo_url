@@ -43,7 +43,7 @@ class Database
         $supportedTables = [];
         foreach ($dbConfigs as $DBID => $dbConfig) {
             $tables = [];
-            $sqlTables = \rex_sql::showTables($DBID);
+            $sqlTables = \rex_sql::getTablesAndViews($DBID);
             foreach ($sqlTables as $sqlTable) {
                 $tableColumns = [];
                 $sqlColumns = \rex_sql::showColumns($sqlTable, $DBID);
