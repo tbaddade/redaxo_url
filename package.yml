@@ -18,7 +18,7 @@ page:
                     title: 'translate:url_generator_urls_generated'
 
 requires:
-    redaxo: ^5.4.0
+    redaxo: >=5.6.2
     packages:
         yrewrite: ^2.2.0
     php:
