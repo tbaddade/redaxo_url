@@ -19,7 +19,7 @@ class Database
     {
         $dbConfigs = \rex::getProperty('db');
         foreach ($dbConfigs as $DBID => $dbConfig) {
-            if ($dbConfig['host'] . $dbConfig['login'] . $dbConfig['password'] . $dbConfig['name'] != '') {
+            if ($dbConfig['host'].$dbConfig['login'].$dbConfig['password'].$dbConfig['name'] != '') {
                 //$connection = \rex_sql::checkDbConnection(
                 //    $dbConfig['host'],
                 //    $dbConfig['login'],
@@ -63,7 +63,6 @@ class Database
         return $supportedTables;
     }
 
-
     public static function getLogicalOperators()
     {
         return [
@@ -71,7 +70,6 @@ class Database
             'OR' => 'OR',
         ];
     }
-
 
     public static function getComparisonOperators()
     {

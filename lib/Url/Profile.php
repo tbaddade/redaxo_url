@@ -350,7 +350,7 @@ class Profile
                 ];
             }
         }
-
+        dump($urlObjects);
         foreach ($urlObjects as $urlObject) {
             /* @var $urlInstance \Url */
             $urlInstance = $urlObject['object'];

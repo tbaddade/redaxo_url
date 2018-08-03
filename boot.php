@@ -9,9 +9,10 @@
  * file that was distributed with this source code.
  */
 
+use Url\Cache;
 use Url\ExtensionPointManager;
-use \Url\Generator;
-use \Url\Seo;
+use Url\Generator;
+use Url\Seo;
 
 class_alias('Url\Url', 'Url');
 class_alias('Url\UrlManager', 'UrlManager');
@@ -22,7 +23,7 @@ class_alias('Url\Seo', 'UrlSeo');
 if (null !== Url::getRewriter()) {
     Url::getRewriter()->articleIdNotFound();
 }
-
+Cache::generateProfiles();
 rex_extension::register('PACKAGES_INCLUDED', function (\rex_extension_point $epPackagesIncluded) {
     // if anything changes -> refresh PathFile
     if (rex::isBackend()) {
@@ -43,11 +44,9 @@ rex_extension::register('PACKAGES_INCLUDED', function (\rex_extension_point $epP
         }
     }
 
-
     rex_extension::register('URL_REWRITE', function (\rex_extension_point $ep) {
         return UrlManager::getRewriteUrl($ep);
     }, rex_extension::EARLY);
-
 
     if (null !== Url::getRewriter() && Url::getRewriter()->getSitemapExtensionPoint()) {
         rex_extension::register(Url::getRewriter()->getSitemapExtensionPoint(), function (rex_extension_point $ep) {
@@ -60,6 +59,4 @@ rex_extension::register('PACKAGES_INCLUDED', function (\rex_extension_point $epP
             $ep->setSubject($sitemap);
         }, rex_extension::EARLY);
     }
-
 }, rex_extension::EARLY);
-

@@ -234,7 +234,7 @@ class UrlManager
     /**
      * @param \rex_extension_point $ep
      *
-     * @return mixed|null|string
+     * @return null|mixed|string
      */
     public static function getRewriteUrl(\rex_extension_point $ep)
     {
@@ -289,7 +289,6 @@ class UrlManager
         }
         return null;
     }
-
 
     public static function getSegmentPartSeparators()
     {

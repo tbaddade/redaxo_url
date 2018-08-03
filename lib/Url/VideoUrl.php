@@ -13,7 +13,6 @@ namespace Url;
 
 class VideoUrl extends Url
 {
-
     public $aspectRatio = '16:9';
     public $autoPlay = false;
     public $fullscreen = true;
@@ -52,7 +51,6 @@ class VideoUrl extends Url
         return '<div'.\rex_string::buildAttributes($attributes).'></div>';
     }
 
-
     /**
      * Builds a embed url from a video id.
      *
@@ -62,7 +60,8 @@ class VideoUrl extends Url
     {
         if ($this->isVimeo()) {
             return $this->getVimeoEmbedUrl();
-        } elseif ($this->isYoutube()) {
+        }
+        if ($this->isYoutube()) {
             return $this->getYoutubeEmbedUrl();
         }
 
@@ -76,21 +75,12 @@ class VideoUrl extends Url
     {
         if ($this->isVimeo()) {
             return $this->getVimeoId();
-        } elseif ($this->isYoutube()) {
+        }
+        if ($this->isYoutube()) {
             return $this->getYoutubeId();
         }
 
         return null;
-    }
-
-    /*
-     * @return string The last element of the url path
-     */
-    protected function getIdFromUrlPath()
-    {
-        $pathParts = explode('/', $this->getPath());
-
-        return end($pathParts);
     }
 
     /**
@@ -101,7 +91,8 @@ class VideoUrl extends Url
         $url = $this->getFullUrl();
         if (preg_match('%vimeo%i', $url)) {
             return 'vimeo';
-        } elseif (preg_match('%youtube|youtu\.be%i', $url)) {
+        }
+        if (preg_match('%youtube|youtu\.be%i', $url)) {
             return 'youtube';
         }
 
@@ -117,7 +108,8 @@ class VideoUrl extends Url
     {
         if ($this->isVimeo()) {
             return $this->getVimeoThumbnailUrl();
-        } elseif ($this->isYoutube()) {
+        }
+        if ($this->isYoutube()) {
             return $this->getYoutubeThumbnailUrl();
         }
 
@@ -217,13 +209,12 @@ class VideoUrl extends Url
         return 'https://img.youtube.com/vi/'.$this->getYoutubeId().'/0.jpg';
     }
 
-
     /**
      * @return bool
      */
     public function isVimeo()
     {
-        return ($this->getService() == 'vimeo');
+        return $this->getService() == 'vimeo';
     }
 
     /**
@@ -231,9 +222,8 @@ class VideoUrl extends Url
      */
     public function isYoutube()
     {
-        return ($this->getService() == 'youtube');
+        return $this->getService() == 'youtube';
     }
-
 
     /**
      * @param $aspectRatio string
@@ -257,7 +247,6 @@ class VideoUrl extends Url
         $this->autoPlay = $autoPlay;
     }
 
-
     /**
      * @param $fullscreen bool
      *
@@ -267,7 +256,6 @@ class VideoUrl extends Url
     {
         $this->fullscreen = $fullscreen;
     }
-
 
     /**
      * @param $related bool
@@ -279,4 +267,13 @@ class VideoUrl extends Url
         $this->related = $related;
     }
 
+    /*
+     * @return string The last element of the url path
+     */
+    protected function getIdFromUrlPath()
+    {
+        $pathParts = explode('/', $this->getPath());
+
+        return end($pathParts);
+    }
 }

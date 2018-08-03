@@ -27,8 +27,8 @@ class ProfileRestriction
     public function __construct($index, $columnName, $comparisonOperator, $value, $logicalOperator)
     {
         $this->index = $index;
-        $this->alias = Profile::RESTRICTION_PREFIX . $this->index;
-        $this->prefix = $this->alias . '_';
+        $this->alias = Profile::RESTRICTION_PREFIX.$this->index;
+        $this->prefix = $this->alias.'_';
 
         $this->columnName = $columnName;
         $this->comparisonOperator = $comparisonOperator;
@@ -61,14 +61,14 @@ class ProfileRestriction
                         unset($values[$key]);
                     }
                 }
-                $value = ' (' . implode(',', $values) . ') ';
+                $value = ' ('.implode(',', $values).') ';
                 break;
 
             case 'BETWEEN':
             case 'NOT BETWEEN':
                 $values = explode(',', $value);
                 if (count($values) == 2) {
-                    $value = $values[0] . ' AND ' . $values[1];
+                    $value = $values[0].' AND '.$values[1];
                 }
                 break;
 

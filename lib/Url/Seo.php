@@ -135,7 +135,7 @@ class Seo
             }
 
             $profileUrls = $profile->getUrls();
-            if(!$profileUrls) {
+            if (!$profileUrls) {
                 continue;
             }
 

@@ -152,7 +152,7 @@ class UrlManagerSql
 
     /**
      * @param int $profileId
-     * @param int     $datasetId
+     * @param int $datasetId
      */
     public static function deleteByProfileIdAndDatasetId($profileId, $datasetId)
     {
@@ -195,7 +195,7 @@ class UrlManagerSql
     public static function getHreflangUrlsForDataset($datasetId, $articleId, $clangIds)
     {
         $where = implode(' OR ',
-            array_map(function() {
+            array_map(function () {
                 return '`clang_id` = ?';
             }, $clangIds)
         );

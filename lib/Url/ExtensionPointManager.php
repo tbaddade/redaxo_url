@@ -39,13 +39,54 @@ class ExtensionPointManager
     /**
      * Create a new manager instance.
      *
-     * @param  \rex_extension_point $extensionPoint
+     * @param \rex_extension_point $extensionPoint
      */
     public function __construct($extensionPoint)
     {
         $this->extensionPoint = $extensionPoint;
         $this->normalize();
         return $this;
+    }
+
+    public function __get($name)
+    {
+        if (method_exists($this, $name)) {
+            return $this->$name();
+        }
+        if (property_exists($this, $name)) {
+            return $this->$name;
+        }
+        return null;
+    }
+
+    public function getMode()
+    {
+        return $this->mode;
+    }
+
+    public function getDatasetPrimaryId()
+    {
+        return $this->dataPrimaryId;
+    }
+
+    public function getDatasetPrimaryColumnName()
+    {
+        return $this->dataPrimaryColumnName;
+    }
+
+    public function getDatasetTableName()
+    {
+        return $this->dataTableName;
+    }
+
+    public function getStructureArticleId()
+    {
+        return $this->structureArticleId;
+    }
+
+    public function getStructureClangId()
+    {
+        return $this->structureClangId;
     }
 
     protected function normalize()
@@ -111,11 +152,6 @@ class ExtensionPointManager
         }
     }
 
-    public function getMode()
-    {
-        return $this->mode;
-    }
-
     protected function setMode($mode)
     {
         $this->mode = $mode;
@@ -126,19 +162,9 @@ class ExtensionPointManager
         $this->dataEditMode = $mode;
     }
 
-    public function getDatasetPrimaryId()
-    {
-        return $this->dataPrimaryId;
-    }
-
     protected function setDatasetPrimaryId($id)
     {
         $this->dataPrimaryId = $id;
-    }
-
-    public function getDatasetPrimaryColumnName()
-    {
-        return $this->dataPrimaryColumnName;
     }
 
     protected function setDatasetPrimaryColumnName($key)
@@ -146,19 +172,9 @@ class ExtensionPointManager
         $this->dataPrimaryColumnName = $key;
     }
 
-    public function getDatasetTableName()
-    {
-        return $this->dataTableName;
-    }
-
     protected function setDatasetTableName($tableName)
     {
         $this->dataTableName = $tableName;
-    }
-
-    public function getStructureArticleId()
-    {
-        return $this->structureArticleId;
     }
 
     protected function setStructureArticleId($id)
@@ -166,24 +182,8 @@ class ExtensionPointManager
         $this->structureArticleId = $id;
     }
 
-    public function getStructureClangId()
-    {
-        return $this->structureClangId;
-    }
-
     protected function setStructureClangId($clang_id)
     {
         $this->structureClangId = $clang_id;
     }
-
-    public function __get($name)
-    {
-        if (method_exists($this, $name)) {
-            return $this->$name();
-        } elseif(property_exists($this, $name)) {
-            return $this->$name;
-        }
-        return null;
-    }
-
 }
