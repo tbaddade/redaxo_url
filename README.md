@@ -63,6 +63,13 @@ if ($newsDataId > 0) {
 ?>
 ```
 
+### Beispiel: URL-Pathlist neu generieren
+
+Wenn Datenbanktabellen außerhalb des YForm-Table-Managers befüllt werden, greift der passende EP nicht und die URLs werden nicht neu generiert. Dies lässt sich manuell nachholen, indem folgende Methode aufgerufen wird.
+
+```
+UrlGenerator::generatePathFile([]);
+```
 
 ### Installation
 --------------------------------------------------------------------------------
