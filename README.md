@@ -2,9 +2,10 @@ Url AddOn
 ================================================================================
 ### Table of Contents
 1. [Beschreibung](#beschreibung)
-2. [Beispiel: News AddOn](#beispiel-news-addOn)
-3. [Installation](#installation)
-4. [unterstützte Rewriter](#unterstützte-rewriter)
+1. [Beispiel: News AddOn](#beispiel-news-addon)
+1. [URL-Pathlist neu generieren](#url-pathlist-generieren)
+1. [Installation](#installation)
+1. [unterstützte Rewriter](#unterstützte-rewriter)
 
 ### Beschreibung
 --------------------------------------------------------------------------------
@@ -70,6 +71,15 @@ Weitere Parameter können über die Funktion getData geholt werden
 $urldata = UrlGenerator::getData();
 dump($urldata);
 ?>
+```
+
+<a id="url-pathlist-generieren"></a>
+### URL-Pathlist neu generieren
+--------------------------------------------------------------------------------
+Wenn Datenbanktabellen außerhalb des YForm-Table-Managers befüllt werden, greift der passende EP nicht und die URLs werden nicht neu generiert. Dies lässt sich manuell nachholen, indem folgende Methode aufgerufen wird.
+
+```
+UrlGenerator::generatePathFile([]);
 ```
 
 
