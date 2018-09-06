@@ -135,6 +135,14 @@ class ExtensionPointManager
 
                 break;
 
+            case 'REX_YFORM_SAVED':
+                // dump($this->extensionPoint->getParams());
+                // Domain wurde angelegt/aktualisiert
+                if ($this->extensionPoint->getParam('table') == 'rex_yrewrite_domain') {
+                    $this->setMode(self::MODE_UPDATE_URL_ALL);
+                }
+                break;
+
             case 'YFORM_DATA_ADDED':
             case 'YFORM_DATA_UPDATED':
                 // dump($this->extensionPoint->getParams());

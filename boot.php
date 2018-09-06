@@ -32,6 +32,7 @@ rex_extension::register('PACKAGES_INCLUDED', function (\rex_extension_point $epP
             'CAT_ADDED', 'CAT_UPDATED', 'CAT_DELETED', 'CAT_STATUS',
             'CLANG_ADDED', 'CLANG_UPDATED', 'CLANG_DELETED',
             'REX_FORM_SAVED',
+            'REX_YFORM_SAVED',
             'YFORM_DATA_ADDED', 'YFORM_DATA_UPDATED',
         ];
 
