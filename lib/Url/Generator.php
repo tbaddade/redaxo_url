@@ -26,10 +26,10 @@ class Generator
     {
         switch ($this->manager->getMode()) {
             case ExtensionPointManager::MODE_UPDATE_URL_ALL:
+                UrlManagerSql::deleteAll();
                 $profiles = Profile::getAll();
                 if ($profiles) {
                     foreach ($profiles as $profile) {
-                        $profile->deleteUrls();
                         $profile->buildUrls();
                     }
                 }
