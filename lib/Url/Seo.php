@@ -20,11 +20,11 @@ class Seo
 
     private $rewriterSeo;
 
-    private $urlData;
+    private $manager;
 
     public function __construct()
     {
-        $this->urlData = UrlManager::getData();
+        $this->manager = Url::resolveCurrent();
         $this->rewriter = Url::getRewriter();
         $this->rewriterSeo = $this->rewriter->getSeoInstance();
     }
@@ -32,8 +32,8 @@ class Seo
     public function getTitle()
     {
         $title = $this->rewriterSeo->getTitle();
-        if ($this->isUrl() && $this->urlData->getSeoTitle()) {
-            $title = $this->urlData->getSeoTitle().' - '.$title;
+        if ($this->isUrl() && $this->manager->getSeoTitle()) {
+            $title = $this->manager->getSeoTitle().' - '.$title;
         }
 
         $title = \rex_extension::registerPoint(new \rex_extension_point('URL_SEO_TITLE', $title));
@@ -56,8 +56,8 @@ class Seo
     public function getDescription()
     {
         $description = $this->rewriterSeo->getDescription();
-        if ($this->isUrl() && $this->urlData->getSeoDescription()) {
-            $description = $this->urlData->getSeoDescription();
+        if ($this->isUrl() && $this->manager->getSeoDescription()) {
+            $description = $this->manager->getSeoDescription();
         }
 
         $description = \rex_extension::registerPoint(new \rex_extension_point('URL_SEO_DESCRIPTION', $description));
@@ -79,7 +79,7 @@ class Seo
 
     public function getCanonicalUrl()
     {
-        $url = $this->urlData->getUrl();
+        $url = $this->manager->getUrl();
         $url->withSolvedScheme();
         return $url->getSchemeAndHttpHost().$url->getPath();
     }
@@ -95,7 +95,7 @@ class Seo
     public function getHreflangTags()
     {
         if ($this->isUrl()) {
-            $items = $this->urlData->getHreflangUrls(\rex_clang::getAllIds(true));
+            $items = $this->manager->getHreflang(\rex_clang::getAllIds(true));
 
             if ($items) {
                 $metas = [];
@@ -118,7 +118,7 @@ class Seo
 
     public function getImage()
     {
-        return $this->urlData->getSeoImage();
+        return $this->manager->getSeoImage();
     }
 
     public static function getSitemap()
@@ -158,7 +158,7 @@ class Seo
 
     protected function isUrl()
     {
-        return $this->urlData instanceof UrlManager;
+        return $this->manager instanceof UrlManager;
     }
 
     protected function normalize($string)
