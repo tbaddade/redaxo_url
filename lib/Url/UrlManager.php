@@ -38,18 +38,53 @@ class UrlManager
         return $this->values['clang_id'];
     }
 
-    // public function getDataset()
-    // {
-    //     $profile = Profile::get($this->getProfileId());
-    //     if (!$profile) {
-    //         return null;
-    //     }
-    //
-    //     $yFormTables = \rex_yform_manager_table::getAll();
-    //     if (count($yFormTables) && isset($yFormTables[$profile->getTableName()])) {
-    //
-    //     }
-    // }
+    /**
+     * @todo ambiguous fieldnames with relations
+     */
+    public function getDataset()
+    {
+        $profile = Profile::get($this->getProfileId());
+        if (!$profile) {
+            return null;
+        }
+
+        $query = \rex_yform_manager_query::get($profile->getTableName());
+
+        $yFormTables = \rex_yform_manager_table::getAll();
+        if (count($yFormTables) && isset($yFormTables[$profile->getTableName()])) {
+            $modelClass = \rex_yform_manager_dataset::getModelClass($profile->getTableName());
+            if ($modelClass) {
+                /** @noinspection PhpUndefinedMethodInspection */
+                $query = $modelClass::query();
+            }
+        }
+
+        $query->resetOrderBy();
+        $query->alias(Profile::ALIAS);
+        $query->where(
+            $profile->getColumnNameWithAlias(
+                \rex_sql_table::get($profile->getTableName())->getPrimaryKey()[0]
+            ),
+            $this->getDatasetId()
+        );
+
+        if ($profile->hasRelations()) {
+            foreach ($profile->getRelations() as $relation) {
+                // $query->select($relation->getAlias().'.*');
+                $joinCondition = $profile->getColumnNameWithAlias('relation_'.$relation->getIndex()).' = '.$relation->getColumnNameWithAlias('id');
+
+                if (null === $profile->getColumnNameWithAlias('clang_id') && $profile->getArticleClangId() != '' && $relation->getColumnNameWithAlias('clang_id') != '') {
+                    $joinCondition .= ' AND '.$profile->getArticleClangId().' = '.$relation->getColumnNameWithAlias('clang_id');
+                }
+
+                $query->joinRaw('LEFT', $relation->getTableName(), $relation->getAlias(), $joinCondition);
+            }
+        }
+
+        $items = \rex_sql::factory()->setDebug()->getArray($query->getQuery(), $query->getParams());
+
+        return $query->findOne();
+    }
 
     public function getDatasetId()
     {
@@ -61,9 +96,9 @@ class UrlManager
      *
      * @return null|UrlManager[]
      */
-    public function getHreflangUrls($clangIds)
+    public function getHreflang($clangIds)
     {
-        $items = UrlManagerSql::getHreflangUrlsForDataset($this->getDatasetId(), $this->getArticleId(), $clangIds);
+        $items = UrlManagerSql::getHreflang($this, $clangIds);
 
         if (!$items) {
             return null;
@@ -149,9 +184,17 @@ class UrlManager
     /**
      * @return bool
      */
+    public function isRoot()
+    {
+        return $this->isStructure() || $this->isUserPath() ? false : true;
+    }
+
+    /**
+     * @return bool
+     */
     public function isStructure()
     {
-        return $this->values['is_structure'] === 1 ? true : false;
+        return $this->values['is_structure'] === '1' ? true : false;
     }
 
     /**
@@ -159,7 +202,7 @@ class UrlManager
      */
     public function isUserPath()
     {
-        return $this->values['is_user_path'] === 1 ? true : false;
+        return $this->values['is_user_path'] === '1' ? true : false;
     }
 
     /**
@@ -167,7 +210,7 @@ class UrlManager
      *
      * @return null|UrlManager[]
      */
-    public static function getUrlsByProfileId($profileId)
+    public static function getByProfileId($profileId)
     {
         $items = UrlManagerSql::getByProfileId($profileId);
 
@@ -183,15 +226,13 @@ class UrlManager
     }
 
     /**
-     * @param Profile $profile
-     * @param int     $datasetId
-     * @param int     $clangId
+     * @param Url $url
      *
      * @return null|UrlManager
      */
-    public static function getOriginalUrlForDataset(Profile $profile, $datasetId, $clangId)
+    public static function resolveUrl(Url $url)
     {
-        $items = UrlManagerSql::getOriginalUrlForDataset($profile, $datasetId, $clangId);
+        $items = UrlManagerSql::getByUrl($url);
 
         if (count($items) != 1) {
             return null;
@@ -206,7 +247,7 @@ class UrlManager
      */
     public static function getArticleParams()
     {
-        $items = UrlManagerSql::getFromCurrentUrl();
+        $items = UrlManagerSql::getByUrl(Url::getCurrent());
 
         if (count($items) != 1) {
             return null;
@@ -214,21 +255,6 @@ class UrlManager
 
         $instance = new self($items[0]);
         return ['article_id' => $instance->getArticleId(), 'clang' => $instance->getClangId()];
-    }
-
-    /**
-     * @return null|UrlManager
-     */
-    public static function getData()
-    {
-        $items = UrlManagerSql::getFromCurrentUrl();
-
-        if (count($items) != 1) {
-            return null;
-        }
-
-        $instance = new self($items[0]);
-        return $instance;
     }
 
     /**
@@ -249,6 +275,7 @@ class UrlManager
             return null;
         }
 
+        $structureId = $ep->getParam('id');
         $clangId = $ep->getParam('clang');
         $urlParams = $ep->getParam('params');
         foreach ($urlParams as $urlParamKey => $urlParamValue) {
@@ -260,31 +287,56 @@ class UrlManager
                     continue;
                 }
 
-                $url = self::getOriginalUrlForDataset($profile, (int) $urlParamValue, $clangId);
-                if (!$url) {
-                    $profile->buildDatasetUrls($urlParamValue, \rex_sql_table::get($profile->getTableName())->getPrimaryKey()[0]);
+                $urlRecord = self::getForRewriteUrl($profile, (int) $urlParamValue, $clangId);
+                if (!$urlRecord) {
+                    // Urls erstellen
+                    $profile->buildUrlsByDatasetId($urlParamValue, \rex_sql_table::get($profile->getTableName())->getPrimaryKey()[0]);
+                    $urlRecord = self::getForRewriteUrl($profile, (int) $urlParamValue, $clangId);
+                }
 
-                    $url = self::getOriginalUrlForDataset($profile, (int) $urlParamValue, $clangId);
-                    if (!$url) {
-                        continue;
+                if (!$urlRecord) {
+                    // Keine Origin Url gefunden
+                    continue;
+                }
+
+                // Prüfen ob für Unterkategorien eine Url gesetzt werden muss
+                // (Unterkategorien anhängen)
+                if ($profile->appendStructureCategories() && $profile->getArticleId() != $structureId) {
+                    $category = \rex_category::get($structureId);
+                    if ($category) {
+                        $article = \rex_article::get($profile->getArticleId());
+                        $restStructurePath = str_replace($article->getUrl(), '', $category->getUrl());
+
+                        $restStructurePathUrl = new Url($restStructurePath);
+                        $restStructurePathUrl->handleRewriterSuffix();
+
+                        $expandedOriginUrl = $urlRecord->getUrl();
+                        $expandedOriginUrl->handleRewriterSuffix();
+                        $expandedOriginUrl->appendPathSegments($restStructurePathUrl->getSegments());
+
+                        $urlRecord = self::resolveUrl($expandedOriginUrl);
                     }
                 }
 
-                $dataset = $url->getUrl();
-                $current = Url::getCurrent();
+                if (!$urlRecord) {
+                    // Keine Origin oder appendStructureCategory Url gefunden
+                    continue;
+                }
+
+                $url = $urlRecord->getUrl();
 
                 unset($urlParams[$urlParamKey]);
                 if (count($urlParams)) {
-                    $dataset->withQuery('?'.\rex_string::buildQuery($urlParams, $ep->getParam('separator')));
+                    $url->withQuery('?'.\rex_string::buildQuery($urlParams, $ep->getParam('separator')));
                 }
 
-                if ($dataset->getDomain() == $current->getDomain()) {
-                    return $dataset->getPath().$dataset->getQuery();
+                if ($url->getDomain() == Url::getCurrent()->getDomain()) {
+                    return $url->getPath().$url->getQuery();
                 }
 
-                $scheme = Url::getRewriter()->getSchemeByDomain($dataset->getDomain()) ?: (Url::getRewriter()->isHttps() ? 'https' : 'http');
-                $dataset->withScheme($scheme);
-                return $dataset->getSchemeAndHttpHost().$dataset->getPath();
+                $scheme = Url::getRewriter()->getSchemeByDomain($url->getDomain()) ?: (Url::getRewriter()->isHttps() ? 'https' : 'http');
+                $url->withScheme($scheme);
+                return $url->getSchemeAndHttpHost().$url->getPath();
             }
         }
         return null;
@@ -296,5 +348,24 @@ class UrlManager
             '/' => '/',
             '-' => '-',
         ];
+    }
+
+    /**
+     * @param Profile $profile
+     * @param int     $datasetId
+     * @param int     $clangId
+     *
+     * @return null|UrlManager
+     */
+    private static function getForRewriteUrl(Profile $profile, $datasetId, $clangId)
+    {
+        $items = UrlManagerSql::getOrigin($profile, $datasetId, $clangId);
+
+        if (count($items) != 1) {
+            return null;
+        }
+
+        $instance = new self($items[0]);
+        return $instance;
     }
 }
