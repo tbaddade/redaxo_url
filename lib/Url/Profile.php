@@ -84,7 +84,7 @@ class Profile
     private $relations = [];
 
     /** @var $restrictions ProfileRestriction[] */
-    private $restrictions = [];
+    // private $restrictions = [];
 
     private $segment_part_separators;
     private $sitemap_add = false;
@@ -350,7 +350,7 @@ class Profile
                 ];
             }
         }
-        dump($urlObjects);
+        // dump($urlObjects);
         foreach ($urlObjects as $urlObject) {
             /* @var $urlInstance \Url */
             $urlInstance = $urlObject['object'];
@@ -546,8 +546,16 @@ class Profile
             }
         }
 
-        $query->where($this->getColumnNameWithAlias('segment_part_1'), '', '!=');
-        $query->whereRaw($this->getColumnNameWithAlias('segment_part_1', true).' IS NOT NULL');
+        // sicherstellen, dass der Datensatz auch Werte in den zu bildenen Spalten für die Url hat
+        // $query->where($this->getColumnNameWithAlias('segment_part_1'), '', '!=');
+        // $query->whereRaw($this->getColumnNameWithAlias('segment_part_1', true).' IS NOT NULL');
+        $whereRawSegmentParts = [];
+        for ($index = 1; $index <= self::SEGMENT_PART_COUNT; ++$index) {
+            if ($this->getColumnName('segment_part_'.$index) != '') {
+                $whereRawSegmentParts[] = $this->getColumnNameWithAlias('segment_part_'.$index).' != "" AND '.$this->getColumnNameWithAlias('segment_part_'.$index, true).' IS NOT NULL';
+            }
+        }
+        $query->whereRaw('('.implode(' OR ', $whereRawSegmentParts).')');
 
         if ($this->hasRestrictions()) {
             $where = [];
