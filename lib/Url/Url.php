@@ -12,13 +12,10 @@
 namespace Url;
 
 use Riimu\Kit\UrlParser\Uri;
-use Riimu\Kit\UrlParser\UriParser;
 use Url\Rewriter\Rewriter;
 
 class Url
 {
-    const TABLE_NAME = 'url_generator_url';
-
     public $uri;
 
     protected $handleRewriterSuffix = false;
@@ -218,10 +215,10 @@ class Url
         );
     }
 
-    public static function parse($url)
-    {
-        return new self($url);
-    }
+    // public static function parse($url)
+    // {
+    //     return new self($url);
+    // }
 
     protected function modifyPathSegments(array $arrayA, array $arrayB)
     {
@@ -255,5 +252,13 @@ class Url
             $sick[$index] = self::$rewriter->normalize($value);
         }
         return $sick;
+    }
+
+    /**
+     * @return null|UrlManager
+     */
+    public static function resolveCurrent()
+    {
+        return UrlManager::resolveUrl(self::getCurrent());
     }
 }
