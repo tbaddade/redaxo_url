@@ -10,6 +10,7 @@
  */
 
 use Url\Profile;
+use Url\Url;
 use Url\UrlManagerSql;
 
 $id = rex_request('id', 'int');
