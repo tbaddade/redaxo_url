@@ -9,6 +9,7 @@
  * file that was distributed with this source code.
  */
 
+use Url\Cache;
 use Url\Database;
 use Url\Generator;
 use Url\Profile;
@@ -16,6 +17,11 @@ use Url\Url;
 
 $id = rex_request('id', 'int');
 $func = rex_request('func', 'string');
+$action = rex_request('action', 'string');
+
+if ($action == 'cache') {
+    Cache::deleteProfiles();
+}
 
 $a = [];
 
@@ -29,10 +35,12 @@ if (!function_exists('url_generate_column_article')) {
         if ($a instanceof rex_article) {
             $return = $a->getName();
             $return .= ' [';
-            $return .= '<a href="'.rex_url::backendPage('/content/edit', ['category_id' => $a->getCategoryId(), 'article_id' => $a->getId(), 'clang' => $a->getClang(), 'mode' => 'edit']).'">Backend</a>';
+            $return .= '<a href="'.rex_url::backendPage('/content/edit', ['category_id' => $a->getCategoryId(), 'article_id' => $a->getId(), 'clang' => $a->getClangId(), 'mode' => 'edit']).'">Backend</a>';
             $return .= ' | ';
             $return .= '<a href="'.rex_getUrl($list->getValue('article_id'), $list->getValue('clang_id')).'">Frontend</a>';
             $return .= ']';
+
+            $return .= '<div><small><b>Domain: </b>'.\rex_yrewrite::getDomainByArticleId($a->getId(), $a->getClangId()).'</small></div>';
 
             $tree = $a->getParentTree();
 
@@ -44,7 +52,7 @@ if (!function_exists('url_generate_column_article')) {
             foreach ($tree as $object) {
                 $levels[] = $object->getName();
             }
-            $return .= '<div class="url-path"><small><b>Pfad: </b>'.implode(' : ', $levels).'</small></div>';
+            $return .= '<div><small><b>Pfad: </b>'.implode(' : ', $levels).'</small></div>';
         }
         return $return;
     }
@@ -170,13 +178,13 @@ if ($func == '') {
     //$list->removeColumn('clang_id');
 
     $list->setColumnLabel('article_id', $this->i18n('url_generator_article'));
-    //$list->setColumnFormat('article_id', 'custom', 'url_generate_column_article');
+    $list->setColumnFormat('article_id', 'custom', 'url_generate_column_article');
 
     //$list->addColumn('data', '');
     //$list->setColumnLabel('data', $this->i18n('url_generator_data'));
     //$list->setColumnFormat('data', 'custom', 'url_generate_column_data');
 
-    $list->addColumn($this->i18n('function'), $this->i18n('edit'));
+    $list->addColumn($this->i18n('function'), '<i class="rex-icon rex-icon-edit"></i> '.$this->i18n('edit'));
     $list->setColumnLayout($this->i18n('function'), ['<th class="rex-table-action" colspan="2">###VALUE###</th>', '<td class="rex-table-action">###VALUE###</td>']);
     $list->setColumnParams($this->i18n('function'), ['func' => 'edit', 'id' => '###id###']);
 
@@ -192,8 +200,8 @@ if ($func == '') {
     $title = $func == 'edit' ? $this->i18n('edit') : $this->i18n('add');
 
     $form = rex_form::factory(rex::getTable('url_generator_profile'), '', 'id = '.$id, 'post', false);
-
     $form->addParam('id', $id);
+    $form->addParam('action', 'cache');
     $form->setApplyUrl(rex_url::currentBackendPage());
     $form->setEditMode($func == 'edit');
 
@@ -347,11 +355,11 @@ if ($func == '') {
                 $select->addOption($this->i18n('url_generator_no_clang_id'), '');
                 $select->addOptions($options, true);
             } else {
-                $f->setFooter('</div>');
 
                 $type = 'hidden';
                 $name = 'column_clang_id';
                 $f = $fieldContainer->addGroupedField($group, $type, $name, '');
+                $f->setFooter('</div>');
             }
 
             for ($i = 1; $i <= Profile::RESTRICTION_COUNT; ++$i) {
