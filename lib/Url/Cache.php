@@ -24,6 +24,7 @@ class Cache
         $sql->setQuery('SELECT * FROM '.\rex::getTable(Profile::TABLE_NAME).' ORDER BY `table_name`');
 
         $profiles = [];
+        /* @var $profile \rex_sql */
         foreach ($sql as $profile) {
             $id = $profile->getValue('id');
             foreach ($sql->getFieldnames() as $fieldName) {
