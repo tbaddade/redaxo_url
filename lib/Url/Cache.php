@@ -14,7 +14,7 @@ namespace Url;
 class Cache
 {
     /**
-     * Schreibt Eigenschaften der Profile in die Datei profiles.clang.
+     * Schreibt Eigenschaften der Profile in die Datei profiles.cache.
      *
      * @throws \rex_exception
      */
@@ -138,7 +138,13 @@ class Cache
 
         $file = \rex_path::addonCache('url', 'profiles.cache');
         if (\rex_file::putCache($file, $profiles) === false) {
-            throw new \rex_exception('Clang cache file could not be generated');
+            throw new \rex_exception('Url Profile cache file could not be generated');
         }
+    }
+
+    public static function deleteProfiles()
+    {
+        $file = \rex_path::addonCache('url', 'profiles.cache');
+        \rex_file::delete($file);
     }
 }
