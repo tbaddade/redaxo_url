@@ -352,7 +352,7 @@ class Profile
         }
         // dump($urlObjects);
         foreach ($urlObjects as $urlObject) {
-            /* @var $urlInstance \Url */
+            /* @var $urlInstance \Url\Url */
             $urlInstance = $urlObject['object'];
 
             $urlObject['clang_id'] = $clangId;
@@ -406,7 +406,7 @@ class Profile
      */
     public function getUrls()
     {
-        return UrlManager::getUrlsByProfileId($this->getId());
+        return UrlManagerSql::getByProfileId($this->getId());
     }
 
     /**

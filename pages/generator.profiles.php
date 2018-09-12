@@ -14,6 +14,7 @@ use Url\Database;
 use Url\Generator;
 use Url\Profile;
 use Url\Url;
+use Url\UrlManager;
 
 $id = rex_request('id', 'int');
 $func = rex_request('func', 'string');

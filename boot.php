@@ -9,21 +9,17 @@
  * file that was distributed with this source code.
  */
 
-use Url\Cache;
 use Url\ExtensionPointManager;
 use Url\Generator;
 use Url\Seo;
-
-class_alias('Url\Url', 'Url');
-class_alias('Url\UrlManager', 'UrlManager');
-class_alias('Url\UrlManagerSql', 'UrlManagerSql');
-class_alias('Url\Seo', 'UrlSeo');
+use Url\Url;
+use Url\UrlManager;
 
 \Url\Generator::boot();
 if (null !== Url::getRewriter()) {
     Url::getRewriter()->articleIdNotFound();
 }
-Cache::generateProfiles();
+
 rex_extension::register('PACKAGES_INCLUDED', function (\rex_extension_point $epPackagesIncluded) {
     // if anything changes -> refresh PathFile
     if (rex::isBackend()) {
