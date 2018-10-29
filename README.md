@@ -5,7 +5,7 @@ Url AddOn
 1. [Beispiel: News AddOn](#beispiel-news-addon)
 1. [URL-Pathlist neu generieren](#url-pathlist-generieren)
 1. [Installation](#installation)
-1. [unterstützte Rewriter](#unterstützte-rewriter)
+1. [unterstützte Rewriter](#unterstuetzte-rewriter)
 1. [SEO-Metadaten](#seo-metadaten)
 
 ### Beschreibung
@@ -90,13 +90,13 @@ UrlGenerator::generatePathFile([]);
 * AddOn installieren und aktivieren
 
 
-<a id="url-unterstützte-rewriter"></a>
+<a id="unterstuetzte-rewriter"></a>
 ### unterstützte Rewriter
 --------------------------------------------------------------------------------
 * [yrewrite](https://github.com/yakamara/redaxo_yrewrite)
 
 
-<a id="url-unterstützte-rewriter"></a>
+<a id="seo-metadaten"></a>
 ### SEO-Metadaten
 --------------------------------------------------------------------------------
 
