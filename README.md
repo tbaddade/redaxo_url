@@ -6,6 +6,7 @@ Url AddOn
 1. [URL-Pathlist neu generieren](#url-pathlist-generieren)
 1. [Installation](#installation)
 1. [unterstützte Rewriter](#unterstützte-rewriter)
+1. [SEO-Metadaten](#seo-metadaten)
 
 ### Beschreibung
 --------------------------------------------------------------------------------
@@ -82,13 +83,30 @@ Wenn Datenbanktabellen außerhalb des YForm-Table-Managers befüllt werden, grei
 UrlGenerator::generatePathFile([]);
 ```
 
-
+<a id="installation"></a>
 ### Installation
 --------------------------------------------------------------------------------
 * Via Install AddOn im Backend herunterladen
 * AddOn installieren und aktivieren
 
 
+<a id="url-unterstützte-rewriter"></a>
 ### unterstützte Rewriter
 --------------------------------------------------------------------------------
 * [yrewrite](https://github.com/yakamara/redaxo_yrewrite)
+
+
+<a id="url-unterstützte-rewriter"></a>
+### SEO-Metadaten
+--------------------------------------------------------------------------------
+
+Für die ordnungsgemäße Ausgabe müssen die YRewrite-Tags für Titel, Beschreibung u.a. durch die SEO-Klasse des URL-Addons ausgetauscht werden:
+
+```
+$urlSeo = new UrlSeo();
+    echo $urlSeo->getTitleTag().PHP_EOL;
+    echo $urlSeo->getDescriptionTag().PHP_EOL;
+    echo $urlSeo->getRobotsTag().PHP_EOL;
+    echo $urlSeo->getHreflangTags().PHP_EOL;
+    echo $urlSeo->getCanonicalUrlTag().PHP_EOL;
+```
