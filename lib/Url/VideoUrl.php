@@ -18,6 +18,7 @@ class VideoUrl extends Url
     public $autoPlay = false;
     public $fullscreen = true;
     public $related = false;
+    public $urlParams = [];
 
     /**
      * Returns a embed code.
@@ -138,6 +139,7 @@ class VideoUrl extends Url
         if ($this->autoPlay) {
             $params['autoplay'] = '1';
         }
+        $params = array_merge($params, $this->urlParams);
         $params = count($params) ? '?'.\rex_string::buildQuery($params) : '';
 
         return 'https://player.vimeo.com/video/'.$this->getVimeoId().$params;
@@ -182,7 +184,7 @@ class VideoUrl extends Url
         }
 
         $params['rel'] = $this->related ? '1' : '0';
-
+        $params = array_merge($params, $this->urlParams);
         $params = count($params) ? '?'.\rex_string::buildQuery($params) : '';
 
         return 'https://youtube.com/embed/'.$this->getYoutubeId().$params;
@@ -277,6 +279,16 @@ class VideoUrl extends Url
     public function setRelated($related = true)
     {
         $this->related = $related;
+    }
+
+
+    /**
+     * @param $key string
+     * @param $value bool|string
+     */
+    public function addUrlParam($key, $value)
+    {
+        $this->urlParams[$key] = $value;
     }
 
 }
