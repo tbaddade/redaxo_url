@@ -16,7 +16,12 @@ page:
                     title: 'translate:url_generator_profiles'
                 urls:
                     title: 'translate:url_generator_urls_generated'
-
+        help: 
+            title: translate:url_help
+            pjax: false
+            subPath: README.md
+            itemclass: pull-right 
+            
 requires:
     redaxo: ^5.4.0
     packages:
