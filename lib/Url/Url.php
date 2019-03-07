@@ -215,6 +215,16 @@ class Url
         );
     }
 
+    /**
+     * @throws \rex_sql_exception
+     *
+     * @return null|UrlManager
+     */
+    public static function resolveCurrent()
+    {
+        return UrlManager::resolveUrl(self::getCurrent());
+    }
+
     // public static function parse($url)
     // {
     //     return new self($url);
@@ -223,6 +233,8 @@ class Url
     protected function modifyPathSegments(array $arrayA, array $arrayB)
     {
         $this->uri = $this->uri->withPathSegments(array_merge($arrayA, $arrayB));
+        // Path neu setzen, da der Path den / am Anfang durch withPathSegments verloren hat
+        $this->uri = $this->uri->withPath('/'.$this->uri->getPath());
         return $this;
     }
 
@@ -252,13 +264,5 @@ class Url
             $sick[$index] = self::$rewriter->normalize($value);
         }
         return $sick;
-    }
-
-    /**
-     * @return null|UrlManager
-     */
-    public static function resolveCurrent()
-    {
-        return UrlManager::resolveUrl(self::getCurrent());
     }
 }
