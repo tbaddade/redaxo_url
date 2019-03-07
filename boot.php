@@ -11,6 +11,7 @@
 
 use Url\ExtensionPointManager;
 use Url\Generator;
+use Url\Profile;
 use Url\Seo;
 use Url\Url;
 use Url\UrlManager;
@@ -22,7 +23,7 @@ if (null !== Url::getRewriter()) {
 
 rex_extension::register('PACKAGES_INCLUDED', function (\rex_extension_point $epPackagesIncluded) {
     // if anything changes -> refresh PathFile
-    if (rex::isBackend()) {
+    if (rex::isBackend() && rex::getUser()) {
         $extensionPoints = [
             'ART_ADDED', 'ART_UPDATED', 'ART_DELETED', 'ART_STATUS',
             'CAT_ADDED', 'CAT_UPDATED', 'CAT_DELETED', 'CAT_STATUS',
@@ -38,6 +39,33 @@ rex_extension::register('PACKAGES_INCLUDED', function (\rex_extension_point $epP
                 $generator = new Generator($manager);
                 $generator->execute();
             }, rex_extension::LATE);
+        }
+
+        $profileArticleIds = Profile::getAllArticleIds();
+
+        // Profilartikel nicht löschen
+        // Manipulation des löschen Links
+        rex_extension::register('OUTPUT_FILTER', function (\rex_extension_point $ep) use($profileArticleIds) {
+            $subject = $ep->getSubject();
+
+            foreach ($profileArticleIds as $id) {
+                $regexp = '@<a href="index\.php\?page=structure.*?category-id='.$id.'.*?rex-api-call=category_delete.*?>(.*?)<\/a>@';
+                if (preg_match($regexp, $subject, $matches)) {
+                    $subject = str_replace($matches[0], '<span class="text-muted">'.$matches[1].'</span>', $subject);
+                }
+            }
+            return $subject;
+        });
+
+        // Profilartikel - löschen nicht erlauben
+        $rexApiCall = rex_request(rex_api_function::REQ_CALL_PARAM, 'string', '');
+        if (($rexApiCall == 'category_delete' && in_array(rex_request('category-id', 'int'), $profileArticleIds)) ||
+            ($rexApiCall == 'article_delete' && in_array(rex_request('article_id', 'int'), $profileArticleIds))) {
+            $_REQUEST[rex_api_function::REQ_CALL_PARAM] = '';
+            rex_extension::register('PAGE_TITLE_SHOWN', function (\rex_extension_point $ep) {
+                $subject = $ep->getSubject();
+                $ep->setSubject(rex_view::error(rex_i18n::msg('url_generator_rex_api_delete')).$subject);
+            });
         }
     }
 

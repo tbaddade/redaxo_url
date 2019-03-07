@@ -72,6 +72,7 @@ url_generator_table_not_selected = keine Tabelle ausgewählt
 url_generator_table_relation_legend = Relationstabelle {0}
 url_generator_url = Url
 url_generator_url_notice = Spalten aus der die Url erzeugt wird
+url_generator_rex_api_delete = Kategorie oder Artikel konnte nicht gelöscht werden. Wird noch vom Url-AddOn genutzt
 
 
 
