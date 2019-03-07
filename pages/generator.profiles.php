@@ -356,7 +356,6 @@ if ($func == '') {
                 $select->addOption($this->i18n('url_generator_no_clang_id'), '');
                 $select->addOptions($options, true);
             } else {
-
                 $type = 'hidden';
                 $name = 'column_clang_id';
                 $f = $fieldContainer->addGroupedField($group, $type, $name, '');

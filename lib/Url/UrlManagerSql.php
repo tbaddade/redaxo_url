@@ -103,6 +103,8 @@ class UrlManagerSql
 
     /**
      * @param string $value
+     *
+     * @throws \Exception
      */
     public function setLastmod($value = null)
     {
@@ -119,6 +121,8 @@ class UrlManagerSql
     }
 
     /**
+     * @throws \rex_sql_exception
+     *
      * @return array
      */
     public function fetch()
@@ -142,6 +146,9 @@ class UrlManagerSql
         return $success;
     }
 
+    /**
+     * @throws \rex_sql_exception
+     */
     public static function deleteAll()
     {
         $sql = self::factory();
@@ -150,6 +157,8 @@ class UrlManagerSql
 
     /**
      * @param int $profileId
+     *
+     * @throws \rex_sql_exception
      */
     public static function deleteByProfileId($profileId)
     {
@@ -161,6 +170,8 @@ class UrlManagerSql
     /**
      * @param int $profileId
      * @param int $datasetId
+     *
+     * @throws \rex_sql_exception
      */
     public static function deleteByProfileIdAndDatasetId($profileId, $datasetId)
     {
@@ -172,6 +183,8 @@ class UrlManagerSql
     /**
      * @param int $profileId
      *
+     * @throws \rex_sql_exception
+     *
      * @return array
      */
     public static function getByProfileId($profileId)
@@ -181,8 +194,10 @@ class UrlManagerSql
     }
 
     /**
-     * @param UrlManager    $manager
-     * @param array         $clangIds
+     * @param UrlManager $manager
+     * @param array      $clangIds
+     *
+     * @throws \rex_sql_exception
      *
      * @return array
      */
@@ -209,6 +224,8 @@ class UrlManagerSql
      * @param int     $datasetId
      * @param int     $clangId
      *
+     * @throws \rex_sql_exception
+     *
      * @return array
      */
     public static function getOrigin(Profile $profile, $datasetId, $clangId)
@@ -222,6 +239,8 @@ class UrlManagerSql
      * @param int     $datasetId
      * @param int     $clangId
      *
+     * @throws \rex_sql_exception
+     *
      * @return array
      */
     public static function getOriginAndExpanded(Profile $profile, $datasetId, $clangId)
@@ -232,6 +251,8 @@ class UrlManagerSql
 
     /**
      * @param Url $url
+     *
+     * @throws \rex_sql_exception
      *
      * @return array
      */
