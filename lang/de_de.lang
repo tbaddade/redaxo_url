@@ -70,6 +70,7 @@ url_generator_table_error = Tabelle wählen
 url_generator_table_legend = Aus welcher Tabelle werden die Urls erstellt
 url_generator_table_not_selected = keine Tabelle ausgewählt
 url_generator_table_relation_legend = Relationstabelle {0}
+url_generator_url = Url
 url_generator_url_notice = Spalten aus der die Url erzeugt wird
 
 

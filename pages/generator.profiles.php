@@ -29,19 +29,14 @@ $a = [];
 if (!function_exists('url_generate_column_article')) {
     function url_generate_column_article($params)
     {
+        /** @var rex_list $list */
         $list = $params['list'];
         $return = '';
 
         $a = rex_article::get($list->getValue('article_id'), $list->getValue('clang_id'));
         if ($a instanceof rex_article) {
-            $return = $a->getName();
-            $return .= ' [';
-            $return .= '<a href="'.rex_url::backendPage('/content/edit', ['category_id' => $a->getCategoryId(), 'article_id' => $a->getId(), 'clang' => $a->getClangId(), 'mode' => 'edit']).'">Backend</a>';
-            $return .= ' | ';
-            $return .= '<a href="'.rex_getUrl($list->getValue('article_id'), $list->getValue('clang_id')).'">Frontend</a>';
-            $return .= ']';
-
-            $return .= '<div><small><b>Domain: </b>'.\rex_yrewrite::getDomainByArticleId($a->getId(), $a->getClangId()).'</small></div>';
+            $return = '<p>'.$a->getName().' <small>[<a href="'.rex_url::backendPage('/content/edit', ['category_id' => $a->getCategoryId(), 'article_id' => $a->getId(), 'clang' => $a->getClangId(), 'mode' => 'edit']).'">Backend</a> | <a href="'.rex_getUrl($list->getValue('article_id'), $list->getValue('clang_id')).'">Frontend</a>]</small></p>';
+            $return .= '<p><small><b>Domain: </b>'.\rex_yrewrite::getDomainByArticleId($a->getId(), $a->getClangId()).'</small></p>';
 
             $tree = $a->getParentTree();
 
@@ -53,7 +48,7 @@ if (!function_exists('url_generate_column_article')) {
             foreach ($tree as $object) {
                 $levels[] = $object->getName();
             }
-            $return .= '<div><small><b>Pfad: </b>'.implode(' : ', $levels).'</small></div>';
+            $return .= '<p><small><b>Pfad: </b>'.implode(' : ', $levels).'</small></p>';
         }
         return $return;
     }
@@ -62,108 +57,45 @@ if (!function_exists('url_generate_column_article')) {
 if (!function_exists('url_generate_column_data')) {
     function url_generate_column_data($params)
     {
+        /** @var rex_list $list */
         $list = $params['list'];
         $return = '';
-        $table = $list->getValue('table');
-        $table_parameters = json_decode($list->getValue('table_parameters'), true);
 
-        $search = [];
-        $replace = [];
-        $dbconfigs = rex::getProperty('db');
-        foreach ($dbconfigs as $DBID => $dbconfig) {
-            $search[] = Generator::mergeDatabaseAndTable($DBID, '');
-            $replace[] = $dbconfig['name'].'.';
-        }
-        $table_out = str_replace($search, $replace, $table);
+        $infoList = [];
+        $profile = Profile::get($list->getValue('id'));
+        $infoList[] = [rex_i18n::msg('url_generator_table'), $profile->getTableName()];
 
-        $url = Generator::stripRewriterSuffix(rex_getUrl($list->getValue('article_id'), $list->getValue('clang_id'))).'/';
-        $url .= ($table_parameters[$table.'_field_1'] != '') ? '<code>'.$table_parameters[$table.'_field_1'].'</code>-' : '';
-        $url .= ($table_parameters[$table.'_field_2'] != '') ? '<code>'.$table_parameters[$table.'_field_2'].'</code>-' : '';
-        $url .= ($table_parameters[$table.'_field_3'] != '') ? '<code>'.$table_parameters[$table.'_field_3'].'</code>' : '';
-        $url = rtrim($url, '-');
-        $url = Generator::appendRewriterSuffix($url);
+        $infoList[] = [rex_i18n::msg('url_generator_namespace'), $profile->getNamespace()];
 
-        $url_paths = '';
-        if ($table_parameters[$table.'_path_names'] != '') {
-            $paths = explode("\n", trim($table_parameters[$table.'_path_names']));
-            if (count($paths)) {
-                $url_paths .= '<b><small>'.rex_i18n::msg('url_generate_path_own').'</small></b><br />';
-                foreach ($paths as $path) {
-                    $pathNameParts = explode('|', $path);
-                    $pathNameForUrl = trim($pathNameParts[0]);
-                    $pathSegment = str_replace(
-                                        Generator::$pathSlashPlaceholder, '/',
-                                        Url::getRewriter()->normalize(
-                                            str_replace(
-                                                '/', Generator::$pathSlashPlaceholder,
-                                                $pathNameForUrl))
-                                        );
-                    $url_paths .= Generator::buildUrl($url, [$pathSegment]).'<br />';
-                }
+        $concatSegmentParts = '';
+        for ($index = 1; $index <= Profile::SEGMENT_PART_COUNT; ++$index) {
+            if ($profile->getColumnName('segment_part_'.$index) != '') {
+                $concatSegmentParts .= $profile->getSegmentPartSeparators()[$index] ?? '';
+                $concatSegmentParts .= '<code>'.$profile->getColumnName('segment_part_'.$index).'</code>';
             }
         }
-        if ($table_parameters[$table.'_path_categories'] == '1') {
-            $articleCategory = \rex_category::get($list->getValue('article_id'), $list->getValue('clang_id'));
-            if ($articleCategory instanceof \rex_category) {
-                $categories = $articleCategory->getChildren();
-                if (count($categories)) {
-                    $url_paths .= '<b><small>'.rex_i18n::msg('url_generate_path_categories').'</small></b><br />';
-                    foreach ($categories as $category) {
-                        $url_paths .= Generator::buildUrl($url, [trim($category->getName())]).'<br />';
-                    }
-                }
-            }
-        }
-        if ($table_parameters[$table.'_relation_field'] != '') {
-            $url_paths .= '<b><small>'.rex_i18n::msg('url_generator_path_relation').'</small></b><br />';
-            $url_paths .= '<b><small>'.rex_i18n::msg('url_generator_path_relation_table').'</small>:</b> '.str_replace($search, $replace, str_replace('relation_', '', $list->getValue('relation_table'))).'<br />';
-            //$url_paths .= '<b><small>' . rex_i18n::msg('url_generate_path_relation_url_field') . '</small>:</b> ' . str_replace($search, $replace, str_replace('relation_', '', $list->getValue('relation_table'))) . '<br />';
-        }
 
-        $return .= '<dl class="url-dl">';
-        $return .= '<dt>'.rex_i18n::msg('url_table').': </dt><dd><code>'.$table_out.'</code></dd>';
-        $return .= '<dt>'.rex_i18n::msg('url').': </dt><dd>'.$url.'</dd>';
-        $return .= '<dt>'.rex_i18n::msg('url_id').': </dt><dd><code>'.$table_parameters[$table.'_id'].'</code></dd>';
 
-        if ($table_parameters[$table.'_url_param_key'] != '') {
-            $return .= '<dt>'.rex_i18n::msg('url_generate_url_param_key_short').': </dt><dd><code>rex_getUrl(\'\', \'\', [\'<b>'.$table_parameters[$table.'_url_param_key'].'</b>\' => {n}])</code></dd>';
-        } else {
-            $return .= '<dt>'.rex_i18n::msg('url_generate_url_param_key_short').': </dt><dd><code>rex_getUrl('.$list->getValue('article_id').', '.$list->getValue('clang_id').', [\'id\' => {n}])</code></dd>';
+        $url = new Url(Url::getRewriter()->getFullUrl($list->getValue('article_id'), $list->getValue('clang_id')));
+        $url->withScheme('');
+        $infoList[] = [rex_i18n::msg('url_generator_url'), $url->getPath().$concatSegmentParts.Url::getRewriter()->getSuffix()];
+
+        $infoList[] = [rex_i18n::msg('url_generator_identify_record'), '<code>'.$profile->getColumnName('id').'</code>' . ($profile->getColumnName('clang_id') == '' ? '' : ' - <code>'.$profile->getColumnName('clang_id').'</code>')];
+
+        $infoList[] = [rex_i18n::msg('url_generator_namespace_short'), '<code>rex_getUrl(\'\', \'\', [\''.$profile->getNamespace().'\' => {id}])</code><br /><code>->getUrl([\''.$profile->getNamespace().'\' => {id}])</code>'];
+
+        $return = '<dl class="dl-horizontal">';
+        foreach ($infoList as $item) {
+            $return .= '<dt><small>'.$item[0].'</small></dt><dd>'.$item[1].'</dd>';
         }
-
-        $field = $table_parameters[$table.'_restriction_field'];
-        $operator = $table_parameters[$table.'_restriction_operator'];
-        $value = $table_parameters[$table.'_restriction_value'];
-        if ($field != '') {
-            $return .= '<dt>'.rex_i18n::msg('url_generate_restriction').': </dt><dd><code>'.$field.$operator.$value.'</code></dd>';
-        }
-
-        $sitemapAdd = $table_parameters[$table.'_sitemap_add'];
-        if ($sitemapAdd == '1') {
-            $sitemapFrequency = $table_parameters[$table.'_sitemap_frequency'];
-            $sitemapPriority = $table_parameters[$table.'_sitemap_priority'];
-            $return .= '
-                <dt>'.rex_i18n::msg('url_generate_sitemap').': </dt>
-                <dd>
-                    '.rex_i18n::msg('yes').'<br />
-                    <small>'.rex_i18n::msg('url_generate_notice_sitemap_frequency').':</small> <code>'.$sitemapFrequency.'</code><br />
-                    <small>'.rex_i18n::msg('url_generate_notice_sitemap_priority').':</small> <code>'.$sitemapPriority.'</code>
-                </dd>';
-        }
-
-        if ($url_paths != '') {
-            $return .= '<dt>'.rex_i18n::msg('url_generate_path_names_short').': </dt><dd>'.$url_paths.'</dd>';
-        }
-
-        $return .= '</dl>';
+        $return .= '<dl>';
         return $return;
     }
 }
 if ($func == '') {
     $query = '  SELECT      `id`,
                             `article_id`,
-                            `clang_id`,
-                            `namespace`
+                            `clang_id`
                 FROM        '.rex::getTable('url_generator_profile');
 
     $list = rex_list::factory($query);
@@ -176,14 +108,14 @@ if ($func == '') {
 
     $list->setColumnLabel('id', rex_i18n::msg('id'));
     $list->setColumnLayout('id', ['<th class="rex-table-id">###VALUE###</th>', '<td class="rex-table-id" data-title="'.rex_i18n::msg('id').'">###VALUE###</td>']);
-    //$list->removeColumn('clang_id');
+    $list->removeColumn('clang_id');
 
     $list->setColumnLabel('article_id', $this->i18n('url_generator_article'));
     $list->setColumnFormat('article_id', 'custom', 'url_generate_column_article');
 
-    //$list->addColumn('data', '');
-    //$list->setColumnLabel('data', $this->i18n('url_generator_data'));
-    //$list->setColumnFormat('data', 'custom', 'url_generate_column_data');
+    $list->addColumn('data', '');
+    $list->setColumnLabel('data', $this->i18n('url_generator_data'));
+    $list->setColumnFormat('data', 'custom', 'url_generate_column_data');
 
     $list->addColumn($this->i18n('function'), '<i class="rex-icon rex-icon-edit"></i> '.$this->i18n('edit'));
     $list->setColumnLayout($this->i18n('function'), ['<th class="rex-table-action" colspan="2">###VALUE###</th>', '<td class="rex-table-action">###VALUE###</td>']);
@@ -1118,97 +1050,3 @@ if ($func == 'add' || $func == 'edit') {
         font-size: 150%;
     }
 </style>
-
-<!--<style>-->
-<!--    .form-group > dd .rex-select-style select.form-control {-->
-<!--        margin-top: 0;-->
-<!--        margin-bottom: 0;-->
-<!--        padding-top: 7px;-->
-<!--        padding-bottom: 7px;-->
-<!--    }-->
-<!--    .url-container .input-group,-->
-<!--    .url-container .rex-select-style,-->
-<!--    .url-container .url-grid-item .form-control {-->
-<!--        width: 300px;-->
-<!--    }-->
-<!--    .url-container .input-group .form-control {-->
-<!--        width: 100%;-->
-<!--    }-->
-<!--    .url-container .help-block {-->
-<!--        color: #324050;-->
-<!--        font-size: 90%;-->
-<!--    }-->
-<!--    .url-container .url-grid-item-small .rex-select-style,-->
-<!--    .url-container .url-grid-item-small .rex-form-group,-->
-<!--    .url-container .url-grid-item-small .form-control {-->
-<!--        width: 135px;-->
-<!--    }-->
-<!--    .url-grid {-->
-<!--        margin-left: -15px;-->
-<!--        margin-right: -15px;-->
-<!--    }-->
-<!--    .url-grid:before,-->
-<!--    .url-grid:after {-->
-<!--        content: '';-->
-<!--        display: table;-->
-<!--    }-->
-<!--    .url-grid:after {-->
-<!--        clear: both;-->
-<!--    }-->
-<!--    .url-grid > .help-block {-->
-<!--        clear: both;-->
-<!--        position: relative;-->
-<!--        top: -10px;-->
-<!--    }-->
-<!--    .url-grid-item {-->
-<!--        position: relative;-->
-<!--        float: left;-->
-<!--        min-height: 1px;-->
-<!--        padding-left: 15px;-->
-<!--        padding-right: 15px;-->
-<!--    }-->
-<!--    .url-grid-item > .rex-form-group {-->
-<!--        display: block;-->
-<!--        width: auto;-->
-<!--    }-->
-<!--    .url-grid-item > .rex-form-group > * {-->
-<!--        display: block;-->
-<!--    }-->
-<!--    .url-grid-item > .rex-form-group > dd:first-child {-->
-<!--        padding-left: 0;-->
-<!--    }-->
-<!--    .url-grid-item + .url-grid-item > .rex-form-group > dt {-->
-<!--        width: 330px;-->
-<!--        text-align: right;-->
-<!--    }-->
-<!--    @media (min-width: 992px) {-->
-<!--        .url-grid > .help-block {-->
-<!--            padding-left: 195px-->
-<!--        }-->
-<!--    }-->
-<!--    @media (min-width: 1200px) {-->
-<!--        .url-grid > .help-block {-->
-<!--            padding-left: 225px-->
-<!--        }-->
-<!--    }-->
-<!--    @media (min-width: 1400px) {-->
-<!--        .url-grid > .help-block {-->
-<!--            padding-left: 315px-->
-<!--        }-->
-<!--    }-->
-<!---->
-<!--    .url-dl > dt {-->
-<!--        clear: left;-->
-<!--        float: left;-->
-<!--        margin-bottom: 4px;-->
-<!--        font-size: 90%;-->
-<!--        font-weight: 700;-->
-<!--    }-->
-<!--    .url-dl > dd {-->
-<!--        margin-left: 110px;-->
-<!--        margin-bottom: 4px;-->
-<!--    }-->
-<!--    .url-hr {-->
-<!--        border-top-color: #c1c9d4;-->
-<!--    }-->
-<!--</style>-->
