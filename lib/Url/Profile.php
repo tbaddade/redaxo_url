@@ -441,6 +441,21 @@ class Profile
     }
 
     /**
+     * Returns an array of all profile ids.
+     *
+     * @return array
+     */
+    public static function getAllArticleIds()
+    {
+        self::checkCache();
+
+        return array_unique(array_map(function (self $profile) {
+                return $profile->getArticleId();
+            }, self::$profiles)
+        );
+    }
+
+    /**
      * Returns an array of all profiles for the given articleId and clangId.
      *
      * @param int $articleId
