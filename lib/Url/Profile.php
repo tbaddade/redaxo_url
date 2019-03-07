@@ -134,6 +134,11 @@ class Profile
         return $this->clang_id;
     }
 
+    public function getArticleUrl()
+    {
+        return new Url(Url::getRewriter()->getFullUrl($this->getArticleId(), $this->getArticleClangId()));
+    }
+
     public function getId()
     {
         return (int) $this->id;
@@ -591,6 +596,8 @@ class Profile
 
     /**
      * Loads the cache if not already loaded.
+     *
+     * @throws \rex_exception
      */
     private static function checkCache()
     {
