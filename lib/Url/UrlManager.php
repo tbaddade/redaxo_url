@@ -40,6 +40,8 @@ class UrlManager
 
     /**
      * @todo ambiguous fieldnames with relations
+     *
+     * @throws \rex_sql_exception
      */
     public function getDataset()
     {
@@ -94,6 +96,8 @@ class UrlManager
     /**
      * @param $clangIds
      *
+     * @throws \rex_sql_exception
+     *
      * @return null|UrlManager[]
      */
     public function getHreflang($clangIds)
@@ -137,21 +141,43 @@ class UrlManager
         return $this->values['seo'];
     }
 
+    /**
+     * @throws \rex_exception
+     *
+     * @return null|mixed
+     */
     public function getSeoDescription()
     {
         return $this->getSeoValue('description');
     }
 
+    /**
+     * @throws \rex_exception
+     *
+     * @return null|mixed
+     */
     public function getSeoImage()
     {
         return $this->getSeoValue('image');
     }
 
+    /**
+     * @throws \rex_exception
+     *
+     * @return null|mixed
+     */
     public function getSeoTitle()
     {
         return $this->getSeoValue('title');
     }
 
+    /**
+     * @param $key
+     *
+     * @throws \rex_exception
+     *
+     * @return null|mixed
+     */
     public function getSeoValue($key)
     {
         if (empty($key)) {
@@ -208,6 +234,8 @@ class UrlManager
     /**
      * @param int $profileId
      *
+     * @throws \rex_sql_exception
+     *
      * @return null|UrlManager[]
      */
     public static function getByProfileId($profileId)
@@ -228,12 +256,27 @@ class UrlManager
     /**
      * @param Url $url
      *
+     * @throws \rex_sql_exception
+     *
      * @return null|UrlManager
      */
     public static function resolveUrl(Url $url)
     {
-        $items = UrlManagerSql::getByUrl($url);
+        // Url nur auflösen (DB-Abfrage), wenn der erste Teil des Url-Pfades auch in einem Profil zu finden ist
+        // Prüft ob der erste Teil der übergebenen Url in einem Profil zu finden ist.
+        $resolve = false;
+        foreach (Profile::getAll() as $profile) {
+            $articlePath = $profile->getArticleUrl()->getPath();
+            if ($articlePath == substr($url->getPath(), 0, strlen($articlePath))) {
+                $resolve = true;
+                break;
+            }
+        }
+        if (!$resolve) {
+            return null;
+        }
 
+        $items = UrlManagerSql::getByUrl($url);
         if (count($items) != 1) {
             return null;
         }
@@ -243,22 +286,26 @@ class UrlManager
     }
 
     /**
+     * @throws \rex_sql_exception
+     *
      * @return null|array
      */
     public static function getArticleParams()
     {
-        $items = UrlManagerSql::getByUrl(Url::getCurrent());
-
-        if (count($items) != 1) {
+        $current = Url::getCurrent();
+        $instance = self::resolveUrl($current);
+        if (!$instance) {
             return null;
         }
-
-        $instance = new self($items[0]);
         return ['article_id' => $instance->getArticleId(), 'clang' => $instance->getClangId()];
     }
 
     /**
+     * rex_getUrl oder ->getUrl wurde aufgerufen.
+     *
      * @param \rex_extension_point $ep
+     *
+     * @throws \rex_sql_exception
      *
      * @return null|mixed|string
      */
@@ -283,6 +330,7 @@ class UrlManager
                 continue;
             }
             foreach ($profiles as $profile) {
+                // Prüfen ob der Url-Param in einem Profil hinterlegt wurde
                 if ($urlParamKey != $profile->getNamespace()) {
                     continue;
                 }
@@ -354,6 +402,8 @@ class UrlManager
      * @param Profile $profile
      * @param int     $datasetId
      * @param int     $clangId
+     *
+     * @throws \rex_sql_exception
      *
      * @return null|UrlManager
      */
