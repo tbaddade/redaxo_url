@@ -84,4 +84,4 @@ if ($func == '') {
 // echo '<br />';
 // echo rex_getUrl('', '2', ['news-id' => 3]);
 
-dump(Profile::getAll());
+//dump(Profile::getAll());
