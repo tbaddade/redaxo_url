@@ -4,7 +4,16 @@ Url - Changelog
 
 # Changelog
 
-Version 1.0.1 - 06.11.2017
+Version 2.0.0 - xx.xx.xxxx
+---------------------------------
+## Neu
+- Kompletter Umbau des Addons, sodass Urls jetzt in der Datenbank gespeichert werden
+
+## Änderungen
+- `URL_GENERATOR_PATH_CREATED` => `URL_MANAGER_PRE_SAVE`
+
+
+Version 1.0.1 - 06.11.2017`
 ---------------------------------
 ### Bugfixes
 - Hreflangs nur für aktive Sprache ausgeben (@DanielWeitenauer)
