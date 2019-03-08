@@ -103,6 +103,8 @@ class UrlManagerSql
 
     /**
      * @param string $value
+     *
+     * @throws \Exception
      */
     public function setLastmod($value = null)
     {
@@ -116,6 +118,16 @@ class UrlManagerSql
             $value = $datetime->getTimestamp();
         }
         $this->sql->setValue('lastmod', date(DATE_W3C, $value));
+    }
+
+    /**
+     * @throws \rex_sql_exception
+     *
+     * @return array
+     */
+    public function fetch()
+    {
+        return $this->sql->getArray();
     }
 
     /**
@@ -134,6 +146,9 @@ class UrlManagerSql
         return $success;
     }
 
+    /**
+     * @throws \rex_sql_exception
+     */
     public static function deleteAll()
     {
         $sql = self::factory();
@@ -142,6 +157,8 @@ class UrlManagerSql
 
     /**
      * @param int $profileId
+     *
+     * @throws \rex_sql_exception
      */
     public static function deleteByProfileId($profileId)
     {
@@ -152,7 +169,9 @@ class UrlManagerSql
 
     /**
      * @param int $profileId
-     * @param int     $datasetId
+     * @param int $datasetId
+     *
+     * @throws \rex_sql_exception
      */
     public static function deleteByProfileIdAndDatasetId($profileId, $datasetId)
     {
@@ -164,6 +183,8 @@ class UrlManagerSql
     /**
      * @param int $profileId
      *
+     * @throws \rex_sql_exception
+     *
      * @return array
      */
     public static function getByProfileId($profileId)
@@ -173,33 +194,26 @@ class UrlManagerSql
     }
 
     /**
-     * @param Profile $profile
-     * @param int     $datasetId
-     * @param int     $clangId
+     * @param UrlManager $manager
+     * @param array      $clangIds
+     *
+     * @throws \rex_sql_exception
      *
      * @return array
      */
-    public static function getUrlsForDataset(Profile $profile, $datasetId, $clangId)
-    {
-        $sql = self::factory();
-        return $sql->sql->getArray('SELECT * FROM '.\rex::getTable(self::TABLE_NAME).' WHERE `profile_id` = ? AND `data_id` = ? AND `clang_id` = ?', [$profile->getId(), $datasetId, $clangId]);
-    }
-
-    /**
-     * @param int   $datasetId
-     * @param int   $articleId
-     * @param array $clangIds
-     *
-     * @return array
-     */
-    public static function getHreflangUrlsForDataset($datasetId, $articleId, $clangIds)
+    public static function getHreflang(UrlManager $manager, $clangIds)
     {
         $where = implode(' OR ',
-            array_map(function() {
+            array_map(function () {
                 return '`clang_id` = ?';
             }, $clangIds)
         );
-        $params = array_merge([$datasetId, $articleId, 0, 0], $clangIds);
+        $params = array_merge([
+            $manager->getDatasetId(),
+            $manager->getArticleId(),
+            $manager->isUserPath() ? 1 : 0,
+            $manager->isStructure() ? 1 : 0,
+        ], $clangIds);
 
         $sql = self::factory();
         return $sql->sql->getArray('SELECT * FROM '.\rex::getTable(self::TABLE_NAME).' WHERE `data_id` = ? AND `article_id` = ? AND is_user_path = ? AND is_structure = ? AND ('.$where.')', $params);
@@ -210,23 +224,43 @@ class UrlManagerSql
      * @param int     $datasetId
      * @param int     $clangId
      *
+     * @throws \rex_sql_exception
+     *
      * @return array
      */
-    public static function getOriginalUrlForDataset(Profile $profile, $datasetId, $clangId)
+    public static function getOrigin(Profile $profile, $datasetId, $clangId)
     {
         $sql = self::factory();
         return $sql->sql->getArray('SELECT * FROM '.\rex::getTable(self::TABLE_NAME).' WHERE `profile_id` = ? AND `data_id` = ? AND `clang_id` = ? AND is_user_path = ? AND is_structure = ?', [$profile->getId(), $datasetId, $clangId, 0, 0]);
     }
 
     /**
+     * @param Profile $profile
+     * @param int     $datasetId
+     * @param int     $clangId
+     *
+     * @throws \rex_sql_exception
+     *
      * @return array
      */
-    public static function getFromCurrentUrl()
+    public static function getOriginAndExpanded(Profile $profile, $datasetId, $clangId)
     {
-        $currentUrl = Url::getCurrent();
-        $currentUrl->withScheme('');
-        $currentUrl->withQuery('');
-        $urlAsString = $currentUrl->__toString();
+        $sql = self::factory();
+        return $sql->sql->getArray('SELECT * FROM '.\rex::getTable(self::TABLE_NAME).' WHERE `profile_id` = ? AND `data_id` = ? AND `clang_id` = ?', [$profile->getId(), $datasetId, $clangId]);
+    }
+
+    /**
+     * @param Url $url
+     *
+     * @throws \rex_sql_exception
+     *
+     * @return array
+     */
+    public static function getByUrl(Url $url)
+    {
+        $url->withScheme('');
+        $url->withQuery('');
+        $urlAsString = $url->__toString();
 
         $sql = self::factory();
         return $sql->sql->getArray('SELECT * FROM '.\rex::getTable(self::TABLE_NAME).' WHERE `url` = ?', [$urlAsString]);

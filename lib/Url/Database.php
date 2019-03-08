@@ -18,8 +18,8 @@ class Database
     public static function getAll()
     {
         $dbConfigs = \rex::getProperty('db');
-        foreach ($dbConfigs as $DBID => $dbConfig) {
-            if ($dbConfig['host'] . $dbConfig['login'] . $dbConfig['password'] . $dbConfig['name'] != '') {
+        foreach ($dbConfigs as $dbId => $dbConfig) {
+            if ($dbConfig['host'].$dbConfig['login'].$dbConfig['password'].$dbConfig['name'] != '') {
                 //$connection = \rex_sql::checkDbConnection(
                 //    $dbConfig['host'],
                 //    $dbConfig['login'],
@@ -28,10 +28,10 @@ class Database
                 //);
                 $connection = true;
                 if ($connection !== true) {
-                    unset($dbConfigs[$DBID]);
+                    unset($dbConfigs[$dbId]);
                 }
             } else {
-                unset($dbConfigs[$DBID]);
+                unset($dbConfigs[$dbId]);
             }
         }
         return $dbConfigs;
@@ -41,28 +41,27 @@ class Database
     {
         $dbConfigs = self::getAll();
         $supportedTables = [];
-        foreach ($dbConfigs as $DBID => $dbConfig) {
+        foreach ($dbConfigs as $dbId => $dbConfig) {
             $tables = [];
-            $sqlTables = \rex_sql::showTables($DBID);
+            $sqlTables = \rex_sql::factory($dbId)->getTablesAndViews();
             foreach ($sqlTables as $sqlTable) {
                 $tableColumns = [];
-                $sqlColumns = \rex_sql::showColumns($sqlTable, $DBID);
+                $sqlColumns = \rex_sql::showColumns($sqlTable, $dbId);
                 foreach ($sqlColumns as $sqlColumn) {
                     $tableColumns[] = ['name' => $sqlColumn['name']];
                 }
                 $tables[] = [
                     'name' => $sqlTable,
-                    'name_unique' => self::merge($DBID, $sqlTable),
+                    'name_unique' => self::merge($dbId, $sqlTable),
                     'columns' => $tableColumns,
                 ];
             }
 
-            $supportedTables[$DBID]['name'] = $dbConfig['name'];
-            $supportedTables[$DBID]['tables'] = $tables;
+            $supportedTables[$dbId]['name'] = $dbConfig['name'];
+            $supportedTables[$dbId]['tables'] = $tables;
         }
         return $supportedTables;
     }
-
 
     public static function getLogicalOperators()
     {
@@ -71,7 +70,6 @@ class Database
             'OR' => 'OR',
         ];
     }
-
 
     public static function getComparisonOperators()
     {

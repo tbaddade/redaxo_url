@@ -13,11 +13,11 @@ namespace Url;
 
 class VideoUrl extends Url
 {
-
     public $aspectRatio = '16:9';
     public $autoPlay = false;
     public $fullscreen = true;
     public $related = false;
+    public $urlParams = [];
 
     /**
      * Returns a embed code.
@@ -52,7 +52,6 @@ class VideoUrl extends Url
         return '<div'.\rex_string::buildAttributes($attributes).'></div>';
     }
 
-
     /**
      * Builds a embed url from a video id.
      *
@@ -62,7 +61,8 @@ class VideoUrl extends Url
     {
         if ($this->isVimeo()) {
             return $this->getVimeoEmbedUrl();
-        } elseif ($this->isYoutube()) {
+        }
+        if ($this->isYoutube()) {
             return $this->getYoutubeEmbedUrl();
         }
 
@@ -76,21 +76,12 @@ class VideoUrl extends Url
     {
         if ($this->isVimeo()) {
             return $this->getVimeoId();
-        } elseif ($this->isYoutube()) {
+        }
+        if ($this->isYoutube()) {
             return $this->getYoutubeId();
         }
 
         return null;
-    }
-
-    /*
-     * @return string The last element of the url path
-     */
-    protected function getIdFromUrlPath()
-    {
-        $pathParts = explode('/', $this->getPath());
-
-        return end($pathParts);
     }
 
     /**
@@ -101,7 +92,8 @@ class VideoUrl extends Url
         $url = $this->getFullUrl();
         if (preg_match('%vimeo%i', $url)) {
             return 'vimeo';
-        } elseif (preg_match('%youtube|youtu\.be%i', $url)) {
+        }
+        if (preg_match('%youtube|youtu\.be%i', $url)) {
             return 'youtube';
         }
 
@@ -117,7 +109,8 @@ class VideoUrl extends Url
     {
         if ($this->isVimeo()) {
             return $this->getVimeoThumbnailUrl();
-        } elseif ($this->isYoutube()) {
+        }
+        if ($this->isYoutube()) {
             return $this->getYoutubeThumbnailUrl();
         }
 
@@ -138,6 +131,7 @@ class VideoUrl extends Url
         if ($this->autoPlay) {
             $params['autoplay'] = '1';
         }
+        $params = array_merge($params, $this->urlParams);
         $params = count($params) ? '?'.\rex_string::buildQuery($params) : '';
 
         return 'https://player.vimeo.com/video/'.$this->getVimeoId().$params;
@@ -182,7 +176,7 @@ class VideoUrl extends Url
         }
 
         $params['rel'] = $this->related ? '1' : '0';
-
+        $params = array_merge($params, $this->urlParams);
         $params = count($params) ? '?'.\rex_string::buildQuery($params) : '';
 
         return 'https://youtube.com/embed/'.$this->getYoutubeId().$params;
@@ -217,13 +211,12 @@ class VideoUrl extends Url
         return 'https://img.youtube.com/vi/'.$this->getYoutubeId().'/0.jpg';
     }
 
-
     /**
      * @return bool
      */
     public function isVimeo()
     {
-        return ($this->getService() == 'vimeo');
+        return $this->getService() == 'vimeo';
     }
 
     /**
@@ -231,9 +224,8 @@ class VideoUrl extends Url
      */
     public function isYoutube()
     {
-        return ($this->getService() == 'youtube');
+        return $this->getService() == 'youtube';
     }
-
 
     /**
      * @param $aspectRatio string
@@ -257,7 +249,6 @@ class VideoUrl extends Url
         $this->autoPlay = $autoPlay;
     }
 
-
     /**
      * @param $fullscreen bool
      *
@@ -267,7 +258,6 @@ class VideoUrl extends Url
     {
         $this->fullscreen = $fullscreen;
     }
-
 
     /**
      * @param $related bool
@@ -279,4 +269,22 @@ class VideoUrl extends Url
         $this->related = $related;
     }
 
+    /**
+     * @param $key string
+     * @param $value bool|string
+     */
+    public function addUrlParam($key, $value)
+    {
+        $this->urlParams[$key] = $value;
+    }
+
+    /*
+     * @return string The last element of the url path
+     */
+    protected function getIdFromUrlPath()
+    {
+        $pathParts = explode('/', $this->getPath());
+
+        return end($pathParts);
+    }
 }

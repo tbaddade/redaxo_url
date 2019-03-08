@@ -84,7 +84,7 @@ class Profile
     private $relations = [];
 
     /** @var $restrictions ProfileRestriction[] */
-    private $restrictions = [];
+    // private $restrictions = [];
 
     private $segment_part_separators;
     private $sitemap_add = false;
@@ -132,6 +132,11 @@ class Profile
     public function getArticleClangId()
     {
         return $this->clang_id;
+    }
+
+    public function getArticleUrl()
+    {
+        return new Url(Url::getRewriter()->getFullUrl($this->getArticleId(), $this->getArticleClangId()));
     }
 
     public function getId()
@@ -350,9 +355,9 @@ class Profile
                 ];
             }
         }
-
+        // dump($urlObjects);
         foreach ($urlObjects as $urlObject) {
-            /* @var $urlInstance \Url */
+            /* @var $urlInstance \Url\Url */
             $urlInstance = $urlObject['object'];
 
             $urlObject['clang_id'] = $clangId;
@@ -406,7 +411,7 @@ class Profile
      */
     public function getUrls()
     {
-        return UrlManager::getUrlsByProfileId($this->getId());
+        return UrlManagerSql::getByProfileId($this->getId());
     }
 
     /**
@@ -433,6 +438,21 @@ class Profile
     {
         self::checkCache();
         return self::$profiles;
+    }
+
+    /**
+     * Returns an array of all profile ids.
+     *
+     * @return array
+     */
+    public static function getAllArticleIds()
+    {
+        self::checkCache();
+
+        return array_unique(array_map(function (self $profile) {
+                return $profile->getArticleId();
+            }, self::$profiles)
+        );
     }
 
     /**
@@ -546,8 +566,16 @@ class Profile
             }
         }
 
-        $query->where($this->getColumnNameWithAlias('segment_part_1'), '', '!=');
-        $query->whereRaw($this->getColumnNameWithAlias('segment_part_1', true).' IS NOT NULL');
+        // sicherstellen, dass der Datensatz auch Werte in den zu bildenen Spalten für die Url hat
+        // $query->where($this->getColumnNameWithAlias('segment_part_1'), '', '!=');
+        // $query->whereRaw($this->getColumnNameWithAlias('segment_part_1', true).' IS NOT NULL');
+        $whereRawSegmentParts = [];
+        for ($index = 1; $index <= self::SEGMENT_PART_COUNT; ++$index) {
+            if ($this->getColumnName('segment_part_'.$index) != '') {
+                $whereRawSegmentParts[] = $this->getColumnNameWithAlias('segment_part_'.$index).' != "" AND '.$this->getColumnNameWithAlias('segment_part_'.$index, true).' IS NOT NULL';
+            }
+        }
+        $query->whereRaw('('.implode(' OR ', $whereRawSegmentParts).')');
 
         if ($this->hasRestrictions()) {
             $where = [];
@@ -583,6 +611,8 @@ class Profile
 
     /**
      * Loads the cache if not already loaded.
+     *
+     * @throws \rex_exception
      */
     private static function checkCache()
     {

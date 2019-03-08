@@ -12,13 +12,10 @@
 namespace Url;
 
 use Riimu\Kit\UrlParser\Uri;
-use Riimu\Kit\UrlParser\UriParser;
 use Url\Rewriter\Rewriter;
 
 class Url
 {
-    const TABLE_NAME = 'url_generator_url';
-
     public $uri;
 
     protected $handleRewriterSuffix = false;
@@ -218,14 +215,26 @@ class Url
         );
     }
 
-    public static function parse($url)
+    /**
+     * @throws \rex_sql_exception
+     *
+     * @return null|UrlManager
+     */
+    public static function resolveCurrent()
     {
-        return new self($url);
+        return UrlManager::resolveUrl(self::getCurrent());
     }
+
+    // public static function parse($url)
+    // {
+    //     return new self($url);
+    // }
 
     protected function modifyPathSegments(array $arrayA, array $arrayB)
     {
         $this->uri = $this->uri->withPathSegments(array_merge($arrayA, $arrayB));
+        // Path neu setzen, da der Path den / am Anfang durch withPathSegments verloren hat
+        $this->uri = $this->uri->withPath('/'.$this->uri->getPath());
         return $this;
     }
 

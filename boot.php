@@ -10,13 +10,11 @@
  */
 
 use Url\ExtensionPointManager;
-use \Url\Generator;
-use \Url\Seo;
-
-class_alias('Url\Url', 'Url');
-class_alias('Url\UrlManager', 'UrlManager');
-class_alias('Url\UrlManagerSql', 'UrlManagerSql');
-class_alias('Url\Seo', 'UrlSeo');
+use Url\Generator;
+use Url\Profile;
+use Url\Seo;
+use Url\Url;
+use Url\UrlManager;
 
 \Url\Generator::boot();
 if (null !== Url::getRewriter()) {
@@ -25,12 +23,13 @@ if (null !== Url::getRewriter()) {
 
 rex_extension::register('PACKAGES_INCLUDED', function (\rex_extension_point $epPackagesIncluded) {
     // if anything changes -> refresh PathFile
-    if (rex::isBackend()) {
+    if (rex::isBackend() && rex::getUser()) {
         $extensionPoints = [
             'ART_ADDED', 'ART_UPDATED', 'ART_DELETED', 'ART_STATUS',
             'CAT_ADDED', 'CAT_UPDATED', 'CAT_DELETED', 'CAT_STATUS',
             'CLANG_ADDED', 'CLANG_UPDATED', 'CLANG_DELETED',
             'REX_FORM_SAVED',
+            'REX_YFORM_SAVED',
             'YFORM_DATA_ADDED', 'YFORM_DATA_UPDATED',
         ];
 
@@ -41,13 +40,38 @@ rex_extension::register('PACKAGES_INCLUDED', function (\rex_extension_point $epP
                 $generator->execute();
             }, rex_extension::LATE);
         }
-    }
 
+        $profileArticleIds = Profile::getAllArticleIds();
+
+        // Profilartikel nicht löschen
+        // Manipulation des löschen Links
+        rex_extension::register('OUTPUT_FILTER', function (\rex_extension_point $ep) use($profileArticleIds) {
+            $subject = $ep->getSubject();
+
+            foreach ($profileArticleIds as $id) {
+                $regexp = '@<a href="index\.php\?page=structure.*?category-id='.$id.'.*?rex-api-call=category_delete.*?>(.*?)<\/a>@';
+                if (preg_match($regexp, $subject, $matches)) {
+                    $subject = str_replace($matches[0], '<span class="text-muted">'.$matches[1].'</span>', $subject);
+                }
+            }
+            return $subject;
+        });
+
+        // Profilartikel - löschen nicht erlauben
+        $rexApiCall = rex_request(rex_api_function::REQ_CALL_PARAM, 'string', '');
+        if (($rexApiCall == 'category_delete' && in_array(rex_request('category-id', 'int'), $profileArticleIds)) ||
+            ($rexApiCall == 'article_delete' && in_array(rex_request('article_id', 'int'), $profileArticleIds))) {
+            $_REQUEST[rex_api_function::REQ_CALL_PARAM] = '';
+            rex_extension::register('PAGE_TITLE_SHOWN', function (\rex_extension_point $ep) {
+                $subject = $ep->getSubject();
+                $ep->setSubject(rex_view::error(rex_i18n::msg('url_generator_rex_api_delete')).$subject);
+            });
+        }
+    }
 
     rex_extension::register('URL_REWRITE', function (\rex_extension_point $ep) {
         return UrlManager::getRewriteUrl($ep);
     }, rex_extension::EARLY);
-
 
     if (null !== Url::getRewriter() && Url::getRewriter()->getSitemapExtensionPoint()) {
         rex_extension::register(Url::getRewriter()->getSitemapExtensionPoint(), function (rex_extension_point $ep) {
@@ -60,6 +84,4 @@ rex_extension::register('PACKAGES_INCLUDED', function (\rex_extension_point $epP
             $ep->setSubject($sitemap);
         }, rex_extension::EARLY);
     }
-
 }, rex_extension::EARLY);
-
