@@ -63,6 +63,14 @@ if ($newsDataId > 0) {
 ?>
 ```
 
+
+#### zusätzliche Pfade für die Url
+
+Im Feld **eigene Pfade an die Url hängen** lassen sich zusätzliche Pfade eintragen, die als gültige URLs verwendet werden können. So ließe sich beispielsweise bei einem Artikel noch eine zusätzliche Seite über `example.com/kategorie/der_artikel/info/` anzeigen. Dann muss in dem Textfeld einfach nur `info` eingetragen werden - ohne vorangestellten und abschließenden Schrägstrich.
+
+Bei der Ausgabe kann man dann `$mypath = UrlGenerator::getCurrentOwnPath();` schreiben. Wenn die Seite mit dem Zusatz /info aufgerufen wird, enthält `$mypath` den Wert `info`.
+
+
 ### Beispiel: URL-Pathlist neu generieren
 
 Wenn Datenbanktabellen außerhalb des YForm-Table-Managers befüllt werden, greift der passende EP nicht und die URLs werden nicht neu generiert. Dies lässt sich manuell nachholen, indem folgende Methode aufgerufen wird.
@@ -70,6 +78,7 @@ Wenn Datenbanktabellen außerhalb des YForm-Table-Managers befüllt werden, grei
 ```
 UrlGenerator::generatePathFile([]);
 ```
+
 
 ### Installation
 --------------------------------------------------------------------------------
