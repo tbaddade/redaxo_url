@@ -192,6 +192,9 @@ class ExtensionPointManager
 
     protected function setStructureClangId($clang_id)
     {
+        if (count(\rex_clang::getAll()) == 1) {
+            $clang_id = 1;
+        }
         $this->structureClangId = $clang_id;
     }
 }
