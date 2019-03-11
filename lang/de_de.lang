@@ -20,6 +20,7 @@ url_generator_article_error = Artikel wählen
 url_generator_article_legend = In welchem Artikel erfolgt die Ausgabe
 url_generator_clang_id_notice = Spalte der dazugehörigen eindeutigen Clang Id
 url_generator_data = Daten
+url_generator_help = Hilfe
 url_generator_id_notice = Spalte der dazugehörigen eindeutigen Id
 url_generator_identify_record = Datensatz identifizieren
 url_generator_namespace = Namensraum
