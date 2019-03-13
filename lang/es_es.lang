@@ -70,7 +70,9 @@ url_generator_table_error = Elige la tabla
 url_generator_table_legend = Tabla desde la cual generar URL
 url_generator_table_not_selected = Ninguna tabla especificada
 url_generator_table_relation_legend = Tabla de relaciones {0}
+url_generator_url = Url
 url_generator_url_notice = Columnas desde las que se genera la URL
+url_generator_rex_api_delete = Categoría o artículos no pudieron ser eliminados. En uso por Url addon
 
 
 
