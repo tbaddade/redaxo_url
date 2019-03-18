@@ -10,6 +10,7 @@ url_language = Sprache
 url_generator_profile = Profil
 url_generator_profiles = Profile
 url_generator_urls_generated = generierte URLs
+url_subpage_refresh = Cache löschen
 
 url_generator = URLs generieren
 url_generator_article = Artikel
