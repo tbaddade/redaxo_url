@@ -75,8 +75,10 @@ url_generator_url = Url
 url_generator_url_notice = Spalten aus der die Url erzeugt wird
 url_generator_rex_api_delete = Kategorie oder Artikel konnte nicht gelöscht werden. Wird noch vom Url-AddOn genutzt
 
-
-
+url_yform_value_label = Bezeichnung
+url_yform_value_profil = Profil
+url_yform_value_anchor = Anker-Text
+url_yform_value_description = Fügt einen Link zum Frontend hinzu, der durch das URL-AddOn erstellt wurde. 
 
 
 
