@@ -11,12 +11,17 @@
 
 use Url\Profile;
 use Url\Url;
+use Url\Generator;
 use Url\UrlManagerSql;
 
 $id = rex_request('id', 'int');
 $func = rex_request('func', 'string');
 
 $a = [];
+
+if ($func == 'refresh') {
+    // UrlGenerator::generatePathFile([]);
+}
 
 if ($func == '') {
     $orderBy = rex_request('sort', 'string', '') == '' ? 'ORDER BY `p`.`namespace`, `u`.`article_id`, `u`.`data_id`, `u`.`clang_id`' : '';
