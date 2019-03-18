@@ -18,7 +18,6 @@ class ProfileRelation
     private $segment_part_separators;
     private $table;
 
-
     public function __construct($index, $values)
     {
         $this->index = $index;
@@ -44,12 +43,12 @@ class ProfileRelation
 
     public function getColumnNameWithAlias($column)
     {
-        return $this->getAlias() . '.' . $this->getColumnName($column);
+        return $this->getAlias().'.'.$this->getColumnName($column);
     }
 
     public function getAlias()
     {
-        return Profile::RELATION_PREFIX . $this->index;
+        return Profile::RELATION_PREFIX.$this->index;
     }
 
     public function getIndex()
@@ -62,30 +61,29 @@ class ProfileRelation
         return $this->position;
     }
 
-
     public function completeQuery(\rex_yform_manager_query $query, $sourceRelationColumnName, $sourceClangColumnName, $structureArticleClangId)
     {
-        $joinCondition = $sourceRelationColumnName . ' = ' . $this->getColumnNameWithAlias('id');
+        $joinCondition = $sourceRelationColumnName.' = '.$this->getColumnNameWithAlias('id');
 
         if (null === $structureArticleClangId && $sourceClangColumnName != '' && $this->getColumnName('clang_id') != '') {
-            $joinCondition .= ' AND ' . $sourceClangColumnName . ' = ' .  $this->getColumnNameWithAlias('clang_id');
+            $joinCondition .= ' AND '.$sourceClangColumnName.' = '.$this->getColumnNameWithAlias('clang_id');
         }
 
         $query->joinRaw('LEFT', $this->getTableName(), $this->getAlias(), $joinCondition);
-        $query->select($this->getColumnNameWithAlias('id'), $this->getAlias() . '_id');
+        $query->select($this->getColumnNameWithAlias('id'), $this->getAlias().'_id');
 
         if (null === $structureArticleClangId && $this->getColumnName('clang_id') != '') {
-            $query->select($this->getColumnNameWithAlias('clang_id'), $this->getAlias() . '_clang_id');
+            $query->select($this->getColumnNameWithAlias('clang_id'), $this->getAlias().'_clang_id');
         }
 
         $columns = [];
-        for ($index = 1; $index <= Profile::SEGMENT_PART_COUNT; $index++) {
-            $columns[] = 'segment_part_' . $index;
+        for ($index = 1; $index <= Profile::SEGMENT_PART_COUNT; ++$index) {
+            $columns[] = 'segment_part_'.$index;
         }
 
         foreach ($columns as $column) {
             if ($this->getColumnName($column) != '') {
-                $query->select($this->getColumnNameWithAlias($column), $this->getAlias() . '_' . $column);
+                $query->select($this->getColumnNameWithAlias($column), $this->getAlias().'_'.$column);
             }
         }
 

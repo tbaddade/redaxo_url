@@ -14,20 +14,20 @@ namespace Url;
 class Cache
 {
     /**
-     * Schreibt Eigenschaften der Profile in die Datei profiles.clang
+     * Schreibt Eigenschaften der Profile in die Datei profiles.cache.
      *
      * @throws \rex_exception
      */
     public static function generateProfiles()
     {
         $sql = \rex_sql::factory();
-        $sql->setQuery('SELECT * FROM ' . \rex::getTable(Profile::TABLE_NAME) . ' ORDER BY `table_name`');
+        $sql->setQuery('SELECT * FROM '.\rex::getTable(Profile::TABLE_NAME).' ORDER BY `table_name`');
 
         $profiles = [];
+        /* @var $profile \rex_sql */
         foreach ($sql as $profile) {
             $id = $profile->getValue('id');
             foreach ($sql->getFieldnames() as $fieldName) {
-
                 switch ($fieldName) {
                     case 'createdate':
                     case 'updatedate':
@@ -42,7 +42,7 @@ class Cache
                     case 'table_parameters':
                         $params = json_decode($profile->getValue($fieldName), true);
                         foreach ($params as $key => $value) {
-                            switch($key) {
+                            switch ($key) {
                                 case 'column_id':
                                 case 'column_clang_id':
                                 case 'column_segment_part_1':
@@ -71,7 +71,7 @@ class Cache
                                 case 'relation_2_position':
                                 case 'relation_3_position':
                                     $index = substr($key, strlen(Profile::RELATION_PREFIX), 1);
-                                    $profiles[$id]['table']['relations'][$index][substr($key, strlen(Profile::RELATION_PREFIX . $index . '_'))] = $value;
+                                    $profiles[$id]['table']['relations'][$index][substr($key, strlen(Profile::RELATION_PREFIX.$index.'_'))] = $value;
                                     break;
                                 case 'restriction_1_comparison_operator':
                                 case 'restriction_1_value':
@@ -82,7 +82,7 @@ class Cache
                                 case 'restriction_3_logical_operator':
                                 case 'restriction_3_value':
                                     $index = substr($key, strlen(Profile::RESTRICTION_PREFIX), 1);
-                                    $profiles[$id]['table']['restrictions'][$index][substr($key, strlen(Profile::RESTRICTION_PREFIX . $index . '_'))] = $value;
+                                    $profiles[$id]['table']['restrictions'][$index][substr($key, strlen(Profile::RESTRICTION_PREFIX.$index.'_'))] = $value;
                                     break;
                                 case 'append_structure_categories':
                                 case 'append_user_paths':
@@ -113,7 +113,7 @@ class Cache
                             $index = substr($fieldName, strlen(Profile::RELATION_PREFIX), 1);
                             $params = json_decode($value, true);
                             foreach ($params as $key => $paramValue) {
-                                switch($key) {
+                                switch ($key) {
                                     case 'column_id':
                                     case 'column_clang_id':
                                     case 'column_segment_part_1':
@@ -134,13 +134,18 @@ class Cache
                         $profiles[$id][$fieldName] = $profile->getValue($fieldName);
                         break;
                 }
-
             }
         }
 
         $file = \rex_path::addonCache('url', 'profiles.cache');
         if (\rex_file::putCache($file, $profiles) === false) {
-            throw new \rex_exception('Clang cache file could not be generated');
+            throw new \rex_exception('Url Profile cache file could not be generated');
         }
+    }
+
+    public static function deleteProfiles()
+    {
+        $file = \rex_path::addonCache('url', 'profiles.cache');
+        \rex_file::delete($file);
     }
 }

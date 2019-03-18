@@ -8,6 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace Url\Rewriter;
 
 abstract class Rewriter
@@ -15,53 +16,52 @@ abstract class Rewriter
     /**
      * @return string
      */
-    abstract function articleIdNotFound();
+    abstract public function articleIdNotFound();
 
     /**
      * @return string
      */
-    abstract function getSitemapExtensionPoint();
+    abstract public function getSitemapExtensionPoint();
 
     /**
      * @return array
      */
-    abstract function getSitemapFrequency();
+    abstract public function getSitemapFrequency();
 
     /**
      * @return array
      */
-    abstract function getSitemapPriority();
+    abstract public function getSitemapPriority();
 
     /**
      * @return object
      */
-    abstract function getSeoInstance();
+    abstract public function getSeoInstance();
 
     /**
      * @return string
      */
-    abstract function getSeoTitleTagMethod();
+    abstract public function getSeoTitleTagMethod();
 
     /**
      * @return string
      */
-    abstract function getSeoDescriptionTagMethod();
+    abstract public function getSeoDescriptionTagMethod();
 
     /**
      * @return string
      */
-    abstract function getSeoCanonicalTagMethod();
+    abstract public function getSeoCanonicalTagMethod();
 
     /**
      * @return string
      */
-    abstract function getSeoHreflangTagsMethod();
+    abstract public function getSeoHreflangTagsMethod();
 
     /**
      * @return string
      */
-    abstract function getSeoRobotsTagMethod();
-
+    abstract public function getSeoRobotsTagMethod();
 
     /**
      * @param int $article_id
@@ -69,38 +69,36 @@ abstract class Rewriter
      *
      * @return string
      */
-    abstract function getFullUrl($article_id, $clang_id);
+    abstract public function getFullUrl($article_id, $clang_id);
 
     /**
      * @param string $path
      *
      * @return string
      */
-    abstract function getFullPath($path);
+    abstract public function getFullPath($path);
 
     /**
      * @return string
      */
-    abstract function getSuffix();
+    abstract public function getSuffix();
 
     /**
      * @param string $domain
      *
      * @return string
      */
-    abstract function getSchemeByDomain($domain);
+    abstract public function getSchemeByDomain($domain);
 
     /**
      * @return bool
      */
-    abstract function isHttps();
+    abstract public function isHttps();
 
     /**
      * @param string $string
      *
      * @return string
      */
-    abstract function normalize($string);
-
-
+    abstract public function normalize($string);
 }

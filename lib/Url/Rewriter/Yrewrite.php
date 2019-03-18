@@ -8,6 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace Url\Rewriter;
 
 use Url\UrlManager;
@@ -53,7 +54,7 @@ class Yrewrite extends Rewriter
      */
     public function getSeoInstance()
     {
-        return (new \rex_yrewrite_seo());
+        return new \rex_yrewrite_seo();
     }
 
     /**
@@ -95,8 +96,6 @@ class Yrewrite extends Rewriter
     {
         return 'getRobotsTag';
     }
-
-
 
     /**
      * @param int $article_id
