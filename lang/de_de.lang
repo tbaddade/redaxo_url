@@ -3,8 +3,8 @@ url_title = URL
 
 url_after = dahinter
 url_before = davor
-url_data_id = ID des Datensatz
-url_id = ID
+url_data_id = Id des Datensatz
+url_id = Id
 url_language = Sprache
 
 url_generator_profile = Profil
@@ -18,10 +18,10 @@ url_generator_article_clang_notice = wenn "alle Sprachen" ausgewählt, dann muss
 url_generator_article_clang_option_all = alle Sprachen
 url_generator_article_error = Artikel wählen
 url_generator_article_legend = In welchem Artikel erfolgt die Ausgabe?
-url_generator_clang_id_notice = Feld der dazugehörigen eindeutigen Clang ID
+url_generator_clang_id_notice = Feld der dazugehörigen eindeutigen Clang Id
 url_generator_data = Daten
 url_generator_help = Hilfe
-url_generator_id_notice = Feld der dazugehörigen eindeutigen ID
+url_generator_id_notice = Feld der dazugehörigen eindeutigen Id
 url_generator_identify_record = Datensatz identifizieren
 url_generator_namespace = Schlüssel
 url_generator_namespace_error = Eindeutigen Namensraum/Schlüssel vergeben, z.B. <code>product-id</code>
