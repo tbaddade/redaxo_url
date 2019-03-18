@@ -21,6 +21,7 @@ page:
             pjax: false
             subPath: README.md
             itemclass: pull-right
+        clear_cache: { title: 'translate:url_subpage_clear_cache', itemclass: 'pull-right', linkclass: 'btn btn-delete', href: { page: url/generator/urls, func: refresh } }
 
 requires:
     redaxo: ^5.4.0
