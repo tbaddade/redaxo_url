@@ -158,7 +158,7 @@ class UrlManager
      */
     public function getSeoImage()
     {
-        return $this->getSeoValue('image');
+        return array_shift(explode(",",$this->getSeoValue('image')));
     }
 
     /**
