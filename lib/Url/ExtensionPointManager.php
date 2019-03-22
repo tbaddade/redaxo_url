@@ -103,6 +103,7 @@ class ExtensionPointManager
                 $this->setStructureClangId($this->extensionPoint->getParam('clang'));
                 break;
 
+            case 'CACHE_DELETED':
             case 'CLANG_ADDED':
             case 'CLANG_STATUS':
             case 'CLANG_UPDATED':
