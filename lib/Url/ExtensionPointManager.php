@@ -95,9 +95,11 @@ class ExtensionPointManager
             case 'ART_ADDED':
             case 'ART_STATUS':
             case 'ART_UPDATED':
+            case 'ART_MOVED':
             case 'CAT_ADDED':
             case 'CAT_STATUS':
             case 'CAT_UPDATED':
+            case 'CAT_MOVED':
                 $this->setMode(self::MODE_UPDATE_URL_COLLECTION);
                 $this->setStructureArticleId($this->extensionPoint->getParam('id'));
                 $this->setStructureClangId($this->extensionPoint->getParam('clang'));
