@@ -19,12 +19,36 @@ use Url\UrlManager;
 $id = rex_request('id', 'int');
 $func = rex_request('func', 'string');
 $action = rex_request('action', 'string');
+$message = '';
 
 if ($action == 'cache') {
     Cache::deleteProfiles();
 }
 
 $a = [];
+
+if ($func == 'delete' && $id > 0) {
+    if (!rex_csrf_token::factory('url_profile_delete')->isValid()) {
+        $message = rex_view::error(rex_i18n::msg('csrf_token_invalid'));
+    } else {
+        $profile = Profile::get($id);
+        if ($profile) {
+            $profile->deleteUrls();
+
+            $sql = rex_sql::factory()
+                ->setTable(rex::getTable(Profile::TABLE_NAME))
+                ->setWhere('id = :id', ['id' => $id]);
+            if ($sql->delete()) {
+                $message .= rex_view::success(rex_i18n::msg('url_generator_profile_removed'));
+            }
+        }
+    }
+    $func = '';
+}
+
+if ($message != '') {
+    echo $message;
+}
 
 if (!function_exists('url_generate_column_article')) {
     function url_generate_column_article($params)
@@ -121,6 +145,11 @@ if ($func == '') {
     $list->setColumnLayout($this->i18n('function'), ['<th class="rex-table-action" colspan="2">###VALUE###</th>', '<td class="rex-table-action">###VALUE###</td>']);
     $list->setColumnParams($this->i18n('function'), ['func' => 'edit', 'id' => '###id###']);
 
+    $list->addColumn($this->i18n('delete'), '<i class="rex-icon rex-icon-delete"></i> '.$this->i18n('delete'));
+    $list->setColumnLayout($this->i18n('delete'), ['', '<td class="rex-table-action">###VALUE###</td>']);
+    $list->setColumnParams($this->i18n('delete'), ['func' => 'delete', 'id' => '###id###'] + rex_csrf_token::factory('url_profile_delete')->getUrlParams());
+    $list->addLinkAttribute($this->i18n('delete'), 'data-confirm', rex_i18n::msg('delete') . ' ?');
+
     $content = $list->get();
 
     $fragment = new rex_fragment();
@@ -131,6 +160,12 @@ if ($func == '') {
     echo $content;
 } elseif ($func == 'add' || $func == 'edit') {
     $title = $func == 'edit' ? $this->i18n('edit') : $this->i18n('add');
+
+    rex_extension::register('REX_FORM_CONTROL_FIELDS', function (rex_extension_point $ep) {
+        $controlFields = $ep->getSubject();
+        $controlFields['delete'] = '';
+        return $controlFields;
+    });
 
     $form = rex_form::factory(rex::getTable('url_generator_profile'), '', 'id = '.$id, 'post', false);
     $form->addParam('id', $id);
@@ -801,6 +836,8 @@ if ($func == '') {
 
         $form->addRawField('</fieldset></div>');
     }
+
+
 
     $content = $form->get();
 
