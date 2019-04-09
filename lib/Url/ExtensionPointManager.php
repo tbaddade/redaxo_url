@@ -119,6 +119,7 @@ class ExtensionPointManager
                 if ($tableName == \rex::getTable(Profile::TABLE_NAME)) {
                     // Profil wurde angelegt/aktualisiert
                     // Nur Urls dieses Profiles bearbeiten
+                    Profile::reset();
                     $this->setMode(self::MODE_UPDATE_URL_COLLECTION);
                     $this->setStructureArticleId($object->elementPostValue(\rex_i18n::msg('url_generator_article_legend'), 'article_id'));
                     $this->setStructureClangId($object->elementPostValue(\rex_i18n::msg('url_generator_article_legend'), 'clang_id', '0'));
