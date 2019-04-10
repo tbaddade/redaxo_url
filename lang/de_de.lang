@@ -72,6 +72,9 @@ url_generator_table_legend = Aus welcher Tabelle werden die URLs erstellt
 url_generator_table_not_selected = keine Tabelle ausgewählt
 url_generator_table_relation_legend = Relationstabelle {0}
 url_generator_url = URL
+url_generator_url_refresh = Urls neu generieren
+url_generator_url_refresh_all = Alle Urls neu generieren
+url_generator_url_refreshed = Die Urls des Profiles mit der Id={0} wurden neu generiert.
 url_generator_url_notice = Felder, aus denen die URL erzeugt wird
 url_generator_rex_api_delete = Kategorie oder Artikel wird noch vom URL-AddOn genutzt.
 

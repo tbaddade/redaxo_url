@@ -46,6 +46,31 @@ if ($func == 'delete' && $id > 0) {
     $func = '';
 }
 
+if (($func == 'refresh' && $id > 0) || $func == 'refresh_all') {
+    if (!rex_csrf_token::factory('url_profile_refresh')->isValid()) {
+        $message = rex_view::error(rex_i18n::msg('csrf_token_invalid'));
+    } else {
+        if ($func == 'refresh') {
+            $profile = Profile::get($id);
+            if ($profile) {
+                $profile->deleteUrls();
+                $profile->buildUrls();
+                $message .= rex_view::success(rex_i18n::msg('url_generator_url_refreshed', $id));
+            }
+        } else {
+            $profiles = Profile::getAll();
+            if ($profiles) {
+                foreach ($profiles as $profile) {
+                    $profile->deleteUrls();
+                    $profile->buildUrls();
+                    $message .= rex_view::success(rex_i18n::msg('url_generator_url_refreshed', $profile->getId()));
+                }
+            }
+        }
+    }
+    $func = '';
+}
+
 if ($message != '') {
     echo $message;
 }
@@ -141,19 +166,26 @@ if ($func == '') {
     $list->setColumnLabel('data', $this->i18n('url_generator_data'));
     $list->setColumnFormat('data', 'custom', 'url_generate_column_data');
 
-    $list->addColumn($this->i18n('function'), '<i class="rex-icon rex-icon-edit"></i> '.$this->i18n('edit'));
-    $list->setColumnLayout($this->i18n('function'), ['<th class="rex-table-action" colspan="2">###VALUE###</th>', '<td class="rex-table-action">###VALUE###</td>']);
-    $list->setColumnParams($this->i18n('function'), ['func' => 'edit', 'id' => '###id###']);
+    $list->addColumn('refresh', '<i class="rex-icon rex-icon-delete"></i> '.$this->i18n('url_generator_url_refresh'));
+    $list->setColumnLabel('refresh', $this->i18n('function'));
+    $list->setColumnLayout('refresh', ['<th class="rex-table-action" colspan="3">###VALUE###</th>', '<td class="rex-table-action">###VALUE###</td>']);
+    $list->setColumnParams('refresh', ['func' => 'refresh', 'id' => '###id###'] + rex_csrf_token::factory('url_profile_refresh')->getUrlParams());
+    $list->addLinkAttribute('refresh', 'data-confirm', rex_i18n::msg('url_generator_url_refresh') . ' ?');
 
-    $list->addColumn($this->i18n('delete'), '<i class="rex-icon rex-icon-delete"></i> '.$this->i18n('delete'));
-    $list->setColumnLayout($this->i18n('delete'), ['', '<td class="rex-table-action">###VALUE###</td>']);
-    $list->setColumnParams($this->i18n('delete'), ['func' => 'delete', 'id' => '###id###'] + rex_csrf_token::factory('url_profile_delete')->getUrlParams());
-    $list->addLinkAttribute($this->i18n('delete'), 'data-confirm', rex_i18n::msg('delete') . ' ?');
+    $list->addColumn('edit', '<i class="rex-icon rex-icon-edit"></i> '.$this->i18n('edit'));
+    $list->setColumnLayout('edit', ['', '<td class="rex-table-action">###VALUE###</td>']);
+    $list->setColumnParams('edit', ['func' => 'edit', 'id' => '###id###']);
+
+    $list->addColumn('delete', '<i class="rex-icon rex-icon-delete"></i> '.$this->i18n('delete'));
+    $list->setColumnLayout('delete', ['', '<td class="rex-table-action">###VALUE###</td>']);
+    $list->setColumnParams('delete', ['func' => 'delete', 'id' => '###id###'] + rex_csrf_token::factory('url_profile_delete')->getUrlParams());
+    $list->addLinkAttribute('delete', 'data-confirm', rex_i18n::msg('delete') . ' ?');
 
     $content = $list->get();
 
     $fragment = new rex_fragment();
     $fragment->setVar('title', $this->i18n('url_generator_profiles'));
+    $fragment->setVar('options', sprintf('<a class="btn btn-xs btn-delete" href="%s">%s</a>', rex_url::currentBackendPage(['func' => 'refresh_all'] + rex_csrf_token::factory('url_profile_refresh')->getUrlParams()), $this->i18n('url_generator_url_refresh_all')), false);
     $fragment->setVar('content', $content, false);
     $content = $fragment->parse('core/page/section.php');
 
