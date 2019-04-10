@@ -100,9 +100,13 @@ class ExtensionPointManager
             case 'CAT_MOVED':
             case 'CAT_STATUS':
             case 'CAT_UPDATED':
+                $clangId = $this->extensionPoint->getParam('clang');
+                if (!$this->extensionPoint->hasParam('clang') && $this->extensionPoint->hasParam('clang_id')) {
+                    $clangId = $this->extensionPoint->getParam('clang_id');
+                }
                 $this->setMode(self::MODE_UPDATE_URL_COLLECTION);
                 $this->setStructureArticleId($this->extensionPoint->getParam('id'));
-                $this->setStructureClangId($this->extensionPoint->getParam('clang'));
+                $this->setStructureClangId($clangId);
                 break;
 
             case 'CACHE_DELETED':
