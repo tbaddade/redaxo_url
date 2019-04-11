@@ -8,12 +8,14 @@ if(rex_string::versionCompare(\rex_addon::get('url')->getVersion(), '1.5', '>=')
 	$result->setQuery("SELECT * FROM ". \rex::getTablePrefix() ."url_generate");
 	for($i = 0; $i < $result->getRows(); $i++) {
 		$table_parameters = json_decode($result->getValue('table_parameters'), TRUE);
-		$table_key = substr(key($table_parameters), 6, -8);
-		$table_db_id = substr(key($table_parameters), 0, 1);
+		$table_first_key = key($table_parameters);
+		$table_db_id = substr($table_first_key, 0, strpos($table_first_key, '_xxx_'));
+		$table_key = substr($table_first_key, strlen($table_db_id) + 5, -8);
 
 		$relation_table_parameters = json_decode($result->getValue('relation_table_parameters'), TRUE);
-		$relation_key = substr(key($relation_table_parameters), 15, -8);
-		$relation_db_id = substr(key($relation_table_parameters), 0, 1);
+		$relation_first_key = key($relation_table_parameters);
+		$relation_db_id = substr($relation_first_key, 0, strpos($relation_first_key, '_xxx_'));
+		$relation_key = substr($relation_first_key, strlen($relation_db_id) + 14, -8);
 
 		$query = "INSERT INTO ". \rex::getTablePrefix() ."url_generator_profile (`namespace`, `article_id`, `clang_id`, `table_name`, `table_parameters`, `relation_1_table_name`, `relation_1_table_parameters`, `relation_2_table_name`, `relation_2_table_parameters`, `relation_3_table_name`, `relation_3_table_parameters`, `createdate`, `createuser`, `updatedate`, `updateuser`) VALUES
 			('". ($table_parameters[$table_db_id .'_xxx_'. $table_key .'_url_param_key'] != "" ? $table_parameters[$table_db_id .'_xxx_'. $table_key .'_url_param_key'] : $table_parameters[$table_db_id .'_xxx_'. $table_key .'_id']) ."', "
