@@ -60,6 +60,7 @@ url_generator_seo = SEO
 url_generator_seo_description_notice = Feld, aus dem  die Beschreibung erzeugt wird (meta-description)
 url_generator_seo_image_notice = Feld, aus dem das Bild genommen wird (meta-image)
 url_generator_seo_title_notice = Feld, aus dem der Titel erzeugt wird (title-Tag)
+url_generator_show_dataset = Datensatz ansehen ({0})
 url_generator_sitemap = Sitemap
 url_generator_sitemap_add_notice = URLs in die <code>sitemap.xml</code> aufnehmen?
 url_generator_sitemap_frequency_notice = Frequenz
@@ -78,8 +79,12 @@ url_generator_url_refreshed = Die Urls des Profiles mit der Id={0} wurden neu ge
 url_generator_url_notice = Felder, aus denen die URL erzeugt wird
 url_generator_rex_api_delete = Kategorie oder Artikel wird noch vom URL-AddOn genutzt.
 
-
 url_generator_profile_removed = Profil wurde erfolgreich gelöscht
+
+url_yform_value_label = Bezeichnung
+url_yform_value_profil = Profil
+url_yform_value_anchor = Anker-Text
+url_yform_value_description = Fügt einen Link zum Frontend hinzu, der durch das URL-AddOn erstellt wurde.
 
 
 
