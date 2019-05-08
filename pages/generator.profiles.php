@@ -145,7 +145,8 @@ if ($func == '') {
     $query = '  SELECT      `id`,
                             `article_id`,
                             `clang_id`
-                FROM        '.rex::getTable('url_generator_profile');
+                FROM        '.rex::getTable('url_generator_profile').'
+                ORDER BY    `article_id`';
 
     $list = rex_list::factory($query);
     $list->addTableAttribute('class', 'table-striped');
