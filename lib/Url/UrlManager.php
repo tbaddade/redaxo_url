@@ -83,7 +83,7 @@ class UrlManager
             }
         }
 
-        $items = \rex_sql::factory()->setDebug()->getArray($query->getQuery(), $query->getParams());
+        $items = \rex_sql::factory()->getArray($query->getQuery(), $query->getParams());
 
         return $query->findOne();
     }

@@ -198,7 +198,8 @@ class Profile
      */
     public function inSitemap()
     {
-        return (bool) $this->sitemap_add;
+        $Article = \rex_article::get($this->getArticleId(), $this->getArticleClangId());
+        return (bool) $this->sitemap_add && $Article->isOnline();
     }
 
     public function getSitemapFrequency()
@@ -411,7 +412,7 @@ class Profile
      */
     public function getUrls()
     {
-        return UrlManagerSql::getByProfileId($this->getId());
+        return UrlManager::getByProfileId($this->getId());
     }
 
     /**
