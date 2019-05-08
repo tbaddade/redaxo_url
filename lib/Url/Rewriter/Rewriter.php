@@ -41,27 +41,27 @@ abstract class Rewriter
     /**
      * @return string
      */
-    abstract public function getSeoTitleTagMethod();
+    abstract public function getSeoTitleEP();
 
     /**
      * @return string
      */
-    abstract public function getSeoDescriptionTagMethod();
+    abstract public function getSeoDescriptionEP();
 
     /**
      * @return string
      */
-    abstract public function getSeoCanonicalTagMethod();
+    abstract public function getSeoCanonicalEP();
 
     /**
      * @return string
      */
-    abstract public function getSeoHreflangTagsMethod();
+    abstract public function getSeoHreflangEP();
 
     /**
      * @return string
      */
-    abstract public function getSeoRobotsTagMethod();
+    abstract public function getSeoImagesEP();
 
     /**
      * @param int $article_id

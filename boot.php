@@ -74,15 +74,8 @@ rex_extension::register('PACKAGES_INCLUDED', function (\rex_extension_point $epP
         return UrlManager::getRewriteUrl($ep);
     }, rex_extension::EARLY);
 
-    if (null !== Url::getRewriter() && Url::getRewriter()->getSitemapExtensionPoint()) {
-        rex_extension::register(Url::getRewriter()->getSitemapExtensionPoint(), function (rex_extension_point $ep) {
-            $sitemap = $ep->getSubject();
-            if (is_array($sitemap)) {
-                $sitemap = array_merge($sitemap, Seo::getSitemap());
-            } else {
-                $sitemap = Seo::getSitemap();
-            }
-            $ep->setSubject($sitemap);
-        }, rex_extension::EARLY);
-    }
+
+    $Seo = new Seo();
+    $Seo->init();
+
 }, rex_extension::EARLY);

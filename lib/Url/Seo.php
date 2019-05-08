@@ -24,136 +24,138 @@ class Seo
 
     public function __construct()
     {
-        $this->manager = Url::resolveCurrent();
-        $this->rewriter = Url::getRewriter();
+        $this->manager     = Url::resolveCurrent();
+        $this->rewriter    = Url::getRewriter();
         $this->rewriterSeo = $this->rewriter->getSeoInstance();
     }
 
-    public function getTitle()
+    public function init()
     {
-        $title = $this->rewriterSeo->getTitle();
+        if ($this->rewriter) {
+
+            \rex_extension::register($this->rewriter->getSeoTitleEP(), [$this, 'setTitle']);
+            \rex_extension::register($this->rewriter->getSeoDescriptionEP(), [$this, 'setDescription']);
+            \rex_extension::register($this->rewriter->getSeoHreflangEP(), [$this, 'setHrefLangs']);
+            \rex_extension::register($this->rewriter->getSeoCanonicalEP(), [$this, 'setCanonicalUrl']);
+            \rex_extension::register($this->rewriter->getSeoImagesEP(), [$this, 'setImages']);
+            \rex_extension::register($this->rewriter->getSitemapExtensionPoint(), [$this, 'setSitemap']);
+        }
+    }
+
+    public function setTitle(\rex_extension_point $Ep)
+    {
+        $title = $Ep->getSubject();
+
         if ($this->isUrl() && $this->manager->getSeoTitle()) {
-            $title = $this->manager->getSeoTitle().' - '.$title;
+            $title = $this->manager->getSeoTitle() . ' / ' . $title;
         }
-
-        $title = \rex_extension::registerPoint(new \rex_extension_point('URL_SEO_TITLE', $title));
-
-        if (!$title) {
-            return '';
-        }
-
-        return $this->normalize($title);
+        return $title;
     }
 
-    public function getTitleTag()
+    public function setDescription(\rex_extension_point $Ep)
     {
-        if ($this->isUrl()) {
-            return '<title>'.htmlspecialchars($this->getTitle()).'</title>';
-        }
-        return $this->rewriterSeo->{$this->rewriter->getSeoTitleTagMethod()}();
-    }
+        $description = $Ep->getSubject();
 
-    public function getDescription()
-    {
-        $description = $this->rewriterSeo->getDescription();
         if ($this->isUrl() && $this->manager->getSeoDescription()) {
             $description = $this->manager->getSeoDescription();
         }
-
-        $description = \rex_extension::registerPoint(new \rex_extension_point('URL_SEO_DESCRIPTION', $description));
-
-        if (!$description) {
-            return '';
-        }
-
-        return $this->normalize($description);
+        return $description;
     }
 
-    public function getDescriptionTag()
+    public function setHrefLangs(\rex_extension_point $Ep)
     {
-        if ($this->isUrl()) {
-            return '<meta name="description" content="'.htmlspecialchars($this->getDescription()).'" />';
-        }
-        return $this->rewriterSeo->{$this->rewriter->getSeoDescriptionTagMethod()}();
-    }
+        $href_langs = $Ep->getSubject();
 
-    public function getCanonicalUrl()
-    {
-        $url = $this->manager->getUrl();
-        $url->withSolvedScheme();
-        return $url->getSchemeAndHttpHost().$url->getPath();
-    }
-
-    public function getCanonicalUrlTag()
-    {
-        if ($this->isUrl()) {
-            return '<link rel="canonical" href="'.$this->getCanonicalUrl().'" />';
-        }
-        return $this->rewriterSeo->{$this->rewriter->getSeoCanonicalTagMethod()}();
-    }
-
-    public function getHreflangTags()
-    {
         if ($this->isUrl()) {
             $items = $this->manager->getHreflang(\rex_clang::getAllIds(true));
 
             if ($items) {
-                $metas = [];
+                $href_langs = [];
+
                 foreach ($items as $item) {
-                    $url = $item->getUrl();
+                    $clang = \rex_clang::get($item->getClangId());
+                    $url   = $item->getUrl();
                     $url->withSolvedScheme();
-                    $metas[] = '<link rel="alternate" hreflang="'.\rex_clang::get($item->getClangId())->getCode().'" href="'.$url.'" />';
+                    $href_langs[$clang->getCode()] = (string)$url;
                 }
-                return implode("\n", $metas);
             }
         }
-
-        return $this->rewriterSeo->{$this->rewriter->getSeoHreflangTagsMethod()}();
+        return $href_langs;
     }
 
-    public function getRobotsTag()
+    public function setCanonicalUrl(\rex_extension_point $Ep)
     {
-        return $this->rewriterSeo->{$this->rewriter->getSeoRobotsTagMethod()}();
+        $canonical = $Ep->getSubject();
+
+        if ($this->isUrl()) {
+            $url = $this->manager->getUrl();
+            $url->withSolvedScheme();
+            $canonical = (string)$url;
+        }
+        return $canonical;
     }
 
-    public function getImage()
+    public function setImages(\rex_extension_point $Ep)
     {
-        return $this->manager->getSeoImage();
+        $images = $Ep->getSubject();
+
+        if ($images === '' && $this->isUrl()) {
+            $images = $this->manager->getSeoImage();
+        }
+        return $images;
     }
 
-    public static function getSitemap()
+    public function setSitemap(\rex_extension_point $Ep)
     {
+        $urls     = (array)$Ep->getSubject();
         $profiles = Profile::getAll();
-        if (!$profiles) {
-            return [];
+
+        if ($profiles) {
+            foreach ($profiles as $profile) {
+                if (!$profile->inSitemap()) {
+                    continue;
+                }
+
+                $profileUrls = $profile->getUrls();
+                if (!$profileUrls) {
+                    continue;
+                }
+
+                foreach ($profileUrls as $profileUrl) {
+                    $url = $profileUrl->getUrl();
+                    $url->withSolvedScheme();
+
+                    $url = [
+                        'loc'        => (string)$url,
+                        'lastmod'    => $profileUrl->getLastmod(),
+                        'changefreq' => $profile->getSitemapFrequency(),
+                        'priority'   => $profile->getSitemapPriority(),
+                        'image'      => [],
+                    ];
+
+                    $images = $profileUrl->getSeoImage();
+
+                    if ($images) {
+                        $images = array_unique(array_filter(explode(',', $images)));
+
+
+                        foreach ($images as $media_name) {
+                            $media = \rex_media::get($media_name);
+
+                            if ($media && $media->isImage()) {
+                                $imgUrl         = [
+                                    'loc'   => $this->rewriter->getFullPath(ltrim($media->getUrl(), '/')),
+                                    'title' => rex_escape($media->getTitle()),
+                                ];
+                                $url['image'][] = $imgUrl;
+                            }
+                        }
+                    }
+                    $urls[] = $url;
+                }
+            }
         }
-
-        $sitemap = [];
-        foreach ($profiles as $profile) {
-            if (!$profile->inSitemap()) {
-                continue;
-            }
-
-            $profileUrls = $profile->getUrls();
-            if (!$profileUrls) {
-                continue;
-            }
-
-            foreach ($profileUrls as $profileUrl) {
-                $url = $profileUrl->getUrl();
-                $url->withSolvedScheme();
-
-                $sitemap[] =
-                    "\n".'<url>'.
-                    "\n".'<loc>'.$url->getSchemeAndHttpHost().$url->getPath().'</loc>'.
-                    "\n".'<lastmod>'.$profileUrl->getLastmod().'</lastmod>'.
-                    "\n".'<changefreq>'.$profile->getSitemapFrequency().'</changefreq>'.
-                    "\n".'<priority>'.$profile->getSitemapPriority().'</priority>'.
-                    "\n".'</url>';
-            }
-        }
-
-        return $sitemap;
+        $Ep->setSubject($urls);
     }
 
     protected function isUrl()

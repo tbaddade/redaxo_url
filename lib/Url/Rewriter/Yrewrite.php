@@ -30,7 +30,7 @@ class Yrewrite extends Rewriter
      */
     public function getSitemapExtensionPoint()
     {
-        return 'YREWRITE_SITEMAP';
+        return 'YREWRITE_DOMAIN_SITEMAP_URLS';
     }
 
     /**
@@ -60,41 +60,41 @@ class Yrewrite extends Rewriter
     /**
      * @return string
      */
-    public function getSeoTitleTagMethod()
+    public function getSeoTitleEP()
     {
-        return 'getTitleTag';
+        return 'YREWRITE_TITLE';
     }
 
     /**
      * @return string
      */
-    public function getSeoDescriptionTagMethod()
+    public function getSeoDescriptionEP()
     {
-        return 'getDescriptionTag';
+        return 'YREWRITE_DESCRIPTION';
     }
 
     /**
      * @return string
      */
-    public function getSeoCanonicalTagMethod()
+    public function getSeoCanonicalEP()
     {
-        return 'getCanonicalUrlTag';
+        return 'YREWRITE_CANONICAL_URL';
     }
 
     /**
      * @return string
      */
-    public function getSeoHreflangTagsMethod()
+    public function getSeoHreflangEP()
     {
-        return 'getHreflangTags';
+        return 'YREWRITE_HREFLANG_TAGS';
     }
 
     /**
      * @return string
      */
-    public function getSeoRobotsTagMethod()
+    public function getSeoImagesEP()
     {
-        return 'getRobotsTag';
+        return 'YREWRITE_IMAGES';
     }
 
     /**
