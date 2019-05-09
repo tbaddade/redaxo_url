@@ -233,13 +233,25 @@ class UrlManager
 
     /**
      * @param int $profileId
+     * @param int $articleId
      *
      * @throws \rex_sql_exception
      *
      * @return null|UrlManager[]
      */
-    public static function getByProfileId($profileId)
+    public static function getByProfileId($profileId, $articleId)
     {
+        $Article = \rex_article::get($articleId);
+        $artPath = $Article->getPathAsArray();
+
+        foreach ($artPath as $pathId) {
+            $Category = \rex_category::get($pathId);
+
+            if (!$Category->isOnline()) {
+                return null;
+            }
+        }
+
         $items = UrlManagerSql::getByProfileId($profileId);
 
         if (!$items) {

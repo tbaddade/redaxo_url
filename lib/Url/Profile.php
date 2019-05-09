@@ -411,7 +411,7 @@ class Profile
      */
     public function getUrls()
     {
-        return UrlManager::getByProfileId($this->getId());
+        return UrlManager::getByProfileId($this->getId(), $this->getArticleId());
     }
 
     /**
