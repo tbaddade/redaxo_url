@@ -189,8 +189,20 @@ class UrlManagerSql
      */
     public static function getByProfileId($profileId)
     {
+
+        $clangids = \rex_clang::getAllIds(true);
+
         $sql = self::factory();
-        return $sql->sql->getArray('SELECT * FROM '.\rex::getTable(self::TABLE_NAME).' WHERE `profile_id` = ?', [$profileId]);
+        return $sql->sql->getArray('
+            SELECT * 
+            FROM '.\rex::getTable(self::TABLE_NAME).' AS m 
+            LEFT JOIN '.\rex::getTable('article').' AS jt1 
+                ON `jt1`.`id` = `m`.`article_id` 
+                AND `jt1`.`clang_id` = `m`.`clang_id`
+            WHERE 
+                `m`.`profile_id` = ? 
+                AND `m`.`clang_id` IN('. implode(',', $clangids) .') 
+                AND `jt1`.`status` = 1', [$profileId]);
     }
 
     /**

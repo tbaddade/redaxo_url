@@ -198,8 +198,7 @@ class Profile
      */
     public function inSitemap()
     {
-        $Article = \rex_article::get($this->getArticleId(), $this->getArticleClangId());
-        return (bool) $this->sitemap_add && $Article->isOnline();
+        return (bool) $this->sitemap_add;
     }
 
     public function getSitemapFrequency()
