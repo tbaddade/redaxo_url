@@ -24,9 +24,11 @@ class Seo
 
     public function __construct()
     {
-        $this->manager     = Url::resolveCurrent();
-        $this->rewriter    = Url::getRewriter();
-        $this->rewriterSeo = $this->rewriter->getSeoInstance();
+        if (!\rex::isBackend()) {
+            $this->manager     = Url::resolveCurrent();
+            $this->rewriter    = Url::getRewriter();
+            $this->rewriterSeo = $this->rewriter->getSeoInstance();
+        }
     }
 
     public function init()
