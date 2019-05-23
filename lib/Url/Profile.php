@@ -526,7 +526,9 @@ class Profile
     protected function getDataset($primaryColumnName, $primaryId)
     {
         $query = $this->buildQuery();
-        $query->where($this->getColumnNameWithAlias($primaryColumnName), $primaryId);
+        if($primaryColumnName != '' && $primaryId > 0) {
+        	$query->where($this->getColumnNameWithAlias($primaryColumnName), $primaryId);
+        }
         // $items = \rex_sql::factory()->setDebug()->getArray($query->getQuery(), $query->getParams());
         return $query->find();
     }
