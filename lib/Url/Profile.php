@@ -577,7 +577,7 @@ class Profile
         }
         $query->whereRaw('('.implode(' OR ', $whereRawSegmentParts).')');
 
-        if ($this->hasRestrictions()) {
+        if ($this->hasRestrictions() || $this->getArticleClangId() > 0) {
             $where = [];
             foreach ($this->getRestrictions() as $index => $values) {
                 $restriction = new ProfileRestriction(
@@ -593,6 +593,9 @@ class Profile
                 }
                 $where[] = $restriction->getWhere();
             }
+            if($this->getArticleClangId() > 0) {
+            	$where[] = "data.clang_id = ". $this->getArticleClangId();
+            }
             $query->whereRaw(implode(' ', $where));
         }
 
@@ -601,8 +604,8 @@ class Profile
                 $query = $relation->completeQuery(
                     $query,
                     $this->getColumnNameWithAlias('relation_'.$relation->getIndex()),
-                    $this->getArticleClangId(),
-                    $this->getColumnNameWithAlias('clang_id')
+                    $this->getColumnNameWithAlias('clang_id'),
+					null
                 );
             }
         }
