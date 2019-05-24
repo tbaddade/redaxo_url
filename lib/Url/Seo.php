@@ -140,6 +140,9 @@ class Seo
             }
 
             foreach ($profileUrls as $profileUrl) {
+                if (!is_object($profileUrl)) {
+                    continue;
+                }
                 $url = $profileUrl->getUrl();
                 $url->withSolvedScheme();
 
