@@ -15,6 +15,7 @@ use Url\Generator;
 use Url\Profile;
 use Url\Url;
 use Url\UrlManager;
+use Url\UrlManagerSql;
 
 $id = rex_request('id', 'int');
 $func = rex_request('func', 'string');
@@ -41,6 +42,7 @@ if ($func == 'delete' && $id > 0) {
             if ($sql->delete()) {
                 $message .= rex_view::success(rex_i18n::msg('url_generator_profile_removed'));
             }
+            Cache::deleteProfiles();
         }
     }
     $func = '';
@@ -50,22 +52,25 @@ if (($func == 'refresh' && $id > 0) || $func == 'refresh_all') {
     if (!rex_csrf_token::factory('url_profile_refresh')->isValid()) {
         $message = rex_view::error(rex_i18n::msg('csrf_token_invalid'));
     } else {
-        if ($func == 'refresh') {
-            $profile = Profile::get($id);
-            if ($profile) {
-                $profile->deleteUrls();
-                $profile->buildUrls();
-                $message .= rex_view::success(rex_i18n::msg('url_generator_url_refreshed', $id));
-            }
-        } else {
-            $profiles = Profile::getAll();
-            if ($profiles) {
-                foreach ($profiles as $profile) {
+        switch ($func) {
+            case 'refresh':
+                $profile = Profile::get($id);
+                if ($profile) {
                     $profile->deleteUrls();
                     $profile->buildUrls();
-                    $message .= rex_view::success(rex_i18n::msg('url_generator_url_refreshed', $profile->getId()));
+                    $message .= rex_view::success(rex_i18n::msg('url_generator_url_refreshed', $id));
                 }
-            }
+                break;
+            case 'refresh_all':
+                UrlManagerSql::deleteAll();
+                $profiles = Profile::getAll();
+                if ($profiles) {
+                    foreach ($profiles as $profile) {
+                        $profile->buildUrls();
+                        $message .= rex_view::success(rex_i18n::msg('url_generator_url_refreshed', $profile->getId()));
+                    }
+                }
+                break;
         }
     }
     $func = '';
