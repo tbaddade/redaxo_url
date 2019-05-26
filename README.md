@@ -5,6 +5,7 @@ Url AddOn
 2. [Beispiel: News AddOn](#beispiel-news-addOn)
 3. [Installation](#installation)
 4. [unterstützte Rewriter](#unterstützte-rewriter)
+5. [Extension Points](#extenstion_points)
 
 ## Beschreibung
 --------------------------------------------------------------------------------
@@ -105,3 +106,47 @@ UrlGenerator::generatePathFile([]);
 ### unterstützte Rewriter
 --------------------------------------------------------------------------------
 * [yrewrite](https://github.com/yakamara/redaxo_yrewrite)
+
+
+## Extension Points
+--------------------------------------------------------------------------------
+### Beispiel Code URL_MANAGER_PRE_SAVE
+
+```php
+<?php
+if(\rex::isBackend()) {
+	rex_extension::register('URL_MANAGER_PRE_SAVE', 'rex_url_shortener');
+}
+
+/**
+ * Kürzt URL indem es die Artikel und Kategorienamen aus der URL entfernt
+ * @param rex_extension_point $ep Redaxo extension point
+ * @return Url Neue URL
+ */
+function rex_url_shortener(rex_extension_point $ep) {
+	$params = $ep->getParams();
+	$url = $params['object'];
+	$article_id = $params['article_id'];
+	$clang_id = $params['clang_id'];
+	
+	// URL muss nur gekürzt werden, wenn es sich nicht im den Startartikel der Domain handelt
+	if($article_id != rex_yrewrite::getDomainByArticleId($article_id, $clang_id)->getStartId()) {
+		$article_url = rex_getUrl($article_id, $clang_id);
+		$start_article_url = rex_getUrl(rex_article::getSiteStartArticleId(), $clang_id);
+		$article_url_without_lang_slug = '';
+		if(strlen($start_article_url) == 1) {
+            // Wenn lang slug  im Startartikel nicht angezeigt wird
+			$article_url_without_lang_slug = str_replace('/'. strtolower(rex_clang::get($clang_id)->getCode()) .'/', '/', $article_url);
+		}
+		else {
+			$article_url_without_lang_slug = str_replace($start_article_url, '/', $article_url);
+		}
+		$new_url = new \Url\Url(str_replace($article_url_without_lang_slug, '/', $url->__toString()));
+		$new_url->handleRewriterSuffix();
+
+		return $new_url;
+	}
+	
+	return $url;
+}
+```
