@@ -110,6 +110,9 @@ UrlGenerator::generatePathFile([]);
 
 ## Extension Points
 --------------------------------------------------------------------------------
+
+Der Extension Point URL_MANAGER_PRE_SAVE gibt die Möglichkeit eine URL vor dem Speichern in der URL Tabelle zumanipulieren.
+
 ### Beispiel Code URL_MANAGER_PRE_SAVE
 
 ```php
@@ -119,7 +122,9 @@ if(\rex::isBackend()) {
 }
 
 /**
- * Kürzt URL indem es die Artikel und Kategorienamen aus der URL entfernt
+ * Kürzt URL für ALLE Profile indem es die Artikel und Kategorienamen aus der URL entfernt.
+ * Es findet im Beispielcode KEINE Prüfung statt ob eine URL schon existiert. Beim Erstellen der Profile muss darauf
+ * geachtet werden, dass doppelte URLs nicht möglich sind, da sonst beim Speichern ein Fatal Error geworfen wird.
  * @param rex_extension_point $ep Redaxo extension point
  * @return Url Neue URL
  */
