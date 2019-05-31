@@ -204,7 +204,7 @@ class UrlManager
      */
     public function inSitemap()
     {
-        return $this->values['sitemap'] === 1 ? true : false;
+        return $this->values['sitemap'] == 1;
     }
 
     /**
