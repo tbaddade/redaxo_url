@@ -124,6 +124,10 @@ class Seo
                 }
 
                 foreach ($profileUrls as $profileUrl) {
+                    if (!$profileUrl->publishedInSitemap()) {
+                        continue;
+                    }
+
                     $url = $profileUrl->getUrl();
                     $url->withSolvedScheme();
 

@@ -239,19 +239,8 @@ class UrlManager
      *
      * @return null|UrlManager[]
      */
-    public static function getByProfileId($profileId, $articleId)
+    public static function getByProfileId($profileId)
     {
-        $Article = \rex_article::get($articleId);
-        $artPath = $Article->getPathAsArray();
-
-        foreach ($artPath as $pathId) {
-            $Category = \rex_category::get($pathId);
-
-            if (!$Category->isOnline()) {
-                return null;
-            }
-        }
-
         $items = UrlManagerSql::getByProfileId($profileId);
 
         if (!$items) {
@@ -263,6 +252,35 @@ class UrlManager
             $instances[] = new self($item);
         }
         return $instances;
+    }
+
+    public function publishedInSitemap()
+    {
+        if (!$this->inSitemap()) {
+            return false;
+        }
+
+        $clangId = $this->values['clang_id'];
+        $clang   = \rex_clang::get($clangId);
+
+        if (!$clang->isOnline()) {
+            return false;
+        }
+
+        $article = \rex_article::get($this->getArticleId(), $clangId);
+        if (!$article->isOnline()) {
+            return false;
+        }
+
+        $articlePath = $article->getPathAsArray();
+        foreach ($articlePath as $id) {
+            $category = \rex_category::get($id);
+            if (!$category->isOnline()) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
