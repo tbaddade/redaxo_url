@@ -15,6 +15,7 @@ use Url\Generator;
 use Url\Profile;
 use Url\Url;
 use Url\UrlManager;
+use Url\UrlManagerSql;
 
 $id = rex_request('id', 'int');
 $func = rex_request('func', 'string');
@@ -41,6 +42,7 @@ if ($func == 'delete' && $id > 0) {
             if ($sql->delete()) {
                 $message .= rex_view::success(rex_i18n::msg('url_generator_profile_removed'));
             }
+            Cache::deleteProfiles();
         }
     }
     $func = '';
@@ -50,22 +52,25 @@ if (($func == 'refresh' && $id > 0) || $func == 'refresh_all') {
     if (!rex_csrf_token::factory('url_profile_refresh')->isValid()) {
         $message = rex_view::error(rex_i18n::msg('csrf_token_invalid'));
     } else {
-        if ($func == 'refresh') {
-            $profile = Profile::get($id);
-            if ($profile) {
-                $profile->deleteUrls();
-                $profile->buildUrls();
-                $message .= rex_view::success(rex_i18n::msg('url_generator_url_refreshed', $id));
-            }
-        } else {
-            $profiles = Profile::getAll();
-            if ($profiles) {
-                foreach ($profiles as $profile) {
+        switch ($func) {
+            case 'refresh':
+                $profile = Profile::get($id);
+                if ($profile) {
                     $profile->deleteUrls();
                     $profile->buildUrls();
-                    $message .= rex_view::success(rex_i18n::msg('url_generator_url_refreshed', $profile->getId()));
+                    $message .= rex_view::success(rex_i18n::msg('url_generator_url_refreshed', $id));
                 }
-            }
+                break;
+            case 'refresh_all':
+                UrlManagerSql::deleteAll();
+                $profiles = Profile::getAll();
+                if ($profiles) {
+                    foreach ($profiles as $profile) {
+                        $profile->buildUrls();
+                        $message .= rex_view::success(rex_i18n::msg('url_generator_url_refreshed', $profile->getId()));
+                    }
+                }
+                break;
         }
     }
     $func = '';
@@ -246,8 +251,6 @@ if ($func == '') {
         $fieldArticleClangId->setFooter('
                 </div>
             </div>');
-        $fieldArticleClangId->setPrefix('<div class="rex-select-style">');
-        $fieldArticleClangId->setSuffix('</div>');
         $fieldArticleClangId->setNotice($this->i18n('url_generator_article_clang').'; '.$this->i18n('url_generator_article_clang_notice', $this->i18n('url_generator_identify_record')));
         $select = $fieldArticleClangId->getSelect();
         $select->addOption($this->i18n('url_generator_article_clang_option_all'), '0');
@@ -272,8 +275,6 @@ if ($func == '') {
     $fieldTable->setFooter('
             </div>
         </div>');
-    $fieldTable->setPrefix('<div class="rex-select-style">');
-    $fieldTable->setSuffix('</div>');
     $fieldTable->getValidator()
         ->add('notEmpty', $this->i18n('url_generator_table_error'));
     $fieldTableSelect = $fieldTable->getSelect();
@@ -331,8 +332,6 @@ if ($func == '') {
                     <div class="addoff-grid-item" data-addoff-size="3">');
             $f->setFooter('
                     </div>');
-            $f->setPrefix('<div class="rex-select-style">');
-            $f->setSuffix('</div>');
             $f->setAttribute('disabled', 'true');
             $f->setNotice($this->i18n('url_generator_id_notice'));
             $select = $f->getSelect();
@@ -348,8 +347,6 @@ if ($func == '') {
                 $f->setFooter('
                         </div>
                     </div>');
-                $f->setPrefix('<div class="rex-select-style">');
-                $f->setSuffix('</div>');
                 $f->setAttribute('disabled', 'true');
                 $f->setNotice($this->i18n('url_language').' '.$this->i18n('url_generator_clang_id_notice'));
                 $select = $f->getSelect();
@@ -374,8 +371,6 @@ if ($func == '') {
                     $f->setFooter('
                                     </div>
                                 </div>');
-                    $f->setPrefix('<div class="rex-select-style">');
-                    $f->setSuffix('</div>');
                     $f->setAttribute('disabled', 'true');
                     $select = $f->getSelect();
                     $select->addOption('', '');
@@ -404,8 +399,6 @@ if ($func == '') {
                                 <div class="addoff-grid-item" data-addoff-size="3of10">');
                 $f->setFooter('
                                 </div>');
-                $f->setPrefix('<div class="rex-select-style">');
-                $f->setSuffix('</div>');
                 $f->setAttribute('disabled', 'true');
                 $select = $f->getSelect();
                 $select->addOption($this->i18n('url_generator_no_restriction'), '');
@@ -417,8 +410,6 @@ if ($func == '') {
                 $f = $fieldContainer->addGroupedField($group, $type, $name);
                 $f->setHeader('<div class="addoff-grid-item" data-addoff-size="1of10">');
                 $f->setFooter('</div>');
-                $f->setPrefix('<div class="rex-select-style">');
-                $f->setSuffix('</div>');
                 $f->setAttribute('disabled', 'true');
                 $select = $f->getSelect();
                 $select->addOptions(Database::getComparisonOperators());
@@ -446,8 +437,6 @@ if ($func == '') {
                     $f = $fieldContainer->addGroupedField($group, $type, $name);
                     $f->setHeader('<div class="addoff-grid-item text-center text-large" data-addoff-size="1">');
                     $f->setFooter('</div>');
-                    $f->setPrefix('<div class="rex-select-style">');
-                    $f->setSuffix('</div>');
                     $f->setAttribute('disabled', 'true');
                     $select = $f->getSelect();
                     $select->addOptions(UrlManager::getSegmentPartSeparators());
@@ -476,8 +465,6 @@ if ($func == '') {
                 $appendFooter = ($i == Profile::SEGMENT_PART_COUNT) ? '</div>' : '';
                 $f->setFooter('
                         </div>'.$appendFooter);
-                $f->setPrefix('<div class="rex-select-style">');
-                $f->setSuffix('</div>');
                 $f->setAttribute('disabled', 'true');
                 $select = $f->getSelect();
                 if ($i > 1) {
@@ -519,7 +506,7 @@ if ($func == '') {
                                 <div class="addoff-grid-item" data-addoff-size="2of10">');
                 $f->setFooter('
                                 </div>');
-                $f->setPrefix('<div class="rex-select-style js-change-relation-'.$i.'-select">');
+                $f->setPrefix('<div class="js-change-relation-'.$i.'-select">');
                 $f->setSuffix('</div>');
                 $f->setAttribute('disabled', 'true');
                 // $f->setNotice($this->i18n('url_generator_relation_column_notice'));
@@ -550,8 +537,6 @@ if ($func == '') {
                 $f->setFooter('
                                 </div>
                             </div>'.$appendFooter);
-                $f->setPrefix('<div class="rex-select-style">');
-                $f->setSuffix('</div>');
                 $f->setAttribute('disabled', 'true');
                 // $f->setNotice($this->i18n('url_generator_relation_position_notice'));
                 $select = $f->getSelect();
@@ -584,8 +569,7 @@ if ($func == '') {
             $f->setFooter('
                     </div>
                 </div>');
-            $f->setPrefix('<label>'.$this->i18n('url_generator_append_structure_categories_append').'</label><div class="rex-select-style">');
-            $f->setSuffix('</div>');
+            $f->setPrefix('<label>'.$this->i18n('url_generator_append_structure_categories_append').'</label>');
             $f->setNotice($this->i18n('url_generator_append_structure_categories_notice'));
             $select = $f->getSelect();
             $select->addOptions(['0' => $this->i18n('no'), '1' => $this->i18n('yes')]);
@@ -603,8 +587,6 @@ if ($func == '') {
                     <div class="addoff-grid-item" data-addoff-size="3">');
             $f->setFooter('
                     </div>');
-            $f->setPrefix('<div class="rex-select-style">');
-            $f->setSuffix('</div>');
             $f->setAttribute('disabled', 'true');
             $f->setNotice($this->i18n('url_generator_seo_title_notice'));
             $select = $f->getSelect();
@@ -619,8 +601,6 @@ if ($func == '') {
                     <div class="addoff-grid-item" data-addoff-size="3">');
             $f->setFooter('
                     </div>');
-            $f->setPrefix('<div class="rex-select-style">');
-            $f->setSuffix('</div>');
             $f->setAttribute('disabled', 'true');
             $f->setNotice($this->i18n('url_generator_seo_description_notice'));
             $select = $f->getSelect();
@@ -636,8 +616,6 @@ if ($func == '') {
             $f->setFooter('
                     </div>
                 </div>');
-            $f->setPrefix('<div class="rex-select-style">');
-            $f->setSuffix('</div>');
             $f->setAttribute('disabled', 'true');
             $f->setNotice($this->i18n('url_generator_seo_image_notice'));
             $select = $f->getSelect();
@@ -657,8 +635,6 @@ if ($func == '') {
                     <div class="addoff-grid-item" data-addoff-size="2">');
             $f->setFooter('
                     </div>');
-            $f->setPrefix('<div class="rex-select-style">');
-            $f->setSuffix('</div>');
             $f->setAttribute('disabled', 'true');
             $f->setNotice($this->i18n('url_generator_sitemap_add_notice'));
             $select = $f->getSelect();
@@ -672,8 +648,6 @@ if ($func == '') {
                     <div class="addoff-grid-item" data-addoff-size="2">');
             $f->setFooter('
                     </div>');
-            $f->setPrefix('<div class="rex-select-style">');
-            $f->setSuffix('</div>');
             $f->setAttribute('disabled', 'true');
             $f->setNotice($this->i18n('url_generator_sitemap_frequency_notice'));
             $select = $f->getSelect();
@@ -687,8 +661,6 @@ if ($func == '') {
                     <div class="addoff-grid-item" data-addoff-size="2">');
             $f->setFooter('
                     </div>');
-            $f->setPrefix('<div class="rex-select-style">');
-            $f->setSuffix('</div>');
             $f->setAttribute('disabled', 'true');
             $f->setNotice($this->i18n('url_generator_sitemap_priority_notice'));
             $select = $f->getSelect();
@@ -703,8 +675,6 @@ if ($func == '') {
             $f->setFooter('
                     </div>
                 </div>');
-            $f->setPrefix('<div class="rex-select-style">');
-            $f->setSuffix('</div>');
             $f->setAttribute('disabled', 'true');
             $f->setNotice($this->i18n('url_generator_sitemap_lastmod_notice'));
             $select = $f->getSelect();
@@ -726,8 +696,6 @@ if ($func == '') {
         $f->setFooter('
                 </div>
             </div>');
-        $f->setPrefix('<div class="rex-select-style">');
-        $f->setSuffix('</div>');
         $fieldRelationTableSelect = $f->getSelect();
         $fieldRelationTableSelect->addOption($this->i18n('url_no_table_selected'), '');
 
@@ -784,8 +752,6 @@ if ($func == '') {
                         <div class="addoff-grid-item" data-addoff-size="3">');
                 $f->setFooter('
                         </div>');
-                $f->setPrefix('<div class="rex-select-style">');
-                $f->setSuffix('</div>');
                 $f->setAttribute('disabled', 'true');
                 $f->setNotice($this->i18n('url_generator_id_notice'));
                 $select = $f->getSelect();
@@ -801,8 +767,6 @@ if ($func == '') {
                     $f->setFooter('
                             </div>
                         </div>');
-                    $f->setPrefix('<div class="rex-select-style">');
-                    $f->setSuffix('</div>');
                     $f->setAttribute('disabled', 'true');
                     $f->setNotice($this->i18n('url_generator_clang_id_notice'));
                     $select = $f->getSelect();
@@ -825,8 +789,6 @@ if ($func == '') {
                         $f = $fieldContainer->addGroupedField($group, $type, $name);
                         $f->setHeader('<div class="addoff-grid-item text-center text-large" data-addoff-size="1">');
                         $f->setFooter('</div>');
-                        $f->setPrefix('<div class="rex-select-style">');
-                        $f->setSuffix('</div>');
                         $f->setAttribute('disabled', 'true');
                         $select = $f->getSelect();
                         $select->addOptions(UrlManager::getSegmentPartSeparators());
@@ -855,8 +817,6 @@ if ($func == '') {
                     $appendFooter = ($j == Profile::SEGMENT_PART_COUNT) ? '</div>' : '';
                     $f->setFooter('
                             </div>'.$appendFooter);
-                    $f->setPrefix('<div class="rex-select-style">');
-                    $f->setSuffix('</div>');
                     $f->setAttribute('disabled', 'true');
                     $select = $f->getSelect();
                     if ($j > 1) {
