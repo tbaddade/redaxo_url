@@ -23,7 +23,7 @@ page:
             itemclass: pull-right
 
 requires:
-    redaxo: ^5.4.0
+    redaxo: ^5.7.0
     packages:
         yrewrite: ^2.2.0
     php:
