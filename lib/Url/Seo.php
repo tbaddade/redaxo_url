@@ -146,7 +146,7 @@ class Seo
                     "\n".'<url>'.
                     "\n".'<loc>'. $url->withSolvedScheme() .'</loc>'.
                     "\n".'<lastmod>'. $profileUrl['lastmod'] .'</lastmod>'.
-					($picture != '' ? "\n".'<picture>'. $url->getSchemeAndHttpHost(). \rex_url::media($picture) .'</picture>' : '').
+					($picture != '' ? "\n".'<image>'. $url->getSchemeAndHttpHost(). \rex_url::media($picture) .'</image>' : '').
                     "\n".'<changefreq>'. $profile->getSitemapFrequency() .'</changefreq>'.
                     "\n".'<priority>'. $profile->getSitemapPriority() .'</priority>'.
                     "\n".'</url>';
