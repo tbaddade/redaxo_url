@@ -140,15 +140,15 @@ class Seo
             }
 
             foreach ($profileUrls as $profileUrl) {
-                $url = $profileUrl->getUrl();
-                $url->withSolvedScheme();
-
+				$url = new \Url\Url($profileUrl['url']);
+				$picture = json_decode($profileUrl['seo'])->image;
                 $sitemap[] =
                     "\n".'<url>'.
-                    "\n".'<loc>'.$url->getSchemeAndHttpHost().$url->getPath().'</loc>'.
-                    "\n".'<lastmod>'.$profileUrl->getLastmod().'</lastmod>'.
-                    "\n".'<changefreq>'.$profile->getSitemapFrequency().'</changefreq>'.
-                    "\n".'<priority>'.$profile->getSitemapPriority().'</priority>'.
+                    "\n".'<loc>'. $url->withSolvedScheme() .'</loc>'.
+                    "\n".'<lastmod>'. $profileUrl['lastmod'] .'</lastmod>'.
+					($picture != '' ? "\n".'<picture>'. $url->getSchemeAndHttpHost(). \rex_url::media($picture) .'</picture>' : '').
+                    "\n".'<changefreq>'. $profile->getSitemapFrequency() .'</changefreq>'.
+                    "\n".'<priority>'. $profile->getSitemapPriority() .'</priority>'.
                     "\n".'</url>';
             }
         }
