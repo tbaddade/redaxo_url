@@ -696,7 +696,7 @@ if ($func == '') {
                 </div>
             </div>');
         $fieldRelationTableSelect = $f->getSelect();
-        $fieldRelationTableSelect->addOption($this->i18n('url_no_table_selected'), '');
+        $fieldRelationTableSelect->addOption($this->i18n('url_generator_table_not_selected'), '');
 
         $activeRelationTable = $f->getValue();
 
