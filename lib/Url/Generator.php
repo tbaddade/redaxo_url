@@ -157,11 +157,6 @@ class Generator
                             case 'NOT IN (...)':
                                 $table->restrictionOperator = str_replace(' (...)', '', $table->restrictionOperator);
                                 $values = explode(',', $table->restrictionValue);
-                                foreach ($values as $key => $value) {
-                                    if (!(int) $value > 0) {
-                                        unset($values[$key]);
-                                    }
-                                }
                                 $table->restrictionValue = ' (' . implode(',', $values) . ') ';
                                 break;
 
