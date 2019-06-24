@@ -262,6 +262,20 @@ class UrlManager
      */
     public static function resolveUrl(Url $url)
     {
+        // Url nur auflösen (DB-Abfrage), wenn der erste Teil des Url-Pfades auch in einem Profil zu finden ist
+        // Prüft ob der erste Teil der übergebenen Url in einem Profil zu finden ist.
+        $resolve = false;
+        foreach (Profile::getAll() as $profile) {
+            $articlePath = $profile->getArticleUrl()->getPath();
+            if ($articlePath == substr($url->getPath(), 0, strlen($articlePath))) {
+                $resolve = true;
+                break;
+            }
+        }
+        if (!$resolve) {
+            return null;
+        }
+
         $items = UrlManagerSql::getByUrl($url);
         if (count($items) != 1) {
             return null;
