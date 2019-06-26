@@ -117,9 +117,7 @@ Der Extension Point URL_MANAGER_PRE_SAVE gibt die Möglichkeit eine URL vor dem 
 
 ```php
 <?php
-if(\rex::isBackend()) {
-	rex_extension::register('URL_MANAGER_PRE_SAVE', 'rex_url_shortener');
-}
+rex_extension::register('URL_MANAGER_PRE_SAVE', 'rex_url_shortener');
 
 /**
  * Kürzt URL für ALLE Profile indem es die Artikel und Kategorienamen aus der URL entfernt.
