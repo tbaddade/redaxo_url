@@ -135,7 +135,7 @@ function rex_url_shortener(rex_extension_point $ep) {
 	// URL muss nur gekürzt werden, wenn es sich nicht im den Startartikel der Domain handelt
 	if($article_id != rex_yrewrite::getDomainByArticleId($article_id, $clang_id)->getStartId()) {
 		$article_url = rex_getUrl($article_id, $clang_id);
-		$start_article_url = rex_getUrl(rex_article::getSiteStartArticleId(), $clang_id);
+		$start_article_url = rex_getUrl(rex_yrewrite::getDomainByArticleId($article_id, $clang_id)->getStartId(), $clang_id);
 		$article_url_without_lang_slug = '';
 		if(strlen($start_article_url) == 1) {
             // Wenn lang slug  im Startartikel nicht angezeigt wird
