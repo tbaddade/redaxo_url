@@ -121,8 +121,6 @@ rex_extension::register('URL_MANAGER_PRE_SAVE', 'rex_url_shortener');
 
 /**
  * Kürzt URL für ALLE Profile indem es die Artikel und Kategorienamen aus der URL entfernt.
- * Es findet im Beispielcode KEINE Prüfung statt ob eine URL schon existiert. Beim Erstellen der Profile muss darauf
- * geachtet werden, dass doppelte URLs nicht möglich sind, da sonst beim Speichern ein Fatal Error geworfen wird.
  * @param rex_extension_point $ep Redaxo extension point
  * @return Url Neue URL
  */
@@ -138,14 +136,33 @@ function rex_url_shortener(rex_extension_point $ep) {
 		$start_article_url = rex_getUrl(rex_yrewrite::getDomainByArticleId($article_id, $clang_id)->getStartId(), $clang_id);
 		$article_url_without_lang_slug = '';
 		if(strlen($start_article_url) == 1) {
-            // Wenn lang slug  im Startartikel nicht angezeigt wird
+            		// Wenn lang slug  im Startartikel nicht angezeigt wird
 			$article_url_without_lang_slug = str_replace('/'. strtolower(rex_clang::get($clang_id)->getCode()) .'/', '/', $article_url);
 		}
 		else {
 			$article_url_without_lang_slug = str_replace($start_article_url, '/', $article_url);
 		}
-		$new_url = new \Url\Url(str_replace($article_url_without_lang_slug, '/', $url->__toString()));
+		
+		// Im Fall $url ist urlencoded, muss Artikel URL ebenfalls encoded werden
+		$article_url_without_lang_slug_split = explode("/", $article_url_without_lang_slug);
+		for($i = 0; $i < count($article_url_without_lang_slug_split); $i++) {
+			$article_url_without_lang_slug_split[$i] = urlencode($article_url_without_lang_slug_split[$i]);
+		}
+		$article_url_without_lang_slug_split_encoded = implode("/", $article_url_without_lang_slug_split);
+
+		$new_url = new \Url\Url(str_replace($$article_url_without_lang_slug_split_encoded, '/', $url->__toString()));
 		$new_url->handleRewriterSuffix();
+		
+		// Auf Duplikate prüfen
+		$query = "SELECT * FROM ". \rex::getTablePrefix() ."url_generator_url "
+			."WHERE url = '". $new_url->__toString() ."'";
+
+		$result = \rex_sql::factory();
+		$result->setQuery($query);
+		if($result->getRows() > 0) {
+			// FALSE zurückgeben, Duplikate sind nicht erlaubt
+			return FALSE;
+		}
 
 		return $new_url;
 	}
