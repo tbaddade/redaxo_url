@@ -408,13 +408,9 @@ class UrlManager
                     $url->withQuery('?'.\rex_string::buildQuery($urlParams, $ep->getParam('separator')));
                 }
 
-                if ($url->getDomain() == Url::getCurrent()->getDomain()) {
-                    return $url->getPath().$url->getQuery();
-                }
-
                 $scheme = Url::getRewriter()->getSchemeByDomain($url->getDomain()) ?: (Url::getRewriter()->isHttps() ? 'https' : 'http');
                 $url->withScheme($scheme);
-                return $url->getSchemeAndHttpHost().$url->getPath();
+                return $url->getSchemeAndHttpHost().$url->getPath().$url->getQuery();
             }
         }
         return null;
