@@ -69,6 +69,12 @@ class Url
         return $this->modifyPathSegments($segments, $this->uri->getPathSegments());
     }
 
+    public function setPathSegments(array $segments)
+    {
+        $segments = $this->normalize($segments);
+        return $this->modifyPathSegments($segments, []);
+    }
+
     public function withHost($domain)
     {
         $this->uri = $this->uri->withHost($domain);
