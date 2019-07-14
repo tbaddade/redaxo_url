@@ -51,4 +51,5 @@
     ->ensureColumn(new \rex_sql_column('updateuser', 'VARCHAR(255)'))
 
     ->ensureIndex(new \rex_sql_index('url', ['url'], \rex_sql_index::UNIQUE))
+    ->ensureIndex(new \rex_sql_index('unique_dataset', ['profile_id', 'article_id', 'clang_id', 'data_id'], \rex_sql_index::UNIQUE))
     ->ensure();
