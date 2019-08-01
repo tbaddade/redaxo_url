@@ -364,6 +364,7 @@ class Profile
             $urlObject['data_id'] = $dataset->getId();
             $urlObject['profile_id'] = $this->getId();
             $urlObject['sitemap'] = $this->inSitemap();
+            $urlObject['tablename'] = $this->getTableName();
 
             $urlInstance = \rex_extension::registerPoint(new \rex_extension_point('URL_MANAGER_PRE_SAVE', $urlInstance, $urlObject));
 
