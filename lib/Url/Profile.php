@@ -637,4 +637,13 @@ class Profile
         }
         self::$cacheLoaded = true;
     }
+
+    /**
+     * Resets the intern cache of this class.
+     */
+    public static function reset()
+    {
+        self::$cacheLoaded = false;
+        self::$profiles = [];
+    }
 }

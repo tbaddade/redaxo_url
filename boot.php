@@ -25,9 +25,9 @@ rex_extension::register('PACKAGES_INCLUDED', function (\rex_extension_point $epP
     // if anything changes -> refresh PathFile
     if (rex::isBackend() && rex::getUser()) {
         $extensionPoints = [
-            'ART_ADDED', 'ART_UPDATED', 'ART_DELETED', 'ART_STATUS',
-            'CAT_ADDED', 'CAT_UPDATED', 'CAT_DELETED', 'CAT_STATUS',
-            'CLANG_ADDED', 'CLANG_UPDATED', 'CLANG_DELETED',
+            'ART_ADDED', 'ART_DELETED', 'ART_MOVED', 'ART_STATUS', 'ART_UPDATED',
+            'CAT_ADDED', 'CAT_DELETED', 'CAT_MOVED', 'CAT_STATUS', 'CAT_UPDATED',
+            'CLANG_ADDED', 'CLANG_DELETED','CLANG_UPDATED',
             'CACHE_DELETED',
             'REX_FORM_SAVED',
             'REX_YFORM_SAVED',
@@ -50,7 +50,7 @@ rex_extension::register('PACKAGES_INCLUDED', function (\rex_extension_point $epP
             $subject = $ep->getSubject();
 
             foreach ($profileArticleIds as $id) {
-                $regexp = '@<a href="index\.php\?page=structure.*?category-id='.$id.'.*?rex-api-call=category_delete.*?>(.*?)<\/a>@';
+                $regexp = '@<a href="index\.php\?page=structure.*?category-id='.$id.'&.*?rex-api-call=category_delete.*?>(.*?)<\/a>@';
                 if (preg_match($regexp, $subject, $matches)) {
                     $subject = str_replace($matches[0], '<span class="text-muted">'.$matches[1].'</span>', $subject);
                 }

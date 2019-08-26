@@ -93,14 +93,20 @@ class ExtensionPointManager
     {
         switch ($this->extensionPoint->getName()) {
             case 'ART_ADDED':
+            case 'ART_MOVED':
             case 'ART_STATUS':
             case 'ART_UPDATED':
             case 'CAT_ADDED':
+            case 'CAT_MOVED':
             case 'CAT_STATUS':
             case 'CAT_UPDATED':
+                $clangId = $this->extensionPoint->getParam('clang');
+                if (!$this->extensionPoint->hasParam('clang') && $this->extensionPoint->hasParam('clang_id')) {
+                    $clangId = $this->extensionPoint->getParam('clang_id');
+                }
                 $this->setMode(self::MODE_UPDATE_URL_COLLECTION);
                 $this->setStructureArticleId($this->extensionPoint->getParam('id'));
-                $this->setStructureClangId($this->extensionPoint->getParam('clang'));
+                $this->setStructureClangId($clangId);
                 break;
 
             case 'CACHE_DELETED':
@@ -119,6 +125,7 @@ class ExtensionPointManager
                 if ($tableName == \rex::getTable(Profile::TABLE_NAME)) {
                     // Profil wurde angelegt/aktualisiert
                     // Nur Urls dieses Profiles bearbeiten
+                    Profile::reset();
                     $this->setMode(self::MODE_UPDATE_URL_COLLECTION);
                     $this->setStructureArticleId($object->elementPostValue(\rex_i18n::msg('url_generator_article_legend'), 'article_id'));
                     $this->setStructureClangId($object->elementPostValue(\rex_i18n::msg('url_generator_article_legend'), 'clang_id', '0'));
