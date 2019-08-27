@@ -57,15 +57,15 @@ class Url
         $this->removeRewriterSuffix();
     }
 
-    public function appendPathSegments(array $segments)
+    public function appendPathSegments(array $segments, $clangId = 0)
     {
-        $segments = $this->normalize($segments);
+        $segments = $this->normalize($segments, $clangId);
         return $this->modifyPathSegments($this->uri->getPathSegments(), $segments);
     }
 
-    public function prependPathSegments(array $segments)
+    public function prependPathSegments(array $segments, $clangId = 0)
     {
-        $segments = $this->normalize($segments);
+        $segments = $this->normalize($segments, $clangId);
         return $this->modifyPathSegments($segments, $this->uri->getPathSegments());
     }
 
@@ -254,14 +254,14 @@ class Url
         return $this;
     }
 
-    private function normalize($sick)
+    private function normalize($sick, $clangId = 0)
     {
         if (is_string($sick)) {
             $sick = [$sick];
         }
 
         foreach ($sick as $index => $value) {
-            $sick[$index] = self::$rewriter->normalize($value);
+            $sick[$index] = self::$rewriter->normalize($value, $clangId);
         }
         return $sick;
     }
