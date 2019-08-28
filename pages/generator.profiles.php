@@ -13,8 +13,10 @@ use Url\Cache;
 use Url\Database;
 use Url\Generator;
 use Url\Profile;
+use Url\ProfileRelation;
 use Url\Url;
 use Url\UrlManager;
+use Url\UrlManagerSql;
 
 $id = rex_request('id', 'int');
 $func = rex_request('func', 'string');
@@ -41,6 +43,7 @@ if ($func == 'delete' && $id > 0) {
             if ($sql->delete()) {
                 $message .= rex_view::success(rex_i18n::msg('url_generator_profile_removed'));
             }
+            Cache::deleteProfiles();
         }
     }
     $func = '';
@@ -50,22 +53,25 @@ if (($func == 'refresh' && $id > 0) || $func == 'refresh_all') {
     if (!rex_csrf_token::factory('url_profile_refresh')->isValid()) {
         $message = rex_view::error(rex_i18n::msg('csrf_token_invalid'));
     } else {
-        if ($func == 'refresh') {
-            $profile = Profile::get($id);
-            if ($profile) {
-                $profile->deleteUrls();
-                $profile->buildUrls();
-                $message .= rex_view::success(rex_i18n::msg('url_generator_url_refreshed', $id));
-            }
-        } else {
-            $profiles = Profile::getAll();
-            if ($profiles) {
-                foreach ($profiles as $profile) {
+        switch ($func) {
+            case 'refresh':
+                $profile = Profile::get($id);
+                if ($profile) {
                     $profile->deleteUrls();
                     $profile->buildUrls();
-                    $message .= rex_view::success(rex_i18n::msg('url_generator_url_refreshed', $profile->getId()));
+                    $message .= rex_view::success(rex_i18n::msg('url_generator_url_refreshed', $id));
                 }
-            }
+                break;
+            case 'refresh_all':
+                UrlManagerSql::deleteAll();
+                $profiles = Profile::getAll();
+                if ($profiles) {
+                    foreach ($profiles as $profile) {
+                        $profile->buildUrls();
+                        $message .= rex_view::success(rex_i18n::msg('url_generator_url_refreshed', $profile->getId()));
+                    }
+                }
+                break;
         }
     }
     $func = '';
@@ -112,9 +118,15 @@ if (!function_exists('url_generate_column_data')) {
 
         $infoList = [];
         $profile = Profile::get($list->getValue('id'));
-        $infoList[] = [rex_i18n::msg('url_generator_table'), $profile->getTableName()];
+        $infoList[] = [
+            rex_i18n::msg('url_generator_table'),
+            $profile->getTableName()
+        ];
+        $infoList[] = [
+            rex_i18n::msg('url_generator_namespace'),
+            $profile->getNamespace()
+        ];
 
-        $infoList[] = [rex_i18n::msg('url_generator_namespace'), $profile->getNamespace()];
 
         $concatSegmentParts = '';
         for ($index = 1; $index <= Profile::SEGMENT_PART_COUNT; ++$index) {
@@ -124,14 +136,44 @@ if (!function_exists('url_generate_column_data')) {
             }
         }
 
+        $append = '';
+        $prepend = '';
+        if ($profile->hasRelations()) {
+            foreach ($profile->getRelations() as $relation) {
+                $concatSegmentPartsRelation = '';
+                for ($index = 1; $index <= Profile::SEGMENT_PART_COUNT; ++$index) {
+                    if ($relation->getColumnName('segment_part_'.$index) != '') {
+                        $concatSegmentPartsRelation .= $profile->getSegmentPartSeparators()[$index] ?? '';
+                        $concatSegmentPartsRelation .= '<code>'.$relation->getColumnNameWithAlias('segment_part_'.$index).'</code>';
+                    }
+                }
+                if ($relation->getSegmentPosition() === 'BEFORE') {
+                    $prepend .= $concatSegmentPartsRelation.Url::getRewriter()->getSuffix();
+                } else {
+                    $append .= $concatSegmentPartsRelation.Url::getRewriter()->getSuffix();
+                }
+            }
+        }
+        $concatSegmentParts = $prepend.$concatSegmentParts.$append;
 
         $url = new Url(Url::getRewriter()->getFullUrl($list->getValue('article_id'), $list->getValue('clang_id')));
         $url->withScheme('');
-        $infoList[] = [rex_i18n::msg('url_generator_url'), $url->getPath().$concatSegmentParts.Url::getRewriter()->getSuffix()];
 
-        $infoList[] = [rex_i18n::msg('url_generator_identify_record'), '<code>'.$profile->getColumnName('id').'</code>' . ($profile->getColumnName('clang_id') == '' ? '' : ' - <code>'.$profile->getColumnName('clang_id').'</code>')];
 
-        $infoList[] = [rex_i18n::msg('url_generator_namespace_short'), '<code>rex_getUrl(\'\', \'\', [\''.$profile->getNamespace().'\' => {id}])</code><br /><code>->getUrl([\''.$profile->getNamespace().'\' => {id}])</code>'];
+        $infoList[] = [
+            rex_i18n::msg('url_generator_url'),
+            $url->getPath().$concatSegmentParts.Url::getRewriter()->getSuffix()
+        ];
+
+        $infoList[] = [
+            rex_i18n::msg('url_generator_identify_record'),
+            '<code>'.$profile->getColumnName('id').'</code>' . ($profile->getColumnName('clang_id') == '' ? '' : ' - <code>'.$profile->getColumnName('clang_id').'</code>')
+        ];
+
+        $infoList[] = [
+            rex_i18n::msg('url_generator_namespace_short'),
+            '<code>rex_getUrl(\'\', \'\', [\''.$profile->getNamespace().'\' => {id}])</code><br /><code>->getUrl([\''.$profile->getNamespace().'\' => {id}])</code>'
+        ];
 
         $return = '<dl class="dl-horizontal">';
         foreach ($infoList as $item) {
@@ -691,7 +733,7 @@ if ($func == '') {
                 </div>
             </div>');
         $fieldRelationTableSelect = $f->getSelect();
-        $fieldRelationTableSelect->addOption($this->i18n('url_no_table_selected'), '');
+        $fieldRelationTableSelect->addOption($this->i18n('url_generator_table_not_selected'), '');
 
         $activeRelationTable = $f->getValue();
 

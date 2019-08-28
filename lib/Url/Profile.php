@@ -605,7 +605,7 @@ class Profile
                     $query,
                     $this->getColumnNameWithAlias('relation_'.$relation->getIndex()),
                     $this->getColumnNameWithAlias('clang_id'),
-					null
+          		      null
                 );
             }
         }

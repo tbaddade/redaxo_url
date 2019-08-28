@@ -20,6 +20,7 @@ url_generator_article_error = Elegir artículo
 url_generator_article_legend = ¿En qué artículo ocurre el problema?
 url_generator_clang_id_notice = Columna del ID de Clang único correspondiente
 url_generator_data = Datos
+url_generator_help = Ayuda
 url_generator_id_notice = Columna de la ID única correspondiente
 url_generator_identify_record = Identificar registro
 url_generator_namespace = Espacio de nombres
@@ -59,6 +60,7 @@ url_generator_seo = SEO
 url_generator_seo_description_notice = Columna para usar para la descripción de SEO
 url_generator_seo_image_notice = Columna para usar para la imagen de SEO
 url_generator_seo_title_notice = Columna para usar para el título de SEO
+url_generator_show_dataset = Ver registro ({0})
 url_generator_sitemap = Mapa del sitio
 url_generator_sitemap_add_notice = Agregar URLs a sitemap.xml?
 url_generator_sitemap_frequency_notice = Frecuencia
@@ -71,10 +73,18 @@ url_generator_table_legend = Tabla desde la cual generar URL
 url_generator_table_not_selected = Ninguna tabla especificada
 url_generator_table_relation_legend = Tabla de relaciones {0}
 url_generator_url = Url
+url_generator_url_refresh = Regenerar urls
+url_generator_url_refresh_all = Regenerar todas las URL
+url_generator_url_refreshed = Las direcciones URL del perfil con id = {0} se regeneraron.
 url_generator_url_notice = Columnas desde las que se genera la URL
 url_generator_rex_api_delete = Categoría o artículos no pudieron ser eliminados. En uso por Url addon
 
+url_generator_profile_removed = El perfil fue eliminado exitosamente
 
+url_yform_value_label = Designación
+url_yform_value_profil = Perfil
+url_yform_value_anchor = Anclaje de texto
+url_yform_value_description = Agrega un enlace a la interfaz creada por la URL AddOn.
 
 
 
