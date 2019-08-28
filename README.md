@@ -90,15 +90,18 @@ Die Urls dazu könnten dann so aussehen: `/filme/the-big-lebowski/schauspieler/`
 
 `Schauspieler` ist dabei eine Unterkategorie der Kategorie `Filme` innerhalb der Strukturverwaltung.
 
-<del>
 ### Beispiel: URL-Pathlist neu generieren
 
-Wenn Datenbanktabellen außerhalb des YForm-Table-Managers befüllt werden, greift der passende EP nicht und die URLs werden nicht neu generiert. Dies lässt sich manuell nachholen, indem folgende Methode aufgerufen wird.
+Wenn Datenbanktabellen außerhalb des YForm-Table-Managers befüllt werden, greift der passende EP nicht und die URLs werden nicht neu generiert. Dies lässt sich im Code nachholen, indem folgender Code verwendet wird.
 
 ```
-UrlGenerator::generatePathFile([]);
-```
-</del>
+$profiles = \Url\Profile::getAll();
+if ($profiles) {
+	foreach ($profiles as $profile) {
+		$profile->deleteUrls();
+		$profile->buildUrls();
+	}
+}```
 
 
 
