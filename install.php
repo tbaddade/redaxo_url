@@ -50,3 +50,10 @@
     ->ensureColumn(new \rex_sql_column('updateuser', 'VARCHAR(255)'))
     ->removeIndex('url')
     ->ensure();
+
+$sql = \rex_sql::factory();
+$sql->setQuery('UPDATE '.\rex::getTable('url_generator_url').' SET url_hash = SHA1(url) WHERE url_hash = ""');
+
+\rex_sql_table::get(
+    \rex::getTable('url_generator_profile'))
+    ->ensureIndex(new \rex_sql_index('url_hash', ['url_hash'], \rex_sql_index::UNIQUE));
