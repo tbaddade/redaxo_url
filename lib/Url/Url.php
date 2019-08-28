@@ -12,6 +12,7 @@
 namespace Url;
 
 use Riimu\Kit\UrlParser\Uri;
+use Riimu\Kit\UrlParser\UriParser;
 use Url\Rewriter\Rewriter;
 
 class Url
@@ -31,7 +32,7 @@ class Url
     public function __construct($url)
     {
         // $this->uri = (new UriParser())->parse($url);
-        $this->uri = (new Uri($url));
+        $this->uri = (new Uri($url, UriParser::MODE_UTF8));
     }
 
     public function __call($method, $arguments)

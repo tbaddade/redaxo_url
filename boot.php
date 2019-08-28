@@ -50,7 +50,7 @@ rex_extension::register('PACKAGES_INCLUDED', function (\rex_extension_point $epP
             $subject = $ep->getSubject();
 
             foreach ($profileArticleIds as $id) {
-                $regexp = '@<a href="index\.php\?page=structure.*?category-id='.$id.'.*?rex-api-call=category_delete.*?>(.*?)<\/a>@';
+                $regexp = '@<a href="index\.php\?page=structure.*?category-id='.$id.'&.*?rex-api-call=category_delete.*?>(.*?)<\/a>@';
                 if (preg_match($regexp, $subject, $matches)) {
                     $subject = str_replace($matches[0], '<span class="text-muted">'.$matches[1].'</span>', $subject);
                 }

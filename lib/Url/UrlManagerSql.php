@@ -16,6 +16,7 @@ class UrlManagerSql
     const TABLE_NAME = 'url_generator_url';
 
     private $sql;
+    private $where = [];
 
     private function __construct()
     {
@@ -34,6 +35,7 @@ class UrlManagerSql
     public function setArticleId($id)
     {
         $this->sql->setValue('article_id', $id);
+        $this->where['article_id'] = $id;
     }
 
     /**
@@ -42,6 +44,7 @@ class UrlManagerSql
     public function setClangId($id)
     {
         $this->sql->setValue('clang_id', $id);
+        $this->where['clang_id'] = $id;
     }
 
     /**
@@ -50,6 +53,7 @@ class UrlManagerSql
     public function setDataId($id)
     {
         $this->sql->setValue('data_id', $id);
+        $this->where['data_id'] = $id;
     }
 
     /**
@@ -58,6 +62,7 @@ class UrlManagerSql
     public function setProfileId($id)
     {
         $this->sql->setValue('profile_id', $id);
+        $this->where['profile_id'] = $id;
     }
 
     /**
@@ -65,7 +70,9 @@ class UrlManagerSql
      */
     public function setSeo(array $value)
     {
-        $this->sql->setValue('seo', json_encode($value));
+        $value = json_encode($value);
+        $this->sql->setValue('seo', $value);
+        $this->where['seo'] = $value;
     }
 
     /**
@@ -75,6 +82,7 @@ class UrlManagerSql
     {
         $value = ($value === true) ? $value : false;
         $this->sql->setValue('sitemap', $value);
+        $this->where['sitemap'] = $value;
     }
 
     /**
@@ -83,6 +91,7 @@ class UrlManagerSql
     public function setStructure($value)
     {
         $this->sql->setValue('is_structure', $value);
+        $this->where['is_structure'] = ($value ? '1' : '0');;
     }
 
     /**
@@ -91,6 +100,8 @@ class UrlManagerSql
     public function setUrl($url)
     {
         $this->sql->setValue('url', $url);
+        $this->sql->setValue('url_hash', sha1($url));
+        $this->where['url'] = $url;
     }
 
     /**
@@ -99,6 +110,7 @@ class UrlManagerSql
     public function setUserPath($value)
     {
         $this->sql->setValue('is_user_path', $value);
+        $this->where['is_user_path'] = ($value ? '1' : '0');
     }
 
     /**
@@ -118,6 +130,7 @@ class UrlManagerSql
             $value = $datetime->getTimestamp();
         }
         $this->sql->setValue('lastmod', date(DATE_W3C, $value));
+        $this->where['lastmod'] = date(DATE_W3C, $value);
     }
 
     /**
@@ -127,7 +140,16 @@ class UrlManagerSql
      */
     public function fetch()
     {
-        return $this->sql->getArray();
+        $query = '';
+        foreach ($this->where as $fieldName => $value) {
+            if ($query != '') {
+                $query .= ' AND ';
+            }
+            $query .= $this->sql->escapeIdentifier($fieldName) . ' = :' . $fieldName;
+        }
+
+        $sql = self::factory();
+        return $sql->sql->getArray('SELECT * FROM '.\rex::getTable(self::TABLE_NAME).' WHERE '.$query, $this->where);
     }
 
     /**

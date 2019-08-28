@@ -601,8 +601,8 @@ class Profile
                 $query = $relation->completeQuery(
                     $query,
                     $this->getColumnNameWithAlias('relation_'.$relation->getIndex()),
-                    $this->getArticleClangId(),
-                    $this->getColumnNameWithAlias('clang_id')
+                    $this->getColumnNameWithAlias('clang_id'),
+                    $this->getArticleClangId()
                 );
             }
         }

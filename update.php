@@ -1,6 +1,8 @@
 <?php
-
 $this->includeFile(__DIR__.'/install.php');
+
+$sql = \rex_sql::factory();
+$sql->setQuery('UPDATE '.\rex::getTable('url_generator_url').' SET url_hash = SHA1(url) WHERE url_hash = ""');
 
 if(rex_string::versionCompare(\rex_addon::get('url')->getVersion(), '1.5', '>=')) {
 	// Upgrade tables form version 1.x to 2.x

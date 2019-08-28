@@ -20,6 +20,7 @@ url_generator_article_error = Välj artikel
 url_generator_article_legend = I vilken artikel ska det visas
 url_generator_clang_id_notice = Kolumn med motsvarande unika Clang Id
 url_generator_data = Data
+url_generator_help = Hjälp
 url_generator_id_notice = Kolumn med motsvarande unika ID
 url_generator_identify_record = Identifiera data
 url_generator_namespace = Namespace
@@ -59,6 +60,7 @@ url_generator_seo = SEO
 url_generator_seo_description_notice = Kolumn att använda för SEO-beskrivningen
 url_generator_seo_image_notice = Kolumn från vilken bilden tas
 url_generator_seo_title_notice = Kolumn att använda för SEO-titeln
+url_generator_show_dataset = Visa post ({0})
 url_generator_sitemap = Sitemap
 url_generator_sitemap_add_notice = Lägg till webbadresser till sitemap.xml?
 url_generator_sitemap_frequency_notice = Frekvens
@@ -70,9 +72,19 @@ url_generator_table_error = Välj tabell
 url_generator_table_legend = Ur vilken tabell ska URL-adresserna genereras
 url_generator_table_not_selected = Ingen tabell utvalt
 url_generator_table_relation_legend = Relationstabell {0}
+url_generator_url = Url
+url_generator_url_refresh = Generera webbadresser på nytt
+url_generator_url_refresh_all = Generar alla URLs på nytt
+url_generator_url_refreshed = Webbadresserna för sektionen med id = {0} har regenererats.
 url_generator_url_notice = Kolumn för att generera URL-adressen från
+url_generator_rex_api_delete = Kategori eller artikel kunde inte raderas. Används fortfarande av Url-AddOn
 
+url_generator_profile_removed = Profilen har tagits bort
 
+url_yform_value_label = Beteckning
+url_yform_value_profil = Profil
+url_yform_value_anchor = Ankar-text
+url_yform_value_description = Tillfog länk till frontend, som skapades av URL-Addon:et
 
 
 
