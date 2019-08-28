@@ -1,18 +1,20 @@
-Url AddOn
-================================================================================
-## Table of Contents
-1. [Beschreibung](#beschreibung)
-2. [Beispiel: News AddOn](#beispiel-news-addOn)
-3. [Installation](#installation)
-4. [unterstützte Rewriter](#unterstützte-rewriter)
-5. [Extension Points](#extenstion_points)
+# Url AddOn
 
 ## Beschreibung
---------------------------------------------------------------------------------
+
 REDAXO 5 AddOn zur URL-Generierung für Daten aus den Datenbanktabellen (ehemals Url Control, ehemals Frau Schultze)
 
+## Installation
+
+* Via Install AddOn im Backend herunterladen
+* AddOn installieren und aktivieren
+
+### unterstützte Rewriter
+
+* [yrewrite](https://github.com/yakamara/redaxo_yrewrite)
+
 ## Beispiel: Filme
---------------------------------------------------------------------------------
+
 Normalerweise wird ein Film über eine Url wie `/filme/?movie_id=1` geholt.
 
 Mit dem AddOn ist es möglich Urls wie `/filme/the-big-lebowski/` zu erzeugen.
@@ -20,7 +22,8 @@ Mit dem AddOn ist es möglich Urls wie `/filme/the-big-lebowski/` zu erzeugen.
 Der REDAXO Artikel `/the-big-lebowski/` selbst existiert dabei nicht. Es wird alles im REDAXO Artikel `/filme/` abgehandelt.
 **The Big Lebowski** ist dabei der Titel eines Filmes, welcher in einer eigenen Datenbanktabelle hinterlegt wurde. 
 
-### Url holen 
+
+## Url holen 
 Um die Url eines einzelnen Filmes auszugeben verwendet man:
 
 ```php
@@ -33,7 +36,7 @@ echo rex_getUrl('', '', ['movie-id' => $movieId]);
 | `$movieId`    | Datensatz Id des Filmes |
 
 
-### Id holen 
+## Id holen 
 Nach dem der Film mit der eigenen Url aufgerufen wurde (Darstellung der Detailseite), muss jetzt die dazugehörige Datensatz-Id ermittelt werden. Erst dann können die eigentlichen Daten aus der Tabelle abgerufen und ausgegeben werden.
 
 ```php
@@ -65,13 +68,13 @@ if ($manager) {
 }
 ```
 
-### zusätzliche Pfade aus Relationen bilden
+## Zusätzliche Pfade aus Relationen bilden
 
 Möchte man die Filme Genres zuordnen, passiert dies meist über eine Relation zu diesen Kategorien.
 Die Urls dazu könnten dann so aussehen: `/filme/komoedie/the-big-lebowski/`
  
 
-### zusätzliche Pfade für die Url
+## Zusätzliche Pfade für die Url
 
 #### eigene Pfade an die Url hängen
 
@@ -97,19 +100,10 @@ UrlGenerator::generatePathFile([]);
 ```
 </del>
 
-### Installation
---------------------------------------------------------------------------------
-* Via Install AddOn im Backend herunterladen
-* AddOn installieren und aktivieren
 
-
-### unterstützte Rewriter
---------------------------------------------------------------------------------
-* [yrewrite](https://github.com/yakamara/redaxo_yrewrite)
 
 
 ## Extension Points
---------------------------------------------------------------------------------
 
 Der Extension Point URL_MANAGER_PRE_SAVE gibt die Möglichkeit eine URL vor dem Speichern in der URL Tabelle zumanipulieren.
 
