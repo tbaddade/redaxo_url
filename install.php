@@ -23,12 +23,10 @@
     ->ensureColumn(new \rex_sql_column('relation_2_table_parameters', 'TEXT', true))
     ->ensureColumn(new \rex_sql_column('relation_3_table_name', 'VARCHAR(255)'))
     ->ensureColumn(new \rex_sql_column('relation_3_table_parameters', 'TEXT', true))
-
     ->ensureColumn(new \rex_sql_column('createdate', 'DATETIME'))
     ->ensureColumn(new \rex_sql_column('createuser', 'VARCHAR(255)'))
     ->ensureColumn(new \rex_sql_column('updatedate', 'DATETIME'))
     ->ensureColumn(new \rex_sql_column('updateuser', 'VARCHAR(255)'))
-
     ->ensureIndex(new \rex_sql_index('namespace', ['namespace', 'article_id', 'clang_id'], \rex_sql_index::UNIQUE))
     ->ensure();
 
@@ -50,7 +48,6 @@
     ->ensureColumn(new \rex_sql_column('createuser', 'VARCHAR(255)'))
     ->ensureColumn(new \rex_sql_column('updatedate', 'DATETIME'))
     ->ensureColumn(new \rex_sql_column('updateuser', 'VARCHAR(255)'))
-
-	->removeIndex('url')
+    ->removeIndex('url')
     ->ensureIndex(new \rex_sql_index('url_hash', ['url_hash'], \rex_sql_index::UNIQUE))
     ->ensure();
