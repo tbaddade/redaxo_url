@@ -49,5 +49,4 @@
     ->ensureColumn(new \rex_sql_column('updatedate', 'DATETIME'))
     ->ensureColumn(new \rex_sql_column('updateuser', 'VARCHAR(255)'))
     ->removeIndex('url')
-    ->ensureIndex(new \rex_sql_index('url_hash', ['url_hash'], \rex_sql_index::UNIQUE))
     ->ensure();
