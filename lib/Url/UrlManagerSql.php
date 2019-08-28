@@ -100,6 +100,7 @@ class UrlManagerSql
     public function setUrl($url)
     {
         $this->sql->setValue('url', $url);
+        $this->sql->setValue('url_hash', sha1($url));
         $this->where['url'] = $url;
     }
 

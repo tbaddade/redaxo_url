@@ -41,7 +41,8 @@
     ->ensureColumn(new \rex_sql_column('data_id', 'INT(11)'))
     ->ensureColumn(new \rex_sql_column('is_user_path', 'TINYINT(1)', false, '0'))
     ->ensureColumn(new \rex_sql_column('is_structure', 'TINYINT(1)', false, '0'))
-    ->ensureColumn(new \rex_sql_column('url', 'VARCHAR(255)'))
+    ->ensureColumn(new \rex_sql_column('url', 'TEXT'))
+    ->ensureColumn(new \rex_sql_column('url_hash', 'VARCHAR(191)'))
     ->ensureColumn(new \rex_sql_column('sitemap', 'TINYINT(1)', false, '0'))
     ->ensureColumn(new \rex_sql_column('lastmod', 'VARCHAR(255)'))
     ->ensureColumn(new \rex_sql_column('seo', 'TEXT'))
@@ -50,5 +51,6 @@
     ->ensureColumn(new \rex_sql_column('updatedate', 'DATETIME'))
     ->ensureColumn(new \rex_sql_column('updateuser', 'VARCHAR(255)'))
 
-    ->ensureIndex(new \rex_sql_index('url', ['url'], \rex_sql_index::UNIQUE))
+	->removeIndex('url')
+    ->ensureIndex(new \rex_sql_index('url_hash', ['url_hash'], \rex_sql_index::UNIQUE))
     ->ensure();
