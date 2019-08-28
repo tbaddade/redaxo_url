@@ -41,7 +41,7 @@
     ->ensureColumn(new \rex_sql_column('data_id', 'INT(11)'))
     ->ensureColumn(new \rex_sql_column('is_user_path', 'TINYINT(1)', false, '0'))
     ->ensureColumn(new \rex_sql_column('is_structure', 'TINYINT(1)', false, '0'))
-    ->ensureColumn(new \rex_sql_column('url', 'VARCHAR(1000)'))
+    ->ensureColumn(new \rex_sql_column('url', 'TEXT'))
     ->ensureColumn(new \rex_sql_column('url_hash', 'VARCHAR(191)'))
     ->ensureColumn(new \rex_sql_column('sitemap', 'TINYINT(1)', false, '0'))
     ->ensureColumn(new \rex_sql_column('lastmod', 'VARCHAR(255)'))
