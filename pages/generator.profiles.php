@@ -13,6 +13,7 @@ use Url\Cache;
 use Url\Database;
 use Url\Generator;
 use Url\Profile;
+use Url\ProfileRelation;
 use Url\Url;
 use Url\UrlManager;
 use Url\UrlManagerSql;
@@ -117,9 +118,15 @@ if (!function_exists('url_generate_column_data')) {
 
         $infoList = [];
         $profile = Profile::get($list->getValue('id'));
-        $infoList[] = [rex_i18n::msg('url_generator_table'), $profile->getTableName()];
+        $infoList[] = [
+            rex_i18n::msg('url_generator_table'),
+            $profile->getTableName()
+        ];
+        $infoList[] = [
+            rex_i18n::msg('url_generator_namespace'),
+            $profile->getNamespace()
+        ];
 
-        $infoList[] = [rex_i18n::msg('url_generator_namespace'), $profile->getNamespace()];
 
         $concatSegmentParts = '';
         for ($index = 1; $index <= Profile::SEGMENT_PART_COUNT; ++$index) {
@@ -129,14 +136,44 @@ if (!function_exists('url_generate_column_data')) {
             }
         }
 
+        $append = '';
+        $prepend = '';
+        if ($profile->hasRelations()) {
+            foreach ($profile->getRelations() as $relation) {
+                $concatSegmentPartsRelation = '';
+                for ($index = 1; $index <= Profile::SEGMENT_PART_COUNT; ++$index) {
+                    if ($relation->getColumnName('segment_part_'.$index) != '') {
+                        $concatSegmentPartsRelation .= $profile->getSegmentPartSeparators()[$index] ?? '';
+                        $concatSegmentPartsRelation .= '<code>'.$relation->getColumnNameWithAlias('segment_part_'.$index).'</code>';
+                    }
+                }
+                if ($relation->getSegmentPosition() === 'BEFORE') {
+                    $prepend .= $concatSegmentPartsRelation.Url::getRewriter()->getSuffix();
+                } else {
+                    $append .= $concatSegmentPartsRelation.Url::getRewriter()->getSuffix();
+                }
+            }
+        }
+        $concatSegmentParts = $prepend.$concatSegmentParts.$append;
 
         $url = new Url(Url::getRewriter()->getFullUrl($list->getValue('article_id'), $list->getValue('clang_id')));
         $url->withScheme('');
-        $infoList[] = [rex_i18n::msg('url_generator_url'), $url->getPath().$concatSegmentParts.Url::getRewriter()->getSuffix()];
 
-        $infoList[] = [rex_i18n::msg('url_generator_identify_record'), '<code>'.$profile->getColumnName('id').'</code>' . ($profile->getColumnName('clang_id') == '' ? '' : ' - <code>'.$profile->getColumnName('clang_id').'</code>')];
 
-        $infoList[] = [rex_i18n::msg('url_generator_namespace_short'), '<code>rex_getUrl(\'\', \'\', [\''.$profile->getNamespace().'\' => {id}])</code><br /><code>->getUrl([\''.$profile->getNamespace().'\' => {id}])</code>'];
+        $infoList[] = [
+            rex_i18n::msg('url_generator_url'),
+            $url->getPath().$concatSegmentParts.Url::getRewriter()->getSuffix()
+        ];
+
+        $infoList[] = [
+            rex_i18n::msg('url_generator_identify_record'),
+            '<code>'.$profile->getColumnName('id').'</code>' . ($profile->getColumnName('clang_id') == '' ? '' : ' - <code>'.$profile->getColumnName('clang_id').'</code>')
+        ];
+
+        $infoList[] = [
+            rex_i18n::msg('url_generator_namespace_short'),
+            '<code>rex_getUrl(\'\', \'\', [\''.$profile->getNamespace().'\' => {id}])</code><br /><code>->getUrl([\''.$profile->getNamespace().'\' => {id}])</code>'
+        ];
 
         $return = '<dl class="dl-horizontal">';
         foreach ($infoList as $item) {
