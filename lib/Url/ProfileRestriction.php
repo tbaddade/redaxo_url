@@ -57,8 +57,11 @@ class ProfileRestriction
             case 'NOT IN':
                 $values = explode(',', $value);
                 foreach ($values as $key => $value) {
-                    if (!(int) $value > 0) {
+                    $value = str_replace(['"', "'"], ['', ''], $value);
+                    if ('' === trim($value)) {
                         unset($values[$key]);
+                    } else {
+                        $values[$key] = \rex_sql::factory()->escape($value);
                     }
                 }
                 $value = ' ('.implode(',', $values).') ';
