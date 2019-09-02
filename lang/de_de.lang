@@ -25,7 +25,7 @@ url_generator_id_notice = Feld der dazugehörigen eindeutigen Id
 url_generator_identify_record = Datensatz identifizieren
 url_generator_namespace = Schlüssel
 url_generator_namespace_error = Eindeutigen Namensraum/Schlüssel vergeben, z.B. <code>product-id</code>
-url_generator_namespace_notice = Parameter für <code>rex_getUrl()</code>
+url_generator_namespace_notice = Parameter für <code>rex_getUrl()</code>.<br />Nur über diesen Schlüssel lässt sich die Url korrekt abrufen. Das Holen der Url über <code>rex_getUrl(1, 1, ['id' => $id])</code> ist nicht mehr möglich.
 url_generator_namespace_short = Url-Aufruf
 url_generator_no_additive = kein Zusatz
 url_generator_no_clang_id = kein Feld für Sprachen vorhanden
