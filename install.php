@@ -56,4 +56,5 @@ $sql->setQuery('UPDATE '.\rex::getTable('url_generator_url').' SET url_hash = SH
 
 \rex_sql_table::get(
     \rex::getTable('url_generator_url'))
-    ->ensureIndex(new \rex_sql_index('url_hash', ['url_hash'], \rex_sql_index::UNIQUE));
+    ->ensureIndex(new \rex_sql_index('url_hash', ['url_hash'], \rex_sql_index::UNIQUE))
+    ->ensure();
