@@ -243,9 +243,9 @@ class Profile
         }
     }
 
-    public function buildUrlsByDatasetId($datasetId, $datasetColumnName)
+    public function buildUrlsByDatasetId($datasetId)
     {
-        $items = $this->getDataset($datasetColumnName, $datasetId);
+        $items = $this->getDataset('id', $datasetId);
         foreach ($items as $item) {
             $this->createAndSaveUrls($item);
         }
@@ -355,7 +355,6 @@ class Profile
                 ];
             }
         }
-        // dump($urlObjects);
         foreach ($urlObjects as $urlObject) {
             /* @var $urlInstance \Url\Url */
             $urlInstance = $urlObject['object'];

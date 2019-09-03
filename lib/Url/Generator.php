@@ -50,7 +50,7 @@ class Generator
                 if ($profiles) {
                     foreach ($profiles as $profile) {
                         $profile->deleteUrlsByDatasetId($this->manager->getDatasetPrimaryId());
-                        $profile->buildUrlsByDatasetId($this->manager->getDatasetPrimaryId(), $this->manager->getDatasetPrimaryColumnName());
+                        $profile->buildUrlsByDatasetId($this->manager->getDatasetPrimaryId());
                     }
                 }
                 break;

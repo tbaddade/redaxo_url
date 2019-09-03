@@ -338,7 +338,7 @@ class UrlManager
                 $urlRecord = self::getForRewriteUrl($profile, (int) $urlParamValue, $clangId);
                 if (!$urlRecord) {
                     // Urls erstellen
-                    $profile->buildUrlsByDatasetId($urlParamValue, \rex_sql_table::get($profile->getTableName())->getPrimaryKey()[0]);
+                    $profile->buildUrlsByDatasetId($urlParamValue);
                     $urlRecord = self::getForRewriteUrl($profile, (int) $urlParamValue, $clangId);
                 }
 
