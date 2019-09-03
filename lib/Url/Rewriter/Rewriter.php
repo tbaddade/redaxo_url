@@ -96,9 +96,10 @@ abstract class Rewriter
     abstract public function isHttps();
 
     /**
-     * @param string $string
+     * @param string  $string
+     * @param integer $clangId
      *
      * @return string
      */
-    abstract public function normalize($string);
+    abstract public function normalize($string, $clangId);
 }

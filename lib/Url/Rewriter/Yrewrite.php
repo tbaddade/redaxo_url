@@ -155,7 +155,7 @@ class Yrewrite extends Rewriter
      *
      * @return string
      */
-    public function normalize($string, $clang = 0)
+    public function normalize($string, $clang = 1)
     {
         $scheme = \rex_yrewrite::getScheme();
         return $scheme->normalize($string, $clang);
