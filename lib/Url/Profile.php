@@ -274,10 +274,10 @@ class Profile
         for ($index = 1; $index <= self::SEGMENT_PART_COUNT; ++$index) {
             if ($dataset->hasValue(self::ALIAS.'_segment_part_'.$index)) {
                 $concatSegmentParts .= $this->getSegmentPartSeparators()[$index] ?? '';
-                $concatSegmentParts .= Url::getRewriter()->normalize($dataset->getValue(self::ALIAS.'_segment_part_'.$index));
+                $concatSegmentParts .= Url::getRewriter()->normalize($dataset->getValue(self::ALIAS.'_segment_part_'.$index), $clangId);
             }
         }
-        $dataPath->appendPathSegments(explode('/', $concatSegmentParts));
+        $dataPath->appendPathSegments(explode('/', $concatSegmentParts), $clangId);
 
         if ($this->hasRelations()) {
             $append = [];
@@ -287,7 +287,7 @@ class Profile
                 for ($index = 1; $index <= self::SEGMENT_PART_COUNT; ++$index) {
                     if ($dataset->hasValue($relation->getAlias().'_segment_part_'.$index)) {
                         $concatSegmentParts .= $this->getSegmentPartSeparators()[$index] ?? '';
-                        $concatSegmentParts .= Url::getRewriter()->normalize($dataset->getValue($relation->getAlias().'_segment_part_'.$index));
+                        $concatSegmentParts .= Url::getRewriter()->normalize($dataset->getValue($relation->getAlias().'_segment_part_'.$index), $clangId);
                     }
                 }
                 if ($relation->getSegmentPosition() === 'BEFORE') {
@@ -298,13 +298,13 @@ class Profile
             }
 
             if ($prepend) {
-                $dataPath->prependPathSegments($prepend);
+                $dataPath->prependPathSegments($prepend, $clangId);
             }
             if ($append) {
-                $dataPath->appendPathSegments($append);
+                $dataPath->appendPathSegments($append, $clangId);
             }
         }
-        $url->appendPathSegments($dataPath->getSegments());
+        $url->appendPathSegments($dataPath->getSegments(), $clangId);
 
         $urlObjects = [];
         $urlObjects[] = [
@@ -326,7 +326,7 @@ class Profile
                 if (count($categories)) {
                     foreach ($categories as $category) {
                         $urlCategory = clone $url;
-                        $urlCategory->appendPathSegments([$category->getName()]);
+                        $urlCategory->appendPathSegments([$category->getName()], $clangId);
                         $urlObjects[] = [
                             'article_id' => $category->getId(),
                             'object' => $urlCategory,
@@ -345,7 +345,7 @@ class Profile
                 $userPathParts = explode('=', $userPathLine);
 
                 $urlUserPath = clone $url;
-                $urlUserPath->appendPathSegments(explode('/', trim($userPathParts[0])));
+                $urlUserPath->appendPathSegments(explode('/', trim($userPathParts[0])), $clangId);
                 $urlObjects[] = [
                     'article_id' => $articleId,
                     'object' => $urlUserPath,

@@ -360,7 +360,7 @@ class UrlManager
 
                         $expandedOriginUrl = $urlRecord->getUrl();
                         $expandedOriginUrl->handleRewriterSuffix();
-                        $expandedOriginUrl->appendPathSegments($restStructurePathUrl->getSegments());
+                        $expandedOriginUrl->appendPathSegments($restStructurePathUrl->getSegments(), $article->getClangId());
 
                         $urlRecord = self::resolveUrl($expandedOriginUrl);
                     }
