@@ -144,7 +144,7 @@ class Seo
 				$picture = json_decode($profileUrl['seo'])->image;
                 $sitemap[] =
                     "\n".'<url>'.
-                    "\n".'<loc>'. $url->withSolvedScheme() .'</loc>'.
+                    "\n".'<loc>'. urldecode($url->withSolvedScheme()) .'</loc>'.
                     "\n".'<lastmod>'. $profileUrl['lastmod'] .'</lastmod>'.
 					($picture != '' ? "\n".'<image:image><image:loc>'. $url->getSchemeAndHttpHost(). \rex_url::media($picture) .'</image:loc></image:image>' : '').
                     "\n".'<changefreq>'. $profile->getSitemapFrequency() .'</changefreq>'.
