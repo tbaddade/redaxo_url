@@ -152,6 +152,7 @@ class ExtensionPointManager
                 break;
 
             case 'YFORM_DATA_ADDED':
+            case 'YFORM_DATA_DELETED':
             case 'YFORM_DATA_UPDATED':
                 // dump($this->extensionPoint->getParams());
                 /* @var $object \rex_yform_manager_dataset */
