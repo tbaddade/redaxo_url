@@ -50,7 +50,7 @@ class Yrewrite extends Rewriter
     }
 
     /**
-     * @return object
+     * @return \rex_yrewrite_seo
      */
     public function getSeoInstance()
     {
@@ -60,41 +60,9 @@ class Yrewrite extends Rewriter
     /**
      * @return string
      */
-    public function getSeoTitleTagMethod()
+    public function getSeoTags()
     {
-        return 'getTitleTag';
-    }
-
-    /**
-     * @return string
-     */
-    public function getSeoDescriptionTagMethod()
-    {
-        return 'getDescriptionTag';
-    }
-
-    /**
-     * @return string
-     */
-    public function getSeoCanonicalTagMethod()
-    {
-        return 'getCanonicalUrlTag';
-    }
-
-    /**
-     * @return string
-     */
-    public function getSeoHreflangTagsMethod()
-    {
-        return 'getHreflangTags';
-    }
-
-    /**
-     * @return string
-     */
-    public function getSeoRobotsTagMethod()
-    {
-        return 'getRobotsTag';
+        return '';
     }
 
     /**

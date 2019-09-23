@@ -29,96 +29,86 @@ class Seo
         $this->rewriterSeo = $this->rewriter->getSeoInstance();
     }
 
-    public function getTitle()
+    public function getTags()
     {
-        $title = $this->rewriterSeo->getTitle();
-        if ($this->isUrl() && $this->manager->getSeoTitle()) {
-            $title = $this->manager->getSeoTitle().' - '.$title;
+        $tags = [];
+        $tags['title'] = $this->rewriterSeo->getTitleTag();
+        $tags['description'] = $this->rewriterSeo->getDescriptionTag();
+        $tags['robots'] = $this->rewriterSeo->getRobotsTag();
+        $tags['canonical'] = $this->rewriterSeo->getCanonicalUrlTag();
+
+        //$tags = $this->rewriterSeo->getTags();
+
+        if (!$this->isUrl()) {
+            return implode("\n", $tags);
         }
 
-        $title = \rex_extension::registerPoint(new \rex_extension_point('URL_SEO_TITLE', $title));
-
-        if (!$title) {
-            return '';
+        if ($this->manager->getSeoTitle()) {
+            $title = $this->normalize($this->manager->getSeoTitle());
+            $tags['title'] = '<title>'.$title.'</title>';
+            $tags['og:title'] = '<meta property="og:title" content="'.$title.'" />';
+            $tags['twitter:title'] = '<meta name="twitter:title" content="'.$title.'" />';
         }
 
-        return $this->normalize($title);
+        if ($this->manager->getSeoDescription()) {
+            $description = $this->normalize($this->manager->getSeoDescription());
+            $tags['description'] = '<meta name="description" content="'.$description.'" />';
+            $tags['og:description'] = '<meta property="og:description" content="'.$description.'" />';
+            $tags['twitter:description'] = '<meta name="twitter:description" content="'.$description.'" />';
+        }
+
+        $fullUrl = $this->getFullUrl();
+        $tags['canonical'] = '<link rel="canonical" href="'.$fullUrl.'" />';
+        $tags['og:url'] = '<meta property="og:url" href="'.$fullUrl.'" />';
+        $tags['twitter:url'] = '<meta name="twitter:url" content="'.$fullUrl.'" />';
+
+
+        $items = $this->manager->getHreflang(\rex_clang::getAllIds(true));
+        if ($items) {
+            foreach ($items as $item) {
+                $url = $item->getUrl();
+                $url->withSolvedScheme();
+                $code = \rex_clang::get($item->getClangId())->getCode();
+                $tags['hreflang:'.$code] = '<link rel="alternate" hreflang="'.$code.'" href="'.$url.'" />';
+            }
+        }
+
+        $tags['twitter:card'] = '<meta name="twitter:card" content="summary" />';
+
+        if ($this->manager->getSeoImage()) {
+            $image = array_shift(explode(',', $this->manager->getSeoImage()));
+
+            $media = \rex_media::get($image);
+            if ($media) {
+                $url = $this->manager->getUrl();
+                $url->withSolvedScheme();
+                $mediaUrl = $url->getSchemeAndHttpHost().$media->getUrl();
+
+                $tags['twitter:card'] = '<meta name="twitter:card" content="summary_large_image" />';
+
+                $tags['image'] = '<meta name="image" content="'.$mediaUrl.'" />';
+                $tags['og:image'] = '<meta property="og:image" content="'.$mediaUrl.'" />';
+                $tags['twitter:image'] = '<meta name="twitter:image" content="'.$mediaUrl.'" />';
+
+                if ($media->getWidth()) {
+                    $tags['og:image:width'] = '<meta property="og:image:width" content="'.$media->getWidth().'" />';
+                }
+                if ($media->getHeight()) {
+                    $tags['og:image:height'] = '<meta property="og:image:height" content="'.$media->getHeight().'" />';
+                }
+            }
+        }
+
+        $tags = \rex_extension::registerPoint(new \rex_extension_point('URL_SEO_TAGS', $tags));
+        return implode("\n", $tags);
+
     }
 
-    public function getTitleTag()
-    {
-        if ($this->isUrl()) {
-            return '<title>'.htmlspecialchars($this->getTitle()).'</title>';
-        }
-        return $this->rewriterSeo->{$this->rewriter->getSeoTitleTagMethod()}();
-    }
-
-    public function getDescription()
-    {
-        $description = $this->rewriterSeo->getDescription();
-        if ($this->isUrl() && $this->manager->getSeoDescription()) {
-            $description = $this->manager->getSeoDescription();
-        }
-
-        $description = \rex_extension::registerPoint(new \rex_extension_point('URL_SEO_DESCRIPTION', $description));
-
-        if (!$description) {
-            return '';
-        }
-
-        return $this->normalize($description);
-    }
-
-    public function getDescriptionTag()
-    {
-        if ($this->isUrl()) {
-            return '<meta name="description" content="'.htmlspecialchars($this->getDescription()).'" />';
-        }
-        return $this->rewriterSeo->{$this->rewriter->getSeoDescriptionTagMethod()}();
-    }
-
-    public function getCanonicalUrl()
+    public function getFullUrl()
     {
         $url = $this->manager->getUrl();
         $url->withSolvedScheme();
         return $url->getSchemeAndHttpHost().$url->getPath();
-    }
-
-    public function getCanonicalUrlTag()
-    {
-        if ($this->isUrl()) {
-            return '<link rel="canonical" href="'.$this->getCanonicalUrl().'" />';
-        }
-        return $this->rewriterSeo->{$this->rewriter->getSeoCanonicalTagMethod()}();
-    }
-
-    public function getHreflangTags()
-    {
-        if ($this->isUrl()) {
-            $items = $this->manager->getHreflang(\rex_clang::getAllIds(true));
-
-            if ($items) {
-                $metas = [];
-                foreach ($items as $item) {
-                    $url = $item->getUrl();
-                    $url->withSolvedScheme();
-                    $metas[] = '<link rel="alternate" hreflang="'.\rex_clang::get($item->getClangId())->getCode().'" href="'.$url.'" />';
-                }
-                return implode("\n", $metas);
-            }
-        }
-
-        return $this->rewriterSeo->{$this->rewriter->getSeoHreflangTagsMethod()}();
-    }
-
-    public function getRobotsTag()
-    {
-        return $this->rewriterSeo->{$this->rewriter->getSeoRobotsTagMethod()}();
-    }
-
-    public function getImage()
-    {
-        return $this->manager->getSeoImage();
     }
 
     public static function getSitemap()
@@ -163,6 +153,7 @@ class Seo
 
     protected function normalize($string)
     {
+        $string = rex_escape(strip_tags($string));
         return str_replace(["\n", "\r"], [' ', ''], $string);
     }
 }

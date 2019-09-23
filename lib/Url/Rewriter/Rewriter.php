@@ -41,27 +41,7 @@ abstract class Rewriter
     /**
      * @return string
      */
-    abstract public function getSeoTitleTagMethod();
-
-    /**
-     * @return string
-     */
-    abstract public function getSeoDescriptionTagMethod();
-
-    /**
-     * @return string
-     */
-    abstract public function getSeoCanonicalTagMethod();
-
-    /**
-     * @return string
-     */
-    abstract public function getSeoHreflangTagsMethod();
-
-    /**
-     * @return string
-     */
-    abstract public function getSeoRobotsTagMethod();
+    abstract public function getSeoTags();
 
     /**
      * @param int $article_id
