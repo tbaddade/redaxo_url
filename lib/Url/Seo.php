@@ -133,12 +133,33 @@ class Seo
                 $url = $profileUrl->getUrl();
                 $url->withSolvedScheme();
 
+                $sitemapImage = '';
+                if ($profileUrl->getSeoImage()) {
+                    $image = array_shift(explode(',', $profileUrl->getSeoImage()));
+
+                    $media = \rex_media::get($image);
+                    if ($media) {
+                        $imageTitle = '';
+                        if ('' != $media->getTitle()) {
+                            $imageTitle = "\n\t\t".'<image:title>'.rex_escape(strip_tags($media->getTitle())).'</image:title>';
+                        }
+                        $sitemapImage =
+                            "\n\t".'<image:image>'.
+                            "\n\t\t".'<image:loc>'.$url->getSchemeAndHttpHost().$media->getUrl().'</image:loc>'.
+                            $imageTitle.
+                            "\n\t".'</image:image>';
+
+
+                    }
+                }
+
                 $sitemap[] =
                     "\n".'<url>'.
-                    "\n".'<loc>'.$url->getSchemeAndHttpHost().$url->getPath().'</loc>'.
-                    "\n".'<lastmod>'.$profileUrl->getLastmod().'</lastmod>'.
-                    "\n".'<changefreq>'.$profile->getSitemapFrequency().'</changefreq>'.
-                    "\n".'<priority>'.$profile->getSitemapPriority().'</priority>'.
+                    "\n\t".'<loc>'.$url->getSchemeAndHttpHost().urldecode($url->getPath()).'</loc>'.
+                    "\n\t".'<lastmod>'.$profileUrl->getLastmod().'</lastmod>'.
+                    $sitemapImage.
+                    "\n\t".'<changefreq>'.$profile->getSitemapFrequency().'</changefreq>'.
+                    "\n\t".'<priority>'.$profile->getSitemapPriority().'</priority>'.
                     "\n".'</url>';
             }
         }

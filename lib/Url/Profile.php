@@ -437,7 +437,7 @@ class Profile
      */
     public function getUrls()
     {
-        return UrlManagerSql::getByProfileId($this->getId());
+        return UrlManager::getByProfileId($this->getId());
     }
 
     /**
