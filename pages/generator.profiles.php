@@ -812,7 +812,8 @@ if ($func == '') {
                     $select->addOptions($options, true);
                 } else {
                     $f->setFooter('
-                        </div>');
+                        </div>
+                    </div>');
 
                     $type = 'hidden';
                     $name = 'column_clang_id';
