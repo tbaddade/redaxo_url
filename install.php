@@ -15,6 +15,7 @@
     ->ensureColumn(new \rex_sql_column('namespace', 'VARCHAR(255)'))
     ->ensureColumn(new \rex_sql_column('article_id', 'INT(11)'))
     ->ensureColumn(new \rex_sql_column('clang_id', 'INT(11)', false, 1))
+    ->ensureColumn(new \rex_sql_column('ep_pre_save_called', 'TINYINT(1)', false, 0))
     ->ensureColumn(new \rex_sql_column('table_name', 'VARCHAR(255)'))
     ->ensureColumn(new \rex_sql_column('table_parameters', 'TEXT', true))
     ->ensureColumn(new \rex_sql_column('relation_1_table_name', 'VARCHAR(255)'))

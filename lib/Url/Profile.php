@@ -75,6 +75,7 @@ class Profile
     private $append_user_paths;
     private $article_id;
     private $clang_id;
+    private $ep_pre_save_called;
     private $createdate;
     private $createuser;
     private $id;
@@ -147,6 +148,14 @@ class Profile
     public function getNamespace()
     {
         return $this->namespace;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasPreSaveCalled()
+    {
+        return (bool) $this->ep_pre_save_called;
     }
 
     public function hasRelations()
@@ -355,19 +364,26 @@ class Profile
                 ];
             }
         }
+        $preSaveCalled = false;
         foreach ($urlObjects as $urlObject) {
-            /* @var $urlInstance \Url\Url */
+            /* @var $urlInstance Url */
             $urlInstance = $urlObject['object'];
 
             $urlObject['clang_id'] = $clangId;
             $urlObject['data_id'] = $dataset->getId();
             $urlObject['profile_id'] = $this->getId();
             $urlObject['sitemap'] = $this->inSitemap();
+            $urlObject['profile'] = $this;
 
-            $urlInstance = \rex_extension::registerPoint(new \rex_extension_point('URL_MANAGER_PRE_SAVE', $urlInstance, $urlObject));
+            $preUrlInstance = $urlInstance;
+            $urlInstance = \rex_extension::registerPoint(new \rex_extension_point('URL_PRE_SAVE', $urlInstance, $urlObject));
 
-            if (!$urlInstance) {
-                return;
+            if (!$urlInstance instanceof Url) {
+                throw new \rex_exception('Your returned Url is not an instance of Url\Url');
+            }
+
+            if (false === $preSaveCalled && $preUrlInstance->getPath() != $urlInstance->getPath()) {
+                $preSaveCalled = true;
             }
 
             $urlAsString = $urlInstance->__toString();
@@ -389,6 +405,17 @@ class Profile
 
             if (!$manager->save()) {
                 // $return[] = $urlAsString;
+            }
+        }
+
+        if ($preSaveCalled) {
+            $sql = \rex_sql::factory()
+                ->setTable(\rex::getTable(Profile::TABLE_NAME))
+                ->setWhere('id = :id', ['id' => $this->getId()])
+                ->setValue('ep_pre_save_called', 1);
+
+            if ($sql->update()) {
+                self::reset();
             }
         }
     }

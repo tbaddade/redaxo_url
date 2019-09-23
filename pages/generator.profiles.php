@@ -250,6 +250,8 @@ if ($func == '') {
     $form->addFieldset($this->i18n('url_generator_article_legend'));
     $form->addErrorMessage(REX_FORM_ERROR_VIOLATE_UNIQUE_KEY, $this->i18n('url_generator_namespace_error'));
 
+    $form->addHiddenField('ep_pre_save_called', '0');
+
     $fieldNamespace = $form->addTextField('namespace');
     $fieldNamespace->setHeader('
         <div class="addoff-grid">

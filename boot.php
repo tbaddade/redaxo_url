@@ -16,7 +16,7 @@ use Url\Seo;
 use Url\Url;
 use Url\UrlManager;
 
-\Url\Generator::boot();
+Generator::boot();
 if (null !== Url::getRewriter()) {
     Url::getRewriter()->articleIdNotFound();
 }

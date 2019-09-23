@@ -266,6 +266,11 @@ class UrlManager
         // Prüft ob der erste Teil der übergebenen Url in einem Profil zu finden ist.
         $resolve = false;
         foreach (Profile::getAll() as $profile) {
+            if ($profile->hasPreSaveCalled()) {
+                $resolve = true;
+                break;
+            }
+
             $articlePath = $profile->getArticleUrl()->getPath();
             if ($articlePath == substr($url->getPath(), 0, strlen($articlePath))) {
                 $resolve = true;
