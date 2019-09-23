@@ -124,6 +124,16 @@ class Seo
                 continue;
             }
 
+            $clang = \rex_clang::get($profile->getArticleClangId());
+            if (!$clang->isOnline()) {
+                continue;
+            }
+
+            $article = \rex_article::get($profile->getArticleId(), $clang->getId());
+            if (!$article->isOnline() || !$article->isPermitted()) {
+                continue;
+            }
+
             $profileUrls = $profile->getUrls();
             if (!$profileUrls) {
                 continue;
