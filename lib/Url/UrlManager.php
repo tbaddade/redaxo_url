@@ -262,6 +262,13 @@ class UrlManager
      */
     public static function resolveUrl(Url $url)
     {
+        $rewriterSuffix = Url::getRewriter()->getSuffix();
+        if ($rewriterSuffix && substr($url->getPath(), -strlen($rewriterSuffix)) !== $rewriterSuffix) {
+            header('HTTP/1.1 301 Moved Permanently');
+            header('Location: '.$url->getPath().$rewriterSuffix.$url->getQuery());
+            exit;
+        }
+
         // Url nur auflösen (DB-Abfrage), wenn der erste Teil des Url-Pfades auch in einem Profil zu finden ist
         // Prüft ob der erste Teil der übergebenen Url in einem Profil zu finden ist.
         $resolve = false;
