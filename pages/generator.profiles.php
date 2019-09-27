@@ -11,9 +11,7 @@
 
 use Url\Cache;
 use Url\Database;
-use Url\Generator;
 use Url\Profile;
-use Url\ProfileRelation;
 use Url\Url;
 use Url\UrlManager;
 use Url\UrlManagerSql;
@@ -81,52 +79,79 @@ if ($message != '') {
     echo $message;
 }
 
-if (!function_exists('url_generate_column_article')) {
-    function url_generate_column_article($params)
-    {
-        /** @var rex_list $list */
-        $list = $params['list'];
-        $return = '';
-
-        $a = rex_article::get($list->getValue('article_id'), $list->getValue('clang_id'));
-        if ($a instanceof rex_article) {
-            $return = '<p>'.$a->getName().' <small>[<a href="'.rex_url::backendPage('/content/edit', ['category_id' => $a->getCategoryId(), 'article_id' => $a->getId(), 'clang' => $a->getClangId(), 'mode' => 'edit']).'">Backend</a> | <a href="'.rex_getUrl($list->getValue('article_id'), $list->getValue('clang_id')).'">Frontend</a>]</small></p>';
-            $return .= '<p><small><b>Domain: </b>'.\rex_yrewrite::getDomainByArticleId($a->getId(), $a->getClangId()).'</small></p>';
-
-            $tree = $a->getParentTree();
-
-            $levels = [];
-            if (count(rex_clang::getAll()) >= 2 && in_array($list->getValue('clang_id'), rex_clang::getAllIds())) {
-                $levels[] = rex_clang::get($list->getValue('clang_id'))->getName();
-            }
-
-            foreach ($tree as $object) {
-                $levels[] = $object->getName();
-            }
-            $return .= '<p><small><b>Pfad: </b>'.implode(' : ', $levels).'</small></p>';
-        }
-        return $return;
-    }
-}
-
 if (!function_exists('url_generate_column_data')) {
     function url_generate_column_data($params)
     {
         /** @var rex_list $list */
         $list = $params['list'];
-        $return = '';
 
-        $infoList = [];
         $profile = Profile::get($list->getValue('id'));
-        $infoList[] = [
-            rex_i18n::msg('url_generator_table'),
-            $profile->getTableName()
-        ];
-        $infoList[] = [
-            rex_i18n::msg('url_generator_namespace'),
-            $profile->getNamespace()
+
+        $articleList = [];
+        $dataList = [];
+        $infoList = [
+            rex_i18n::msg('url_generator_restrictions') => $profile->hasRestrictions(),
+            rex_i18n::msg('url_generator_relations') => $profile->hasRelations(),
+            rex_i18n::msg('url_generator_append_user_path_short') => $profile->appendUserPaths(),
+            rex_i18n::msg('url_generator_append_structure_categories_append') => $profile->appendStructureCategories(),
+            rex_i18n::msg('url_generator_sitemap') => $profile->inSitemap(),
+            rex_i18n::msg('url_generator_pre_save_called') => $profile->hasPreSaveCalled(),
         ];
 
+        $articleList[] = [
+            rex_i18n::msg('url_generator_namespace'),
+            sprintf('<code>%s</code>', $profile->getNamespace())
+        ];
+
+        $article = rex_article::get($profile->getArticleId(), $profile->getArticleClangId());
+        if ($article) {
+            $articleList[] = [
+                rex_i18n::msg('url_generator_domain'),
+                \rex_yrewrite::getDomainByArticleId($article->getId(), $article->getClangId()),
+            ];
+            $articleList[] = [
+                rex_i18n::msg('url_generator_article'),
+                sprintf('%s<br /><a href="%s">[Backend]</a> | <a href="%s">[Frontend]</a>', $article->getName(), rex_url::backendPage('/content/edit', ['category_id' => $article->getCategoryId(), 'article_id' => $article->getId(), 'clang' => $article->getClangId(), 'mode' => 'edit']), $article->getUrl())
+            ];
+            $articleList[] = [
+                rex_i18n::msg('url_generator_clang'),
+                (null === $profile->getArticleClangId() ? '' : rex_clang::get($profile->getArticleClangId())->getName())
+            ];
+
+            $levels = [];
+            if (null !== $profile->getArticleClangId() && count(rex_clang::getAll()) >= 2) {
+                $levels[] = rex_clang::get($article->getClangId())->getName();
+            }
+
+            $tree = $article->getParentTree();
+            foreach ($tree as $object) {
+                $levels[] = sprintf('<a href="%s">%s</a>', $object->getUrl(), $object->getName());
+            }
+
+            $articleList[] = [
+                rex_i18n::msg('url_generator_path'),
+                implode(' : ', $levels),
+            ];
+        }
+
+        $dataList[] = [
+            rex_i18n::msg('url_generator_table'),
+            sprintf('<code>%s</code>', $profile->getTableName())
+        ];
+
+        $dataList[] = [
+            rex_i18n::msg('url_generator_identify_record'),
+            '<code>'.$profile->getColumnName('id').'</code>' . ($profile->getColumnName('clang_id') == '' ? '' : ' - <code>'.$profile->getColumnName('clang_id').'</code>')
+        ];
+
+
+        $concatSegmentParts = '';
+        for ($index = 1; $index <= Profile::RESTRICTION_COUNT; ++$index) {
+            if ($profile->getColumnName('segment_part_'.$index) != '') {
+                $concatSegmentParts .= $profile->getSegmentPartSeparators()[$index] ?? '';
+                $concatSegmentParts .= '<code>'.$profile->getColumnName('segment_part_'.$index).'</code>';
+            }
+        }
 
         $concatSegmentParts = '';
         for ($index = 1; $index <= Profile::SEGMENT_PART_COUNT; ++$index) {
@@ -159,27 +184,44 @@ if (!function_exists('url_generate_column_data')) {
         $url = new Url(Url::getRewriter()->getFullUrl($list->getValue('article_id'), $list->getValue('clang_id')));
         $url->withScheme('');
 
-
-        $infoList[] = [
+        $dataList[] = [
             rex_i18n::msg('url_generator_url'),
             $url->getPath().$concatSegmentParts.Url::getRewriter()->getSuffix()
         ];
 
-        $infoList[] = [
-            rex_i18n::msg('url_generator_identify_record'),
-            '<code>'.$profile->getColumnName('id').'</code>' . ($profile->getColumnName('clang_id') == '' ? '' : ' - <code>'.$profile->getColumnName('clang_id').'</code>')
-        ];
-
-        $infoList[] = [
+        $dataList[] = [
             rex_i18n::msg('url_generator_namespace_short'),
             '<code>rex_getUrl(\'\', \'\', [\''.$profile->getNamespace().'\' => {id}])</code><br /><code>->getUrl([\''.$profile->getNamespace().'\' => {id}])</code>'
         ];
 
-        $return = '<dl class="dl-horizontal">';
-        foreach ($infoList as $item) {
-            $return .= '<dt><small>'.$item[0].'</small></dt><dd>'.$item[1].'</dd>';
+        $dataList[] = [
+            '',
+            implode('', array_map(function($label, $value) {
+                return sprintf('<span class="label %s">%s</span> ', ($value ? 'label-success' : 'label-default'), $label);
+            }, array_keys($infoList), array_values($infoList)))
+        ];
+
+        $articleOut = '<table class="addoff-data-table table table-condensed small"><tbody>';
+        foreach ($articleList as $data) {
+            $articleOut .= sprintf('<tr><th>%s</th><td>%s</td></tr>', $data[0], $data[1]);
         }
-        $return .= '<dl>';
+        $articleOut .= '</tbody></table>';
+
+        $dataOut = '<table class="addoff-data-table table table-condensed small"><tbody>';
+        foreach ($dataList as $data) {
+            $dataOut .= sprintf('<tr><th>%s</th><td>%s</td></tr>', $data[0], $data[1]);
+        }
+        $dataOut .= '</tbody></table>';
+
+        $return = sprintf(
+            '<div class="row">
+                <div class="col-lg-6">%s</div>
+                <div class="col-lg-6">%s</div>
+            </div>',
+            $articleOut,
+            $dataOut
+        );
+
         return $return;
     }
 }
@@ -187,10 +229,11 @@ if ($func == '') {
     $query = '  SELECT      `id`,
                             `article_id`,
                             `clang_id`
-                FROM        '.rex::getTable('url_generator_profile');
+                FROM        '.rex::getTable('url_generator_profile').'
+                ORDER BY    `namespace`';
 
     $list = rex_list::factory($query);
-    $list->addTableAttribute('class', 'table-striped');
+    $list->addTableAttribute('class', 'addoff-table table-striped');
 
     $tdIcon = '<i class="rex-icon fa fa-gears"></i>';
     $thIcon = '<a href="'.$list->getUrl(['func' => 'add']).'"'.rex::getAccesskey($this->i18n('add'), 'add').'><i class="rex-icon rex-icon-add-article"></i></a>';
@@ -199,10 +242,10 @@ if ($func == '') {
 
     $list->setColumnLabel('id', rex_i18n::msg('id'));
     $list->setColumnLayout('id', ['<th class="rex-table-id">###VALUE###</th>', '<td class="rex-table-id" data-title="'.rex_i18n::msg('id').'">###VALUE###</td>']);
-    $list->removeColumn('clang_id');
 
-    $list->setColumnLabel('article_id', $this->i18n('url_generator_article'));
-    $list->setColumnFormat('article_id', 'custom', 'url_generate_column_article');
+    $list->removeColumn('id');
+    $list->removeColumn('clang_id');
+    $list->removeColumn('article_id');
 
     $list->addColumn('data', '');
     $list->setColumnLabel('data', $this->i18n('url_generator_data'));
@@ -279,7 +322,7 @@ if ($func == '') {
         ->add('notEmpty', $this->i18n('url_generator_article_error'))
         ->add('match', $this->i18n('url_generator_article_error'), '/^[1-9][0-9]*$/');
 
-    if (count(\rex_clang::getAll()) >= 2) {
+    if (count(rex_clang::getAll()) >= 2) {
         $fieldArticleId->setFooter('
                 </div>');
 
@@ -292,7 +335,7 @@ if ($func == '') {
         $fieldArticleClangId->setNotice($this->i18n('url_generator_article_clang').'; '.$this->i18n('url_generator_article_clang_notice', $this->i18n('url_generator_identify_record')));
         $select = $fieldArticleClangId->getSelect();
         $select->addOption($this->i18n('url_generator_article_clang_option_all'), '0');
-        foreach (\rex_clang::getAll() as $clang) {
+        foreach (rex_clang::getAll() as $clang) {
             $select->addOption($clang->getName(), $clang->getId());
         }
     } else {
@@ -1117,5 +1160,35 @@ if ($func == 'add' || $func == 'edit') {
 
     .text-large {
         font-size: 150%;
+    }
+
+
+
+    .addoff-table > thead > tr > th,
+    .addoff-table > thead > tr > td,
+    .addoff-table > tbody > tr > th,
+    .addoff-table > tbody > tr > td {
+        border-color: #C4C8CC;
+    }
+
+    .addoff-data-table.table {
+        margin: -8px 0;
+        background: transparent;
+    }
+
+    .addoff-data-table tr:first-child > * {
+        border-top: 0;
+    }
+
+    .addoff-data-table th {
+        width: 180px;
+        min-width: 180px;
+    }
+    .addoff-data-table > tbody > tr > th,
+    .addoff-data-table > tbody > tr > td {
+        background: transparent;
+    }
+    .addoff-data-table .label-default {
+        background: #ccc;
     }
 </style>
