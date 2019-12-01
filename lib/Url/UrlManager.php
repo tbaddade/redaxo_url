@@ -262,6 +262,7 @@ class UrlManager
      */
     public static function resolveUrl(Url $url)
     {
+        // Weiterleitung auf URL mit Suffix, wenn Suffix fehlt
         $rewriterSuffix = Url::getRewriter()->getSuffix();
         if ($rewriterSuffix && substr($url->getPath(), -strlen($rewriterSuffix)) !== $rewriterSuffix) {
             header('HTTP/1.1 301 Moved Permanently');
