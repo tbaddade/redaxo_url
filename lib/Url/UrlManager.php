@@ -265,7 +265,7 @@ class UrlManager
         $rewriterSuffix = Url::getRewriter()->getSuffix();
         if ($rewriterSuffix && substr($url->getPath(), -strlen($rewriterSuffix)) !== $rewriterSuffix) {
             header('HTTP/1.1 301 Moved Permanently');
-            header('Location: '.$url->getPath().$rewriterSuffix.$url->getQuery());
+            header('Location: '.$url->getPath().$rewriterSuffix.($url->getQuery() != "" ? "?".$url->getQuery() : ""));
             exit;
         }
 
