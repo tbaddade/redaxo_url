@@ -54,6 +54,10 @@ rex_extension::register('PACKAGES_INCLUDED', function (\rex_extension_point $epP
                 if (preg_match($regexp, $subject, $matches)) {
                     $subject = str_replace($matches[0], '<span class="text-muted">'.$matches[1].'</span>', $subject);
                 }
+                $regexp = '@<a href="index\.php\?page=structure.*?article_id='.$id.'&.*?rex-api-call=article_delete.*?>(.*?)<\/a>@';
+                if (preg_match($regexp, $subject, $matches)) {
+                    $subject = str_replace($matches[0], '<span class="text-muted">'.$matches[1].'</span>', $subject);
+                }
             }
             return $subject;
         });
