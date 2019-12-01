@@ -263,7 +263,7 @@ class UrlManager
     public static function resolveUrl(Url $url)
     {
         $rewriterSuffix = Url::getRewriter()->getSuffix();
-        if ($rewriterSuffix && substr($url->getPath(), -strlen($rewriterSuffix)) !== $rewriterSuffix) {
+        if (!\rex::isBackend() && $rewriterSuffix && substr($url->getPath(), -strlen($rewriterSuffix)) !== $rewriterSuffix) {
             header('HTTP/1.1 301 Moved Permanently');
             header('Location: '.$url->getPath().$rewriterSuffix.$url->getQuery());
             exit;
