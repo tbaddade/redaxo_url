@@ -124,22 +124,22 @@ class Seo
                 continue;
             }
 
-            $clang = \rex_clang::get($profile->getArticleClangId());
-            if (!$clang->isOnline()) {
-                continue;
-            }
-
-            $article = \rex_article::get($profile->getArticleId(), $clang->getId());
-            if (!$article->isOnline() || !$article->isPermitted()) {
-                continue;
-            }
-
             $profileUrls = $profile->getUrls();
             if (!$profileUrls) {
                 continue;
             }
 
             foreach ($profileUrls as $profileUrl) {
+                // Ist Sprache online...
+                if(!\rex_clang::get($profileUrl->getClangId())->isOnline()) {
+                	continue;
+                }
+                // Ist der Artikel online und bestehen die Zugriffsrechte...
+                $article = \rex_article::get($profile->getArticleId(), $profileUrl->getClangId());
+		        if (!$article->isOnline() || !$article->isPermitted()) {
+		            continue;
+		        }
+
                 $url = $profileUrl->getUrl();
                 $url->withSolvedScheme();
 
