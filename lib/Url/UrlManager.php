@@ -262,11 +262,13 @@ class UrlManager
      */
     public static function resolveUrl(Url $url)
     {
-        $rewriterSuffix = Url::getRewriter()->getSuffix();
-        if (!\rex::isBackend() && $rewriterSuffix && substr($url->getPath(), -strlen($rewriterSuffix)) !== $rewriterSuffix) {
-            header('HTTP/1.1 301 Moved Permanently');
-            header('Location: '.$url->getPath().$rewriterSuffix.$url->getQuery());
-            exit;
+        if(!\rex::isBackend()) {
+            $rewriterSuffix = Url::getRewriter()->getSuffix();
+            if ($url->getPath() !== "/sitemap.xml" && $rewriterSuffix && substr($url->getPath(), -strlen($rewriterSuffix)) !== $rewriterSuffix) {
+                header('HTTP/1.1 301 Moved Permanently');
+                header('Location: '.$url->getPath().$rewriterSuffix.$url->getQuery());
+                exit;
+            }
         }
 
         // Url nur auflösen (DB-Abfrage), wenn der erste Teil des Url-Pfades auch in einem Profil zu finden ist
