@@ -124,14 +124,17 @@ class Seo
                 continue;
             }
 
+            // $clang kann null sein, wenn "alle Sprachen" im Profil ausgewählt wurde
             $clang = \rex_clang::get($profile->getArticleClangId());
-            if (!$clang->isOnline()) {
-                continue;
-            }
+            if (null !== $clang) {
+                if (!$clang->isOnline()) {
+                    continue;
+                }
 
-            $article = \rex_article::get($profile->getArticleId(), $clang->getId());
-            if (!$article->isOnline() || !$article->isPermitted()) {
-                continue;
+                $article = \rex_article::get($profile->getArticleId(), $clang->getId());
+                if (!$article->isOnline() || !$article->isPermitted()) {
+                    continue;
+                }
             }
 
             $profileUrls = $profile->getUrls();
@@ -139,10 +142,20 @@ class Seo
                 continue;
             }
 
+            $clangsAreOnline = array_flip(\rex_clang::getAllIds(true));
             foreach ($profileUrls as $profileUrl) {
+                if (null === $clang) {
+                    if (!isset($clangsAreOnline[$profileUrl->getClangId()])) {
+                        continue;
+                    }
+                    $article = \rex_article::get($profile->getArticleId(), $profileUrl->getClangId());
+                    if (!$article->isOnline() || !$article->isPermitted()) {
+                        continue;
+                    }
+                }
+
                 $url = $profileUrl->getUrl();
                 $url->withSolvedScheme();
-
                 $sitemapImage = '';
                 if ($profileUrl->getSeoImage()) {
                     $image = array_shift(explode(',', $profileUrl->getSeoImage()));

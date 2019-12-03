@@ -83,7 +83,7 @@ class UrlManager
             }
         }
 
-        $items = \rex_sql::factory()->setDebug()->getArray($query->getQuery(), $query->getParams());
+        $items = \rex_sql::factory()->getArray($query->getQuery(), $query->getParams());
 
         return $query->findOne();
     }
@@ -262,14 +262,6 @@ class UrlManager
      */
     public static function resolveUrl(Url $url)
     {
-        // Weiterleitung auf URL mit Suffix, wenn Suffix fehlt
-        $rewriterSuffix = Url::getRewriter()->getSuffix();
-        if ($rewriterSuffix && substr($url->getPath(), -strlen($rewriterSuffix)) !== $rewriterSuffix) {
-            header('HTTP/1.1 301 Moved Permanently');
-            header('Location: '.$url->getPath().$rewriterSuffix.($url->getQuery() != "" ? "?".$url->getQuery() : ""));
-            exit;
-        }
-
         // Url nur auflösen (DB-Abfrage), wenn der erste Teil des Url-Pfades auch in einem Profil zu finden ist
         // Prüft ob der erste Teil der übergebenen Url in einem Profil zu finden ist.
         $resolve = false;
@@ -287,6 +279,14 @@ class UrlManager
         }
         if (!$resolve) {
             return null;
+        }
+
+        // Weiterleitung auf URL mit Suffix, wenn Suffix fehlt
+        $rewriterSuffix = Url::getRewriter()->getSuffix();
+        if (\rex::isFrontend() && $rewriterSuffix && substr($url->getPath(), -strlen($rewriterSuffix)) !== $rewriterSuffix) {
+            header('HTTP/1.1 301 Moved Permanently');
+            header('Location: '.$url->getPath().$rewriterSuffix.($url->getQuery() != "" ? "?".$url->getQuery() : ""));
+            exit;
         }
 
         $items = UrlManagerSql::getByUrl($url);

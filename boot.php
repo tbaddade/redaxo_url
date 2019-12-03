@@ -52,7 +52,11 @@ rex_extension::register('PACKAGES_INCLUDED', function (\rex_extension_point $epP
             foreach ($profileArticleIds as $id) {
                 $regexp = '@<a href="index\.php\?page=structure.*?category-id='.$id.'&.*?rex-api-call=category_delete.*?>(.*?)<\/a>@';
                 if (preg_match($regexp, $subject, $matches)) {
-                    $subject = str_replace($matches[0], '<span class="text-muted">'.$matches[1].'</span>', $subject);
+                    $subject = str_replace($matches[0], '<span class="text-muted" title="'.rex_i18n::msg('url_generator_structure_disallow_to_delete_category').'">'.$matches[1].'</span>', $subject);
+                }
+                $regexp = '@<a href="index\.php\?page=structure.*?article_id='.$id.'&.*?rex-api-call=article_delete.*?>(.*?)<\/a>@';
+                if (preg_match($regexp, $subject, $matches)) {
+                    $subject = str_replace($matches[0], '<span class="text-muted" title="'.rex_i18n::msg('url_generator_structure_disallow_to_delete_article').'">'.$matches[1].'</span>', $subject);
                 }
             }
             return $subject;
