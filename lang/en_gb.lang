@@ -12,14 +12,23 @@ url_generator_profiles = Profiles
 url_generator_urls_generated = generated URLs
 
 url_generator = Generate URLs
+url_generator_append_structure_categories = Subcategories
+url_generator_append_structure_categories_append = Append subcategories
+url_generator_append_structure_categories_notice = If available, can subcategories be appended to the URL?
+url_generator_append_user_path = append custom paths to the URL
+url_generator_append_user_path_notice = without <code>/</code> at the start and end<br />The article is displayed even when these paths are appended to the end of the URL. <br />If a "=" and a title are added to the end, this can later be used as a menu item (Ex: about-us = About us)
+url_generator_append_user_path_short = add. paths
 url_generator_article = Article
 url_generator_article_clang = Article language
 url_generator_article_clang_notice = if "all languages" is active a column for languages must be specified (<b>{0}</b>). Otherwise the record cannot be associated with a language.
 url_generator_article_clang_option_all = All languages
 url_generator_article_error = Choose article
 url_generator_article_legend = Article used for output
+url_generator_clang = Language
 url_generator_clang_id_notice = Column with the corresponding unique Clang Id
 url_generator_data = Data
+url_generator_domain = Domain
+url_generator_help = Help
 url_generator_id_notice = Column with the corresponding unique Id
 url_generator_identify_record = Identifiy database record
 url_generator_namespace = Namespace
@@ -31,17 +40,13 @@ url_generator_no_clang_id = no column for languages found
 url_generator_no_relation_column = Don't augment the URL
 url_generator_no_restriction = No restriction
 url_generator_no_selection = No selection
-url_generator_append_structure_categories = Subcategories
-url_generator_append_structure_categories_append = Append subcategories
-url_generator_append_structure_categories_notice = If available, can subcategories be appended to the URL?
+url_generator_path = Path
 url_generator_path_children = Child categories can be added to the URL
-url_generator_append_user_path = append custom paths to the URL
-url_generator_append_user_path_notice = without <code>/</code> at the start and end<br />The article is displayed even when these paths are appended to the end of the URL. <br />If a "=" and a title are added to the end, this can later be used as a menu item (Ex: about-us = About us)
-url_generator_append_user_path_short = add. paths
 url_generator_path_own = custom paths
 url_generator_path_relation = Relation
 url_generator_path_relation_table = Table
 url_generator_paths = additional paths for the URL
+url_generator_pre_save_called = EP URL_PRE_SAVE called
 url_generator_relation = Relation {0}
 url_generator_relation_column = Related column {0}
 url_generator_relation_column_notice = Specify the columns from the relation table below to augment the URL accordingly
@@ -53,28 +58,41 @@ url_generator_relation_position_eg_label = Example
 url_generator_relation_position_in_url = Position in URL
 url_generator_relation_position_notice = Where should the paths be added to the URL
 url_generator_relation_position_notice__2 = According to the URL defined above
+url_generator_relations = Relations
 url_generator_restriction = Restriction
 url_generator_restriction_notice = With this the generation of the URLs for the above article can be restricted. Useful when creating relations between tables. For instance, news entries can be split up into different categories by setting these restrictions accordingly.
+url_generator_restrictions = Restrictions
 url_generator_seo = SEO
 url_generator_seo_description_notice = Column to use for the SEO description
 url_generator_seo_image_notice = Column to use for the SEO image
 url_generator_seo_title_notice = Column to use for the SEO title
+url_generator_show_dataset = View record ({0})
 url_generator_sitemap = Sitemap
 url_generator_sitemap_add_notice = Append URLs to sitemap.xml?
 url_generator_sitemap_frequency_notice = Frequency
 url_generator_sitemap_lastmod_notice = Column containing the update date (last changes)
 url_generator_sitemap_priority_notice = Priority
 url_generator_structure_article = Article used for output
+url_generator_structure_disallow_to_delete_article = This article is used in the Url addon and cannot be deleted
+url_generator_structure_disallow_to_delete_category = This category is used in the Url addon and cannot be deleted
 url_generator_table = Table
 url_generator_table_error = Choose table
 url_generator_table_legend = Table from which to generate URLs
 url_generator_table_not_selected = no table specified
 url_generator_table_relation_legend = Relationtable {0}
 url_generator_url = Url
+url_generator_url_refresh = Regenerate URLs
+url_generator_url_refresh_all = Regenerate all URLs
+url_generator_url_refreshed = Regenerated URLs of profile ID={0}
 url_generator_url_notice = Column to generate the URL from
 url_generator_rex_api_delete = Category or articles could not be deleted. In use by Url addon
 
+url_generator_profile_removed = Profile successfully deleted
 
+url_yform_value_label = Description
+url_yform_value_profil = Profile
+url_yform_value_anchor = Anchor text
+url_yform_value_description = Adds a link to the frontend generated by the URL addon
 
 
 
