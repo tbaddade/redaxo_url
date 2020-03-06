@@ -165,3 +165,10 @@ function rex_url_shortener(rex_extension_point $ep) {
 	return $url;
 }
 ```
+
+
+## Weitere Tipps 
+
+### Leere Einträge vermeiden
+
+Werden URLs selbst erzeugt, z.B. über eine YForm-Tabelle, dann darf das Feld oder die Feldkombination, aus der die URL generiert wird, nur einmal vorkommen (prüfen auf `unique`) und außerdem niemals leer sein (prüfen auf `empty`).
