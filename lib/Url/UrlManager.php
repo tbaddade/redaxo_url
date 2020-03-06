@@ -283,7 +283,7 @@ class UrlManager
 
         // Weiterleitung auf URL mit Suffix, wenn Suffix fehlt
         $rewriterSuffix = Url::getRewriter()->getSuffix();
-        if (\rex::isFrontend() && $rewriterSuffix && substr($url->getPath(), -strlen($rewriterSuffix)) !== $rewriterSuffix) {
+        if (\rex::isFrontend() && $rewriterSuffix && substr($url->getPath(), -strlen($rewriterSuffix)) !== $rewriterSuffix && substr($url->getPath(), -4) !== ".xml") {
             header('HTTP/1.1 301 Moved Permanently');
             header('Location: '.$url->getPath().$rewriterSuffix.($url->getQuery() != "" ? "?".$url->getQuery() : ""));
             exit;
