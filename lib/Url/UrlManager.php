@@ -285,7 +285,8 @@ class UrlManager
         $rewriterSuffix = Url::getRewriter()->getSuffix();
         if (\rex::isFrontend() && $rewriterSuffix && substr($url->getPath(), -strlen($rewriterSuffix)) !== $rewriterSuffix && substr($url->getPath(), -4) !== ".xml") {
             header('HTTP/1.1 301 Moved Permanently');
-            header('Location: '.$url->getPath().$rewriterSuffix.($url->getQuery() != "" ? "?".$url->getQuery() : ""));
+            $url->handleRewriterSuffix();
+			header('Location: '. $url->__toString());
             exit;
         }
 
