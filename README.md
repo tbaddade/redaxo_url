@@ -165,3 +165,26 @@ function rex_url_shortener(rex_extension_point $ep) {
 	return $url;
 }
 ```
+
+
+## Weitere Tipps 
+
+### Leere Einträge vermeiden
+
+Werden URLs selbst erzeugt, z.B. über eine YForm-Tabelle, dann darf das Feld oder die Feldkombination, aus der die URL generiert wird, nur einmal vorkommen (prüfen auf `unique`) und außerdem niemals leer sein (prüfen auf `empty`).
+
+### Von Url generierte Seite mit YForm-Formular
+
+Befindet sich ein Formular auf einer Seite, die über eine URL des URL-Addon aufgerufen wurde, so muss die Ziel-URL des Formulars angepasst werden. 
+
+```php
+$yform->setObjectparams('form_action',rex_getUrl('', '', [$data->urlParamKey => $id]));
+``` 
+
+oder
+
+```php
+$yform->setObjectparams('form_action',Url::current());
+``` 
+
+Weiere Infos zu den Objekt-Parametern von YForm befinden sich in der YForm-Doku.
