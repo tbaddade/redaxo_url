@@ -187,7 +187,7 @@ Werden URLs selbst erzeugt, z.B. über eine YForm-Tabelle, dann darf das Feld od
 
 ### Von Url generierte Seite mit YForm-Formular
 
-Befindet sich ein Formular in einer Seite, die durch ein URL-Profil erzeugt wurde, so muss die Ziel-URL des Formulars angepasst werden. 
+Befindet sich ein Formular auf einer Seite, die über eine URL des URL-Addon aufgerufen wurde, so muss die Ziel-URL des Formulars angepasst werden. 
 
 ```php
 $yform->setObjectparams('form_action',rex_getUrl('', '', [$data->urlParamKey => $id]));
