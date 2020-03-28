@@ -32,7 +32,7 @@
     ->ensure();
 
 \rex_sql_table::get(
-    \rex::getTable('url_generator_url'))
+    \rex::getTable(\rex::getTempPrefix().'url_generator_url'))
     ->ensurePrimaryIdColumn()
     ->ensureColumn(new \rex_sql_column('profile_id', 'INT(11)'))
     ->ensureColumn(new \rex_sql_column('article_id', 'INT(11)'))
@@ -53,9 +53,9 @@
     ->ensure();
 
 $sql = \rex_sql::factory();
-$sql->setQuery('UPDATE '.\rex::getTable('url_generator_url').' SET url_hash = SHA1(url) WHERE url_hash = ""');
+$sql->setQuery('UPDATE '.\rex::getTable(\rex::getTempPrefix().'url_generator_url').' SET url_hash = SHA1(url) WHERE url_hash = ""');
 
 \rex_sql_table::get(
-    \rex::getTable('url_generator_url'))
+    \rex::getTable(\rex::getTempPrefix().'url_generator_url'))
     ->ensureIndex(new \rex_sql_index('url_hash', ['url_hash'], \rex_sql_index::UNIQUE))
     ->ensure();

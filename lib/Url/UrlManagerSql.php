@@ -21,7 +21,7 @@ class UrlManagerSql
     private function __construct()
     {
         $this->sql = \rex_sql::factory();
-        $this->sql->setTable(\rex::getTable(self::TABLE_NAME));
+        $this->sql->setTable(\rex::getTable(\rex::getTempPrefix().self::TABLE_NAME));
     }
 
     public static function factory()
@@ -149,7 +149,7 @@ class UrlManagerSql
         }
 
         $sql = self::factory();
-        return $sql->sql->getArray('SELECT * FROM '.\rex::getTable(self::TABLE_NAME).' WHERE '.$query, $this->where);
+        return $sql->sql->getArray('SELECT * FROM '.\rex::getTable(\rex::getTempPrefix().self::TABLE_NAME).' WHERE '.$query, $this->where);
     }
 
     /**
@@ -174,7 +174,7 @@ class UrlManagerSql
     public static function deleteAll()
     {
         $sql = self::factory();
-        $sql->sql->setQuery('TRUNCATE TABLE '.\rex::getTable(self::TABLE_NAME));
+        $sql->sql->setQuery('TRUNCATE TABLE '.\rex::getTable(\rex::getTempPrefix().self::TABLE_NAME));
     }
 
     /**
@@ -212,7 +212,7 @@ class UrlManagerSql
     public static function getByProfileId($profileId)
     {
         $sql = self::factory();
-        return $sql->sql->getArray('SELECT * FROM '.\rex::getTable(self::TABLE_NAME).' WHERE `profile_id` = ?', [$profileId]);
+        return $sql->sql->getArray('SELECT * FROM '.\rex::getTable(\rex::getTempPrefix().self::TABLE_NAME).' WHERE `profile_id` = ?', [$profileId]);
     }
 
     /**
@@ -238,7 +238,7 @@ class UrlManagerSql
         ], $clangIds);
 
         $sql = self::factory();
-        return $sql->sql->getArray('SELECT * FROM '.\rex::getTable(self::TABLE_NAME).' WHERE `data_id` = ? AND `article_id` = ? AND is_user_path = ? AND is_structure = ? AND ('.$where.')', $params);
+        return $sql->sql->getArray('SELECT * FROM '.\rex::getTable(\rex::getTempPrefix().self::TABLE_NAME).' WHERE `data_id` = ? AND `article_id` = ? AND is_user_path = ? AND is_structure = ? AND ('.$where.')', $params);
     }
 
     /**
@@ -253,7 +253,7 @@ class UrlManagerSql
     public static function getOrigin(Profile $profile, $datasetId, $clangId)
     {
         $sql = self::factory();
-        return $sql->sql->getArray('SELECT * FROM '.\rex::getTable(self::TABLE_NAME).' WHERE `profile_id` = ? AND `data_id` = ? AND `clang_id` = ? AND is_user_path = ? AND is_structure = ?', [$profile->getId(), $datasetId, $clangId, 0, 0]);
+        return $sql->sql->getArray('SELECT * FROM '.\rex::getTable(\rex::getTempPrefix().self::TABLE_NAME).' WHERE `profile_id` = ? AND `data_id` = ? AND `clang_id` = ? AND is_user_path = ? AND is_structure = ?', [$profile->getId(), $datasetId, $clangId, 0, 0]);
     }
 
     /**
@@ -268,7 +268,7 @@ class UrlManagerSql
     public static function getOriginAndExpanded(Profile $profile, $datasetId, $clangId)
     {
         $sql = self::factory();
-        return $sql->sql->getArray('SELECT * FROM '.\rex::getTable(self::TABLE_NAME).' WHERE `profile_id` = ? AND `data_id` = ? AND `clang_id` = ?', [$profile->getId(), $datasetId, $clangId]);
+        return $sql->sql->getArray('SELECT * FROM '.\rex::getTable(\rex::getTempPrefix().self::TABLE_NAME).' WHERE `profile_id` = ? AND `data_id` = ? AND `clang_id` = ?', [$profile->getId(), $datasetId, $clangId]);
     }
 
     /**
@@ -285,6 +285,6 @@ class UrlManagerSql
         $urlAsString = $url->__toString();
 
         $sql = self::factory();
-        return $sql->sql->getArray('SELECT * FROM '.\rex::getTable(self::TABLE_NAME).' WHERE `url` = ?', [$urlAsString]);
+        return $sql->sql->getArray('SELECT * FROM '.\rex::getTable(\rex::getTempPrefix().self::TABLE_NAME).' WHERE `url` = ?', [$urlAsString]);
     }
 }

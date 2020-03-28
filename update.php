@@ -18,7 +18,7 @@ if (rex_string::versionCompare(\rex_addon::get('url')->getVersion(), '1.5', '>='
         $relation_key = substr($relation_first_key, strlen($relation_db_id) + 14, -8);
 
         $sql = \rex_sql::factory();
-        $sql->setTable(\rex::getTable('url_generator_url'));
+        $sql->setTable(\rex::getTable(\rex::getTempPrefix().'url_generator_url'));
         $sql->setValue('namespace', ($table_parameters[$table_db_id.'_xxx_'.$table_key.'_url_param_key'] != '' ? $table_parameters[$table_db_id.'_xxx_'.$table_key.'_url_param_key'] : $table_parameters[$table_db_id.'_xxx_'.$table_key.'_id']));
         $sql->setValue('article_id', $result->getValue('article_id'));
         $sql->setValue('clang_id', $result->getValue('clang_id'));
