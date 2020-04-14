@@ -396,7 +396,7 @@ class UrlManager
 
                 $scheme = Url::getRewriter()->getSchemeByDomain($url->getDomain()) ?: (Url::getRewriter()->isHttps() ? 'https' : 'http');
                 $url->withScheme($scheme);
-                return $url->getSchemeAndHttpHost().$url->getPath();
+                return $url->getSchemeAndHttpHost().$url->getPath().$url->getQuery();
             }
         }
         return null;
