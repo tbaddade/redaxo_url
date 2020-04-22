@@ -283,8 +283,7 @@ class UrlManager
 
 	// Weiterleitung auf URL mit Suffix, wenn Suffix fehlt
 	$rewriterSuffix = Url::getRewriter()->getSuffix();
-	// $resolve in nachfolgender Abfrage verwenden um Weiterleitungen auf URLs des URL Addons zu begrenzen
-	if ($resolve && $rewriterSuffix && substr($url->getPath(), -strlen($rewriterSuffix)) !== $rewriterSuffix) {
+	if ($rewriterSuffix && substr($url->getPath(), -strlen($rewriterSuffix)) !== $rewriterSuffix) {
 		$url->handleRewriterSuffix();
 		// URL Objekt nachfolgend neu erstellen um Parameter nicht zu verlieren
 		if(count(UrlManagerSql::getByUrl(new Url($url->__toString()))) == 1) {
