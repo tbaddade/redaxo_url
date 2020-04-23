@@ -166,6 +166,17 @@ function rex_url_shortener(rex_extension_point $ep) {
 }
 ```
 
+## SEO-Methoden
+Für die ordnungsgemäße Ausgabe müssen die YRewrite-Tags für Titel, Beschreibung u.a. durch die SEO-Klasse des URL-Addons ausgetauscht werden.  `$seo = new rex_yrewrite_seo();` wird ersetzt durch `$urlSeo = new Url\Seo();`:
+
+```php
+$urlSeo = new Url\Seo();
+    echo $urlSeo->getTitleTag().PHP_EOL;
+    echo $urlSeo->getDescriptionTag().PHP_EOL;
+    echo $urlSeo->getRobotsTag().PHP_EOL;
+    echo $urlSeo->getHreflangTags().PHP_EOL;
+    echo $urlSeo->getCanonicalUrlTag().PHP_EOL;
+```
 
 ## Weitere Tipps 
 
