@@ -280,7 +280,7 @@ class UrlManagerSql
      */
     public static function getByUrl(Url $url)
     {
-    	$this_url = clone $url;
+        $this_url = clone $url;
         $this_url->withScheme('');
         $this_url->withQuery('');
         $urlAsString = $this_url->__toString();
