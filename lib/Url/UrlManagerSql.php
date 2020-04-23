@@ -280,9 +280,10 @@ class UrlManagerSql
      */
     public static function getByUrl(Url $url)
     {
-        $url->withScheme('');
-        $url->withQuery('');
-        $urlAsString = $url->__toString();
+        $this_url = clone $url;
+        $this_url->withScheme('');
+        $this_url->withQuery('');
+        $urlAsString = $this_url->__toString();
 
         $sql = self::factory();
         return $sql->sql->getArray('SELECT * FROM '.\rex::getTable(self::TABLE_NAME).' WHERE `url` = ?', [$urlAsString]);

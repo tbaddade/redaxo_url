@@ -281,12 +281,17 @@ class UrlManager
             return null;
         }
 
-        $rewriterSuffix = Url::getRewriter()->getSuffix();
-        if (\rex::isFrontend() && $rewriterSuffix && substr($url->getPath(), -strlen($rewriterSuffix)) !== $rewriterSuffix) {
-            header('HTTP/1.1 301 Moved Permanently');
-            header('Location: '.$url->getPath().$rewriterSuffix.$url->getQuery());
-            exit;
-        }
+	// Weiterleitung auf URL mit Suffix, wenn Suffix fehlt
+	$rewriterSuffix = Url::getRewriter()->getSuffix();
+	if ($rewriterSuffix && substr($url->getPath(), -strlen($rewriterSuffix)) !== $rewriterSuffix) {
+		$url->handleRewriterSuffix();
+		// URL Objekt nachfolgend neu erstellen um Parameter nicht zu verlieren
+		if(count(UrlManagerSql::getByUrl($url))) == 1) {
+			header('HTTP/1.1 301 Moved Permanently');
+			header('Location: '. $url->__toString());
+			exit;
+		}
+	}
 
         $items = UrlManagerSql::getByUrl($url);
         if (count($items) != 1) {
