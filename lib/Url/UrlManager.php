@@ -286,7 +286,7 @@ class UrlManager
 	if ($rewriterSuffix && substr($url->getPath(), -strlen($rewriterSuffix)) !== $rewriterSuffix) {
 		$url->handleRewriterSuffix();
 		// URL Objekt nachfolgend neu erstellen um Parameter nicht zu verlieren
-		if(count(UrlManagerSql::getByUrl($url))) == 1) {
+		if(count(UrlManagerSql::getByUrl($url)) == 1) {
 			header('HTTP/1.1 301 Moved Permanently');
 			header('Location: '. $url->__toString());
 			exit;
