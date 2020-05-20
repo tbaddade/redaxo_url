@@ -295,7 +295,7 @@ class Profile
                 $concatSegmentParts = '';
                 for ($index = 1; $index <= self::SEGMENT_PART_COUNT; ++$index) {
                     if ($dataset->hasValue($relation->getAlias().'_segment_part_'.$index)) {
-                        $concatSegmentParts .= $this->getSegmentPartSeparators()[$index] ?? '';
+                        $concatSegmentParts .= $relation->getSegmentPartSeparators()[$index] ?? '';
                         $concatSegmentParts .= Url::getRewriter()->normalize($dataset->getValue($relation->getAlias().'_segment_part_'.$index), $clangId);
                     }
                 }
