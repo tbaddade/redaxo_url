@@ -110,6 +110,10 @@ class ExtensionPointManager
                 break;
 
             case 'CACHE_DELETED':
+                Cache::deleteProfiles();
+                $this->setMode(self::MODE_UPDATE_URL_ALL);
+                break;
+
             case 'CLANG_ADDED':
             case 'CLANG_STATUS':
             case 'CLANG_UPDATED':

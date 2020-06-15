@@ -145,6 +145,8 @@ class Cache
 
     public static function deleteProfiles()
     {
+        Profile::reset();
+        
         $file = \rex_path::addonCache('url', 'profiles.cache');
         \rex_file::delete($file);
     }
