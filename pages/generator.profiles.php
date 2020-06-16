@@ -168,7 +168,7 @@ if (!function_exists('url_generate_column_data')) {
                 $concatSegmentPartsRelation = '';
                 for ($index = 1; $index <= Profile::SEGMENT_PART_COUNT; ++$index) {
                     if ($relation->getColumnName('segment_part_'.$index) != '') {
-                        $concatSegmentPartsRelation .= $profile->getSegmentPartSeparators()[$index] ?? '';
+                        $concatSegmentPartsRelation .= $relation->getSegmentPartSeparators()[$index] ?? '';
                         $concatSegmentPartsRelation .= '<code>'.$relation->getColumnNameWithAlias('segment_part_'.$index).'</code>';
                     }
                 }
