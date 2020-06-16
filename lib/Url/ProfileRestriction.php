@@ -34,8 +34,6 @@ class ProfileRestriction
         $this->comparisonOperator = $comparisonOperator;
         $this->value = trim($value);
 
-        dump($this->comparisonOperator);
-
         if ($logicalOperator && $logicalOperator != '') {
             $this->logicalOperator = $logicalOperator;
         }
