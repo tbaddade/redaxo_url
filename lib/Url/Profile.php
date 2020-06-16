@@ -111,7 +111,7 @@ class Profile
         }
 
         for ($index = 1; $index <= self::RESTRICTION_COUNT; ++$index) {
-            if ($this->getColumnName(self::RESTRICTION_PREFIX.$index) == '' || $this->table['restrictions'][$index]['value'] == '') {
+            if ($this->getColumnName(self::RESTRICTION_PREFIX.$index) == '' || ($this->table['restrictions'][$index]['value'] == '' && !in_array($this->table['restrictions'][$index]['comparison_operator'], Database::getComparisonOperatorsForEmptyValue()))) {
                 unset($this->table['restrictions'][$index]);
             }
         }

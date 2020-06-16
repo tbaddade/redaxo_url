@@ -75,11 +75,13 @@ class Database
     {
         return [
             '=' => '=',
+            '= ""' => '= ""',
             '>' => '>',
             '>=' => '>=',
             '<' => '<',
             '<=' => '<=',
             '!=' => '!=',
+            '!= ""' => '!= ""',
             'LIKE' => 'LIKE',
             'NOT LIKE' => 'NOT LIKE',
             'IN' => 'IN (...)',
@@ -87,6 +89,18 @@ class Database
             'BETWEEN' => 'BETWEEN',
             'NOT BETWEEN' => 'NOT BETWEEN',
             'FIND_IN_SET' => 'FIND_IN_SET',
+            'IS NULL' => 'IS NULL',
+            'IS NOT NULL' => 'IS NOT NULL',
+        ];
+    }
+
+    public static function getComparisonOperatorsForEmptyValue()
+    {
+        return [
+            '= ""',
+            '!= ""',
+            'IS NULL',
+            'IS NOT NULL',
         ];
     }
 
