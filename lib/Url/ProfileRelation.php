@@ -56,6 +56,15 @@ class ProfileRelation
         return $this->index;
     }
 
+    /**
+     * Get segment part seperators as array
+     * @return array
+     */
+    public function getSegmentPartSeparators()
+    {
+        return $this->segment_part_separators;
+    }
+
     public function getSegmentPosition()
     {
         return $this->position;
