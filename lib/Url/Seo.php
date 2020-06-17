@@ -137,6 +137,7 @@ class Seo
                 }
             }
 
+
             $profileUrls = $profile->getUrls();
             if (!$profileUrls) {
                 continue;
@@ -149,6 +150,13 @@ class Seo
                         continue;
                     }
                     $article = \rex_article::get($profile->getArticleId(), $profileUrl->getClangId());
+                    if (!$article->isOnline() || !$article->isPermitted()) {
+                        continue;
+                    }
+                }
+
+                if ($profileUrl->isStructure()) {
+                    $article = \rex_article::get($profileUrl->getArticleId(), $profileUrl->getClangId());
                     if (!$article->isOnline() || !$article->isPermitted()) {
                         continue;
                     }
