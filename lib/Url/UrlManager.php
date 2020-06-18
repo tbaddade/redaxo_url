@@ -281,7 +281,7 @@ class UrlManager
 
         // Weiterleitung auf URL mit Suffix, wenn Suffix fehlt
         $rewriterSuffix = Url::getRewriter()->getSuffix();
-        if (\rex::isFrontend() && $rewriterSuffix && substr($url->getPath(), -strlen($rewriterSuffix)) !== $rewriterSuffix) {
+        if (\rex::isFrontend() && $rewriterSuffix && substr($url->__toString(), -strlen($rewriterSuffix)) !== $rewriterSuffix) {
             $url->handleRewriterSuffix();
             // URL Objekt nachfolgend neu erstellen um Parameter nicht zu verlieren
             if(count(UrlManagerSql::getByUrl($url)) == 1) {
