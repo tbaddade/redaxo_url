@@ -203,6 +203,24 @@ class Profile
     }
 
     /**
+     * @return array
+     */
+    public function getUserPaths()
+    {
+        $array = [];
+        $lines = explode("\n", $this->append_user_paths);
+        foreach ($lines as $line) {
+            $parts = explode('=', $line);
+            if (!isset($parts[1])) {
+                $parts[1] = $parts[0];
+            }
+            $array[trim($parts[0])] = trim($parts[1]);
+
+        }
+        return $array;
+    }
+
+    /**
      * @return bool
      */
     public function inSitemap()
@@ -349,12 +367,10 @@ class Profile
         }
 
         if ($this->appendUserPaths()) {
-            $userPaths = explode("\n", $this->appendUserPaths());
-            foreach ($userPaths as $userPathLine) {
-                $userPathParts = explode('=', $userPathLine);
-
+            $userPaths = $this->getUserPaths();
+            foreach ($userPaths as $userPath => $userPathLabel) {
                 $urlUserPath = clone $url;
-                $urlUserPath->appendPathSegments(explode('/', trim($userPathParts[0])), $clangId);
+                $urlUserPath->appendPathSegments(explode('/', $userPath), $clangId);
                 $urlObjects[] = [
                     'article_id' => $articleId,
                     'object' => $urlUserPath,
