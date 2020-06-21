@@ -50,9 +50,9 @@ class Url
         return $this->uri->__toString();
     }
 
-    public function getRequestUrl()
+    public function getRequestPath()
     {
-        return $this->requestUri->__toString();
+        return $this->requestUri->getPath();
     }
 
     public function appendPathSegments(array $segments, $clangId = 1)
