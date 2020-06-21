@@ -292,7 +292,6 @@ class Profile
         }
 
         $url = new Url(Url::getRewriter()->getFullUrl($articleId, $clangId));
-        $url->handleRewriterSuffix();
         $url->withScheme('');
 
         $dataPath = new Url('');
@@ -402,7 +401,7 @@ class Profile
                 $preSaveCalled = true;
             }
 
-            $urlAsString = $urlInstance->__toString();
+            $urlAsString = $urlInstance->toString();
             $manager = UrlManagerSql::factory();
             $manager->setArticleId($urlObject['article_id']);
             $manager->setClangId($urlObject['clang_id']);

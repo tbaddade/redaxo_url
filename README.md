@@ -150,7 +150,6 @@ function rex_url_shortener(rex_extension_point $ep) {
 		$article_url_without_lang_slug_split_encoded = implode("/", $article_url_without_lang_slug_split);
 
 		$new_url = new \Url\Url(str_replace($$article_url_without_lang_slug_split_encoded, '/', $url->__toString()));
-		$new_url->handleRewriterSuffix();
 		
 		// Auf Duplikate prüfen
 		$query = "SELECT * FROM ". \rex::getTablePrefix() ."url_generator_url "

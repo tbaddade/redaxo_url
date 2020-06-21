@@ -291,7 +291,7 @@ class UrlManagerSql
         $this_url = clone $url;
         $this_url->withScheme('');
         $this_url->withQuery('');
-        $urlAsString = $this_url->__toString();
+        $urlAsString = $this_url->toString();
 
         $sql = self::factory();
         return $sql->sql->getArray('SELECT * FROM '.\rex::getTable(self::TABLE_NAME).' WHERE `url` = ?', [$urlAsString]);

@@ -108,7 +108,7 @@ if ($func == '') {
         $url = Url::get($value);
         $url->withSolvedScheme();
 
-        return sprintf('<a href="%s" target="_blank">%s</a>', urldecode($url), urldecode($value));
+        return sprintf('<a href="%s" target="_blank">%s</a>', urldecode($url->toString()), urldecode($value));
     });
 
     $content = $list->get();
