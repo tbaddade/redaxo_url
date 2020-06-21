@@ -209,7 +209,7 @@ if (!function_exists('url_generate_column_data')) {
 
         $dataOut = '<table class="addoff-data-table table table-condensed small"><tbody>';
         foreach ($dataList as $data) {
-            $dataOut .= sprintf('<tr><th>%s</th><td>%s</td></tr>', $data[0], $data[1]);
+            $dataOut .= sprintf('<tr><th>%s</th><td class="rex-word-break">%s</td></tr>', $data[0], $data[1]);
         }
         $dataOut .= '</tbody></table>';
 
