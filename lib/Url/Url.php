@@ -18,8 +18,7 @@ use Url\Rewriter\Rewriter;
 class Url
 {
     public $uri;
-
-    protected $handleRewriterSuffix = false;
+    public $requestUri;
 
     protected $sitemap = false;
     protected $sitemapLastmod = '';
@@ -33,6 +32,7 @@ class Url
     {
         // $this->uri = (new UriParser())->parse($url);
         $this->uri = (new Uri($url, UriParser::MODE_UTF8));
+        $this->requestUri = $this->uri;
         $this->removeRewriterSuffix();
     }
 
@@ -48,6 +48,11 @@ class Url
     {
         $this->appendRewriterSuffix();
         return $this->uri->__toString();
+    }
+
+    public function getRequestUrl()
+    {
+        return $this->requestUri->__toString();
     }
 
     public function appendPathSegments(array $segments, $clangId = 1)
