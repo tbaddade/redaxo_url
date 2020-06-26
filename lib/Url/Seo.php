@@ -69,7 +69,7 @@ class Seo
                 $url = $item->getUrl();
                 $url->withSolvedScheme();
                 $code = \rex_clang::get($item->getClangId())->getCode();
-                $tags['hreflang:'.$code] = '<link rel="alternate" hreflang="'.$code.'" href="'.$url.'" />';
+                $tags['hreflang:'.$code] = '<link rel="alternate" hreflang="'.$code.'" href="'.$url->toString().'" />';
             }
         }
 
