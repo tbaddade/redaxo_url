@@ -76,7 +76,8 @@ class Seo
         $tags['twitter:card'] = '<meta name="twitter:card" content="summary" />';
 
         if ($this->manager->getSeoImage()) {
-            $image = array_shift(explode(',', $this->manager->getSeoImage()));
+            $images = explode(',', $this->manager->getSeoImage());
+            $image = array_shift($images);
 
             $media = \rex_media::get($image);
             if ($media) {
