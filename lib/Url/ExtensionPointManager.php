@@ -136,7 +136,15 @@ class ExtensionPointManager
                 } else {
                     // Datensatz wurde aktualisiert
                     // Urls neu schreiben
+
+                    $profiles = Profile::getByTableName($tableName);
+                    if (empty($profiles)) {
+                        break;
+                    }
                     $primaryKey = \rex_sql_table::get($tableName)->getPrimaryKey()[0];
+                    if (null === $primaryKey) {
+                        break;
+                    }
 
                     $this->setMode(self::MODE_UPDATE_URL_DATASET);
                     $this->setDatasetEditMode($object->isEditMode());
@@ -162,7 +170,15 @@ class ExtensionPointManager
                 /* @var $object \rex_yform_manager_dataset */
                 $object = $this->extensionPoint->getParam('data');
                 $tableName = $object->getTableName();
+
+                $profiles = Profile::getByTableName($tableName);
+                if (empty($profiles)) {
+                    break;
+                }
                 $primaryKey = \rex_sql_table::get($tableName)->getPrimaryKey()[0];
+                if (null === $primaryKey) {
+                    break;
+                }
 
                 $this->setMode(self::MODE_UPDATE_URL_DATASET);
                 $this->setDatasetEditMode(($this->extensionPoint->getParam('old_data') ? true : false));
