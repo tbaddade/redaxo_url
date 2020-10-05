@@ -22,7 +22,6 @@ if (null !== Url::getRewriter()) {
 }
 
 rex_extension::register('PACKAGES_INCLUDED', function (\rex_extension_point $epPackagesIncluded) {
-    // if anything changes -> refresh PathFile
     if (rex::isBackend() && rex::getUser()) {
         $extensionPoints = [
             'ART_ADDED', 'ART_DELETED', 'ART_MOVED', 'ART_STATUS', 'ART_UPDATED',
@@ -54,7 +53,7 @@ rex_extension::register('PACKAGES_INCLUDED', function (\rex_extension_point $epP
                 if (preg_match($regexp, $subject, $matches)) {
                     $subject = str_replace($matches[0], '<span class="text-muted" title="'.rex_i18n::msg('url_generator_structure_disallow_to_delete_category').'">'.$matches[1].'</span>', $subject);
                 }
-                $regexp = '@<a href="index\.php\?page=structure.*?article_id='.$id.'&.*?rex-api-call=article_delete.*?>(.*?)<\/a>@';
+                $regexp = '@<a href="index\.php\?page=structure[^>]*article_id='.$id.'&[^>]*rex-api-call=article_delete[^>]*>([^&]*)<\/a>@';
                 if (preg_match($regexp, $subject, $matches)) {
                     $subject = str_replace($matches[0], '<span class="text-muted" title="'.rex_i18n::msg('url_generator_structure_disallow_to_delete_article').'">'.$matches[1].'</span>', $subject);
                 }
