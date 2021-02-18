@@ -167,7 +167,7 @@ class Seo
                 $url->withSolvedScheme();
                 $sitemapImage = '';
                 if ($profileUrl->getSeoImage()) {
-                    $images = explode(',', $this->manager->getSeoImage());
+                    $images = explode(',', $profileUrl->getSeoImage());
                     $image = array_shift($images);
 
                     $media = \rex_media::get($image);
