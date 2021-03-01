@@ -30,8 +30,11 @@ class Url
 
     public function __construct($url)
     {
-        // $this->uri = (new UriParser())->parse($url);
-        $this->uri = (new Uri($url, UriParser::MODE_UTF8));
+        try {
+            $this->uri = (new Uri($url, UriParser::MODE_UTF8));
+        } catch (\InvalidArgumentException $ex) {
+            $this->uri = new Uri();
+        }
         $this->requestUri = $this->uri;
         $this->removeRewriterSuffix();
     }
