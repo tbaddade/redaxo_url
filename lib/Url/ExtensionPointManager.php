@@ -136,7 +136,6 @@ class ExtensionPointManager
                 } else {
                     // Datensatz wurde aktualisiert
                     // Urls neu schreiben
-
                     $profiles = Profile::getByTableName($tableName);
                     if (empty($profiles)) {
                         break;
@@ -146,9 +145,10 @@ class ExtensionPointManager
                         break;
                     }
 
+                    $primaryId = $object->isEditMode() ? $object->getSql()->getValue($primaryKey) : $object->getSql()->getLastId();
                     $this->setMode(self::MODE_UPDATE_URL_DATASET);
                     $this->setDatasetEditMode($object->isEditMode());
-                    $this->setDatasetPrimaryId($object->getSql()->getValue($primaryKey));
+                    $this->setDatasetPrimaryId($primaryId);
                     $this->setDatasetPrimaryColumnName($primaryKey);
                     $this->setDatasetTableName($tableName);
                 }
