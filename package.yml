@@ -28,6 +28,6 @@ requires:
         yrewrite: ^2.2.0
     php:
         extensions: [intl]
-        version: >=7.0
+        version: '>=7.0'
 
 #load: late
