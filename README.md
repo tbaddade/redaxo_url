@@ -174,18 +174,18 @@ Für die ordnungsgemäße Ausgabe müssen die YRewrite-Tags für Titel, Beschrei
 
 ```php
 $urlSeo = new Url\Seo();
-    echo $urlSeo->getTitleTag().PHP_EOL;
-    echo $urlSeo->getDescriptionTag().PHP_EOL;
-    echo $urlSeo->getRobotsTag().PHP_EOL;
-    echo $urlSeo->getHreflangTags().PHP_EOL;
-    echo $urlSeo->getCanonicalUrlTag().PHP_EOL;
+echo $urlSeo->getTitleTag().PHP_EOL;
+echo $urlSeo->getDescriptionTag().PHP_EOL;
+echo $urlSeo->getRobotsTag().PHP_EOL;
+echo $urlSeo->getHreflangTags().PHP_EOL;
+echo $urlSeo->getCanonicalUrlTag().PHP_EOL;
 ```
 
 Oder zusammengefasst:
 
 ```php
 $urlSeo = new Url\Seo();
-    echo $urlSeo->getTags().PHP_EOL;
+echo $urlSeo->getTags().PHP_EOL;
 ```
 
 ## Weitere Tipps 
