@@ -181,6 +181,13 @@ $urlSeo = new Url\Seo();
     echo $urlSeo->getCanonicalUrlTag().PHP_EOL;
 ```
 
+Oder zusammengefasst:
+
+```php
+$urlSeo = new Url\Seo();
+    echo $urlSeo->getTags().PHP_EOL;
+```
+
 ## Weitere Tipps 
 
 ### Leere Einträge vermeiden
