@@ -125,7 +125,7 @@ class Seo
                 continue;
             }
             
-            if (rex_addon::get('yrewrite')->isAvailable()) {
+            if (\rex_addon::get('yrewrite')->isAvailable()) {
 			   if (\rex_yrewrite::getDomainByArticleId($profile->getArticleId())!=\rex_yrewrite::getCurrentDomain())
 			   {
 				continue;
