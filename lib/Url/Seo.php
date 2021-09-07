@@ -125,12 +125,11 @@ class Seo
                 continue;
             }
             
-            if (\rex_addon::get('yrewrite')->isAvailable()) {
-			   if (\rex_yrewrite::getDomainByArticleId($profile->getArticleId())!=\rex_yrewrite::getCurrentDomain())
-			   {
-				continue;
-			   }
-			}
+            // Befindet sich der Artikel in der aktuellen Domain? 
+	    if (\rex_yrewrite::getDomainByArticleId($profile->getArticleId())!=\rex_yrewrite::getCurrentDomain())
+            {
+                continue;
+            }
 
             // $clang kann null sein, wenn "alle Sprachen" im Profil ausgewählt wurde
             $clang = \rex_clang::get($profile->getArticleClangId());
