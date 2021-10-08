@@ -240,7 +240,7 @@ class Profile
 
     public function getDatabaseId()
     {
-        return $this->table['dbid'];
+        return (int) $this->table['dbid'];
     }
 
     public function getTableName()
