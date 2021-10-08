@@ -175,7 +175,9 @@ class Profile
 
     public function getRestrictions()
     {
-        return $this->table['restrictions'];
+        return \rex_extension::registerPoint(new \rex_extension_point('URL_PROFILE_RESTRICTION', $this->table['restrictions'], [
+             'profile' => $this
+        ]));
     }
 
     /**
@@ -246,6 +248,11 @@ class Profile
     public function getTableName()
     {
         return $this->table['name'];
+    }
+
+    public function addColumnName($column)
+    {
+        return $this->table['column_names'][$column] = $column;
     }
 
     public function getColumnName($column)
@@ -623,7 +630,7 @@ class Profile
             foreach ($this->getRestrictions() as $index => $values) {
                 $restriction = new ProfileRestriction(
                     $index,
-                    $this->getColumnNameWithAlias('restriction_'.$index),
+                    $this->getColumnNameWithAlias($values['column'] ?? 'restriction_'.$index),
                     $values['comparison_operator'],
                     $values['value'],
                     ($values['logical_operator'] ?? '')
