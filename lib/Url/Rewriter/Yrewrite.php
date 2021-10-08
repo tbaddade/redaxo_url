@@ -25,6 +25,16 @@ class Yrewrite extends Rewriter
         }, \rex_extension::EARLY);
     }
 
+    public function getDomainByArticleId($articleId)
+    {
+        return \rex_yrewrite::getDomainByArticleId($articleId);
+    }
+
+    public function getCurrentDomain()
+    {
+        return \rex_yrewrite::getCurrentDomain();
+    }
+
     /**
      * @return string
      */

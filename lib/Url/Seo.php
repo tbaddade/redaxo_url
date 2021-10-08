@@ -121,14 +121,16 @@ class Seo
             return [];
         }
 
+        $rewriter = Url::getRewriter();
+
         $sitemap = [];
         foreach ($profiles as $profile) {
             if (!$profile->inSitemap()) {
                 continue;
             }
-            
-            // Befindet sich der Artikel in der aktuellen Domain? 
-	    if (\rex_yrewrite::getDomainByArticleId($profile->getArticleId()) !== \rex_yrewrite::getCurrentDomain()) {
+
+            // Befindet sich der Artikel in der aktuellen Domain?
+            if ($rewriter->getDomainByArticleId($profile->getArticleId()) !== $rewriter->getCurrentDomain()) {
                 continue;
             }
 
