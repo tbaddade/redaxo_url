@@ -59,7 +59,7 @@ class Seo
 
         $fullUrl = $this->getFullUrl();
         $tags['canonical'] = '<link rel="canonical" href="'.$fullUrl.'" />';
-        $tags['og:url'] = '<meta property="og:url" href="'.$fullUrl.'" />';
+        $tags['og:url'] = '<meta property="og:url" content="'.$fullUrl.'" />';
         $tags['twitter:url'] = '<meta name="twitter:url" content="'.$fullUrl.'" />';
 
 
