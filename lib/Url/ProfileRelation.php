@@ -76,6 +76,8 @@ class ProfileRelation
 
         if (null === $structureArticleClangId && $sourceClangColumnName != '' && $this->getColumnName('clang_id') != '') {
             $joinCondition .= ' AND '.$sourceClangColumnName.' = '.$this->getColumnNameWithAlias('clang_id');
+        } elseif ($sourceClangColumnName != '' && $this->getColumnName('clang_id') != '') {
+            $query->where($this->getColumnNameWithAlias('clang_id'), $structureArticleClangId);
         }
 
         $query->joinRaw('LEFT', $this->getTableName(), $this->getAlias(), $joinCondition);
