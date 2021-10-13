@@ -33,7 +33,7 @@ echo rex_getUrl('', '', ['movie-id' => $movieId]);
 | Variable         | Beschreibung                 |
 | ---------------- | ---------------------------- |
 | `movie-id` | ist der im Profil hinterlegte Namensraum |
-| `$movieId`    | Datensatz Id des Filmes |
+| `$movieId`    | Datensatz-Id des Filmes |
 
 
 ### Id holen 
@@ -101,85 +101,139 @@ Wenn Datenbanktabellen außerhalb des YForm-Table-Managers befüllt werden, grei
 ```php
 $profiles = \Url\Profile::getAll();
 if ($profiles) {
-	foreach ($profiles as $profile) {
-		$profile->deleteUrls();
-		$profile->buildUrls();
-	}
+    foreach ($profiles as $profile) {
+        $profile->deleteUrls();
+        $profile->buildUrls();
+    }
 }
 ```
 
 ## Extension Points
 
-Der Extension Point URL_MANAGER_PRE_SAVE gibt die Möglichkeit eine URL vor dem Speichern in der URL Tabelle zumanipulieren.
+- URL_PRE_SAVE
+- URL_PROFILE_RESTRICTION
+- URL_SEO_TAGS
+- URL_TABLE_UPDATED
 
-### Beispiel Code URL_MANAGER_PRE_SAVE
+### URL_PRE_SAVE
+
+Der Extension Point URL_MANAGER_PRE_SAVE gibt die Möglichkeit eine URL vor dem Speichern in der URL Tabelle zu manipulieren.
+
+#### Beispiel Code URL_PRE_SAVE
 
 ```php
-<?php
-rex_extension::register('URL_MANAGER_PRE_SAVE', 'rex_url_shortener');
+rex_extension::register('URL_PRE_SAVE', 'rex_url_shortener');
 
 /**
  * Kürzt URL für ALLE Profile indem es die Artikel und Kategorienamen aus der URL entfernt.
  * @param rex_extension_point $ep Redaxo extension point
  * @return Url Neue URL
  */
-function rex_url_shortener(rex_extension_point $ep) {
-	$params = $ep->getParams();
-	$url = $params['object'];
-	$article_id = $params['article_id'];
-	$clang_id = $params['clang_id'];
-	
-	// URL muss nur gekürzt werden, wenn es sich nicht im den Startartikel der Domain handelt
-	if($article_id != rex_yrewrite::getDomainByArticleId($article_id, $clang_id)->getStartId()) {
-		$article_url = rex_getUrl($article_id, $clang_id);
-		$start_article_url = rex_getUrl(rex_yrewrite::getDomainByArticleId($article_id, $clang_id)->getStartId(), $clang_id);
-		$article_url_without_lang_slug = '';
-		if(strlen($start_article_url) == 1) {
-            		// Wenn lang slug  im Startartikel nicht angezeigt wird
-			$article_url_without_lang_slug = str_replace('/'. strtolower(rex_clang::get($clang_id)->getCode()) .'/', '/', $article_url);
-		}
-		else {
-			$article_url_without_lang_slug = str_replace($start_article_url, '/', $article_url);
-		}
-		
-		// Im Fall $url ist urlencoded, muss Artikel URL ebenfalls encoded werden
-		$article_url_without_lang_slug_split = explode("/", $article_url_without_lang_slug);
-		for($i = 0; $i < count($article_url_without_lang_slug_split); $i++) {
-			$article_url_without_lang_slug_split[$i] = urlencode($article_url_without_lang_slug_split[$i]);
-		}
-		$article_url_without_lang_slug_split_encoded = implode("/", $article_url_without_lang_slug_split);
+function rex_url_shortener(rex_extension_point $ep)
+{
+    $params = $ep->getParams();
+    $url = $params['object'];
+    $article_id = $params['article_id'];
+    $clang_id = $params['clang_id'];
 
-		$new_url = new \Url\Url(str_replace($$article_url_without_lang_slug_split_encoded, '/', $url->__toString()));
-		
-		// Auf Duplikate prüfen
-		$query = "SELECT * FROM ". \rex::getTablePrefix() ."url_generator_url "
-			."WHERE url = '". $new_url->__toString() ."'";
+    // URL muss nur gekürzt werden, wenn es sich nicht im den Startartikel der Domain handelt
+    if ($article_id != rex_yrewrite::getDomainByArticleId($article_id, $clang_id)->getStartId()) {
+        $article_url = rex_getUrl($article_id, $clang_id);
+        $start_article_url = rex_getUrl(rex_yrewrite::getDomainByArticleId($article_id, $clang_id)->getStartId(), $clang_id);
+        $article_url_without_lang_slug = '';
+        if (strlen($start_article_url) == 1) {
+            // Wenn lang slug  im Startartikel nicht angezeigt wird
+            $article_url_without_lang_slug = str_replace('/'.strtolower(rex_clang::get($clang_id)->getCode()).'/', '/', $article_url);
+        } else {
+            $article_url_without_lang_slug = str_replace($start_article_url, '/', $article_url);
+        }
 
-		$result = \rex_sql::factory();
-		$result->setQuery($query);
-		if($result->getRows() > 0) {
-			// FALSE zurückgeben, Duplikate sind nicht erlaubt
-			return FALSE;
-		}
+        // Im Fall $url ist urlencoded, muss Artikel URL ebenfalls encoded werden
+        $article_url_without_lang_slug_split = explode("/", $article_url_without_lang_slug);
+        for ($i = 0; $i < count($article_url_without_lang_slug_split); $i++) {
+            $article_url_without_lang_slug_split[$i] = urlencode($article_url_without_lang_slug_split[$i]);
+        }
+        $article_url_without_lang_slug_split_encoded = implode("/", $article_url_without_lang_slug_split);
 
-		return $new_url;
-	}
-	
-	return $url;
+        $new_url = new \Url\Url(str_replace($$article_url_without_lang_slug_split_encoded, '/', $url->__toString()));
+
+        // Auf Duplikate prüfen
+        $query = "SELECT * FROM ".\rex::getTablePrefix()."url_generator_url "
+            ."WHERE url = '".$new_url->__toString()."'";
+
+        $result = \rex_sql::factory();
+        $result->setQuery($query);
+        if ($result->getRows() > 0) {
+            // FALSE zurückgeben, Duplikate sind nicht erlaubt
+            return false;
+        }
+
+        return $new_url;
+    }
+
+    return $url;
 }
 ```
 
-## SEO-Methoden
-Für die ordnungsgemäße Ausgabe müssen die YRewrite-Tags für Titel, Beschreibung u.a. durch die SEO-Klasse des URL-Addons ausgetauscht werden.  `$seo = new rex_yrewrite_seo();` wird ersetzt durch `$urlSeo = new Url\Seo();`:
+### URL_PROFILE_RESTRICTION
+
+Mit diesem ExtensionPoint kann man die Einschränkungen von außen beeinflussen.
+
+#### Beispiel Code URL_PROFILE_RESTRICTION
+
+Im nachfolgenden Beispiel werden Urls für News erzeugt, die erst 3 Tage später online gehen und damit bereits auch in der sitemap.xml erscheinen.
 
 ```php
-$urlSeo = new Url\Seo();
-    echo $urlSeo->getTitleTag().PHP_EOL;
-    echo $urlSeo->getDescriptionTag().PHP_EOL;
-    echo $urlSeo->getRobotsTag().PHP_EOL;
-    echo $urlSeo->getHreflangTags().PHP_EOL;
-    echo $urlSeo->getCanonicalUrlTag().PHP_EOL;
+rex_extension::register('URL_PROFILE_RESTRICTION', function (\rex_extension_point $ep) {
+    $restrictions = $ep->getSubject();
+    $profile = $ep->getParam('profile');
+
+    if ($profile->getTableName() === 'rex_ao_news') {
+        $profile->addColumnName('online_from');
+        $restrictions[] = [
+            'column'              => 'online_from',
+            'comparison_operator' => '<=',
+            'value'               => date('Y-m-d', strtotime('+3 days')),
+        ];
+        $ep->setSubject($restrictions);
+    }
+});
 ```
+
+### URL_SEO_TAGS
+
+Hiermit können die verschiedenen HTML-Tags nachträglich beeinflusst werden. 
+
+#### Beispiel
+
+```php
+\rex_extension::register('URL_SEO_TAGS', function(\rex_extension_point $ep) {
+    $tags = $ep->getSubject();
+    dump($tags);
+    $ep->setSubject($tags);
+});
+```
+
+### URL_TABLE_UPDATED
+
+Dieser ExtensionPoint wird getriggert, sobald die Tabelle der Urls sich ändert.
+
+### Beispiel
+```php
+\rex_extension::register('URL_PROFILE_RESTRICTION', function () {
+});
+```
+
+
+
+## SEO-Methoden
+
+```php
+$seo = new Url\Seo();
+echo $seo->getTags();
+```
+
+Eine Anpassung der einzelnen Tags kann über den ExtenstionPoint `URL_SEO_TAGS` erreicht werden.
 
 ## Weitere Tipps 
 
@@ -202,3 +256,8 @@ $yform->setObjectparams('form_action',Url::current());
 ``` 
 
 Weiere Infos zu den Objekt-Parametern von YForm befinden sich in der YForm-Doku.
+
+
+### Einzelne Datensätze nicht in der sitemap.xml aufnehmen 
+
+Dazu kann man ein zusätzliches YFormfeld anlegen der das Indexieren speichert. Im Url-AddOn werden dann zwei Profile angelegt und auf das Index-Feld gefiltert. Das eine Profil erhält zusätzlich die Info "In Sitemap aufnehmen".
