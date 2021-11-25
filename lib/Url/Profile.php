@@ -437,7 +437,7 @@ class Profile
                 ->setValue('ep_pre_save_called', 1);
 
             if ($sql->update()) {
-                self::reset();
+                Cache::deleteProfiles();
             }
         }
     }
