@@ -17,12 +17,12 @@ class rex_yform_value_url extends rex_yform_value_abstract
 
     }
 
-    public function getDescription()
+    public function getDescription():string
     {
         return 'url|name|label|title|notice';
     }
 
-    public function getDefinitions()
+    public function getDefinitions(): array
     {
         return [
             'type' => 'value',
