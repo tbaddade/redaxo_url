@@ -9,9 +9,7 @@ REDAXO 5 AddOn zur URL-Generierung für Daten aus den Datenbanktabellen (ehemals
 * Via Install AddOn im Backend herunterladen
 * AddOn installieren und aktivieren
 
-### unterstützte Rewriter
-
-* [yrewrite](https://github.com/yakamara/redaxo_yrewrite)
+> Hinweis: Benötigt [yrewrite](https://github.com/yakamara/redaxo_yrewrite). 
 
 ## Beispiel: Filme
 
