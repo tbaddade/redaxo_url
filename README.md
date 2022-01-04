@@ -92,8 +92,6 @@ Die Urls dazu könnten dann so aussehen: `/filme/komoedie/the-big-lebowski/`
 
 Im Feld **eigene Pfade an die Url hängen** lassen sich zusätzliche Pfade eintragen, die als gültige Urls verwendet werden können. So ließe sich beispielsweise bei einem Film noch eine zusätzliche Seite über `/filme/the-big-lebowski/zitate/` anzeigen. Dann muss in dem Textfeld einfach nur `zitate` eingetragen werden - ohne vorangestellten und abschließenden Schrägstrich.
 
-<del>Bei der Ausgabe kann man dann `$mypath = UrlGenerator::getCurrentOwnPath();` schreiben. Wenn die Seite mit dem Zusatz /info aufgerufen wird, enthält `$mypath` den Wert `info`.</del>
-
 
 #### Unterkategorien anhängen?
 
@@ -102,9 +100,9 @@ Die Urls dazu könnten dann so aussehen: `/filme/the-big-lebowski/schauspieler/`
 
 `Schauspieler` ist dabei eine Unterkategorie der Kategorie `Filme` innerhalb der Strukturverwaltung.
 
-### Beispiel: URL-Pathlist neu generieren
+### Beispiel: URLs neu generieren
 
-Wenn Datenbanktabellen außerhalb des YForm-Table-Managers befüllt werden, greift der passende EP nicht und die URLs werden nicht neu generiert. Dies lässt sich im Code nachholen, indem folgender Code verwendet wird.
+Wenn Datenbanktabellen außerhalb des YForm-Table-Managers befüllt werden, greift der passende Extension Point nicht und die URLs werden nicht neu generiert. Dies lässt sich mit folgendem Code erledigen.
 
 ```php
 $profiles = \Url\Profile::getAll();
@@ -125,7 +123,7 @@ if ($profiles) {
 
 ### URL_PRE_SAVE
 
-Der Extension Point URL_PRE_SAVE gibt die Möglichkeit eine URL vor dem Speichern in der URL Tabelle zu manipulieren.
+Der Extension Point `URL_PRE_SAVE` gibt die Möglichkeit eine URL vor dem Speichern in der URL Tabelle zu manipulieren.
 
 #### Beispiel Code URL_PRE_SAVE
 
@@ -185,7 +183,7 @@ function rex_url_shortener(rex_extension_point $ep)
 
 ### URL_PROFILE_RESTRICTION
 
-Mit diesem ExtensionPoint kann man die Einschränkungen von außen beeinflussen.
+Mit diesem Extension Point kann man die Einschränkungen von außen beeinflussen.
 
 #### Beispiel Code URL_PROFILE_RESTRICTION
 
@@ -226,7 +224,7 @@ Hiermit können die verschiedenen HTML-Tags nachträglich beeinflusst werden.
 
 Dieser ExtensionPoint wird getriggert, sobald die Tabelle der Urls sich ändert.
 
-### Beispiel
+#### Beispiel
 ```php
 \rex_extension::register('URL_PROFILE_RESTRICTION', function () {
 });
@@ -241,26 +239,26 @@ $seo = new Url\Seo();
 echo $seo->getTags();
 ```
 
-Eine Anpassung der einzelnen Tags kann über den ExtenstionPoint `URL_SEO_TAGS` erreicht werden.
+Eine Anpassung der einzelnen Tags kann über den Extension Point `URL_SEO_TAGS` erreicht werden.
 
 ## Weitere Tipps 
 
 ### Leere Einträge vermeiden
 
-Werden URLs selbst erzeugt, z.B. über eine YForm-Tabelle, dann darf das Feld oder die Feldkombination, aus der die URL generiert wird, nur einmal vorkommen (prüfen auf `unique`) und außerdem niemals leer sein (prüfen auf `empty`).
+Werden URLs selbst erzeugt, z.B. über eine YForm-Tabelle, dann sollte das Feld oder die Feldkombination, aus der die URL generiert wird, nur einmal vorkommen (prüfen auf `unique`) und außerdem niemals leer sein (prüfen auf `empty`). Kommt das Feld oder die Feldkombination mehrfach vor, so wird ab der zweiten URL zusätzlich automatisch die ID des Datensatzes angehangen.
 
-### Von Url generierte Seite mit YForm-Formular
+### YForm-Formular auf einer von Url-AddOn erzeugten Url 
 
 Befindet sich ein Formular auf einer Seite, die über eine URL des URL-Addon aufgerufen wurde, so muss die Ziel-URL des Formulars angepasst werden. 
 
 ```php
-$yform->setObjectparams('form_action',rex_getUrl('', '', [$data->urlParamKey => $id]));
+$yform->setObjectparams('form_action', rex_getUrl('', '', [$manager->getProfile()->getNamespace() => $manager->getDatasetId()]));
 ``` 
 
 oder
 
 ```php
-$yform->setObjectparams('form_action',Url::current());
+$yform->setObjectparams('form_action', Url::getCurrent());
 ``` 
 
 Weiere Infos zu den Objekt-Parametern von YForm befinden sich in der YForm-Doku.
