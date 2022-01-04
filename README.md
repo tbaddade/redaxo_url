@@ -272,7 +272,6 @@ Dazu kann man ein zusätzliches YFormfeld anlegen der das Indexieren speichert. 
 
 ## Debugging
 
-Ein Blick auf die Pathlist-Dateien `redaxo/cache/addons/yrewrite/pathlist.json` und  `/redaxo/cache/addons/url/pathlist.php` lässt Rückschlüsse darüber zu, ob die URLs korrekt generiert wurden oder ein Konfigurationsproblem vorliegt. Weitere Ansätze zum Debugging:
 
 * Sind alle gewünschten Domains in YRewrite vollständig und korrekt angegeben, einschl. separater Fehler 404-Seite?
 * Wurden Änderungen an der Datenbank vorgenommen, die sich mit dem Löschen des REDAXO-Caches, insb. der Pathlist-Dateien beheben lassen? Insb. Daten, die außerhalb von REDAXO geändert werden, benötigen ein Auffrischen des Caches.
