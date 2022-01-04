@@ -1,8 +1,18 @@
-# Url AddOn
+# Url AddOn für REDAXO 5
 
 ## Beschreibung
 
 REDAXO 5 AddOn zur URL-Generierung für Daten aus den Datenbanktabellen (ehemals Url Control, ehemals Frau Schultze)
+
+## Features
+
+* Generieren von suchmaschinenfreundlichen URLs anhand von Datenbanktabellen und eines REDAXO-Artikels, z.B: `www.example.org/artikel/datensatz/` anstelle von `www.example.org/artikel/?id=1` 
+* Automatische Oberkategorien anhand von Relationen `www.example.org/kategorie/datensatz/` möglich
+* Mit und ohne YForm-Tabellen nutzbar
+* Zusätzliche Methoden für `<title />`-Felder, SEO- und OpenGraph-Metadaten wie `description` und `og:image`
+* Integration in die `sitemap.xml` von YRewrite
+* Multi-Domain fähig
+* URLs werden vom Addon `search_it` erkannt und Inhalte indexiert
 
 ## Installation
 
@@ -259,3 +269,11 @@ Weiere Infos zu den Objekt-Parametern von YForm befinden sich in der YForm-Doku.
 ### Einzelne Datensätze nicht in der sitemap.xml aufnehmen 
 
 Dazu kann man ein zusätzliches YFormfeld anlegen der das Indexieren speichert. Im Url-AddOn werden dann zwei Profile angelegt und auf das Index-Feld gefiltert. Das eine Profil erhält zusätzlich die Info "In Sitemap aufnehmen".
+
+## Debugging
+
+
+* Sind alle gewünschten Domains in YRewrite vollständig und korrekt angegeben, einschließlich separater 404-Fehlerseite?
+* Wurden Änderungen an der Datenbank vorgenommen, die sich mit dem Löschen des REDAXO-Caches. Datensätze, die außerhalb von REDAXO erstellt, verändert oder gelöscht werden, benötigen ein Auffrischen des Caches.
+* Sind die URL-Profile korrekt oder haben sich Änderungen am verknüpften REDAXO-Artikel oder der Struktur der Datenbankfelder ergeben?
+* Sind innerhalb der URL-Profile Einschränkungen vorgenommen worden? Bspw. können Datensätze gefiltert werden, die dann keine URL erzeugen. Die erzeugten URLs lassen sich im REDAXO-Backend überprüfen.
