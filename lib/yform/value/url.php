@@ -14,10 +14,9 @@ class rex_yform_value_url extends rex_yform_value_abstract
 {
     public function enterObject()
     {
-
     }
 
-    public function getDescription():string
+    public function getDescription(): string
     {
         return 'url|name|label|title|notice';
     }
@@ -34,11 +33,11 @@ class rex_yform_value_url extends rex_yform_value_abstract
             'description' => rex_i18n::msg('url_yform_value_description'),
             'db_type' => ['none'],
             'is_searchable' => false,
-            'famous' => false
+            'famous' => false,
         ];
     }
 
-    public static function getListValue($params)
+    public static function getListValue($params): ?string
     {
         if (!isset($params['params']['field']['table_name'])) {
             return null;
@@ -46,7 +45,7 @@ class rex_yform_value_url extends rex_yform_value_abstract
 
         $table = $params['params']['field']['table_name'];
         $profiles = Profile::getByTableName($table);
-        if(!count($profiles)) {
+        if (!count($profiles)) {
             return null;
         }
 
@@ -60,7 +59,7 @@ class rex_yform_value_url extends rex_yform_value_abstract
             $manager->setStructure(false);
             $manager->setUserPath(false);
             $urls = $manager->fetch();
-            if (count($urls) == 1) {
+            if (1 == count($urls)) {
                 $return[] = sprintf('<a style="white-space: nowrap;" href="%s" target="_blank"><i class="rex-icon rex-icon-view"></i> %s</a>', $urls[0]['url'], rex_i18n::msg('url_generator_show_dataset', rex_clang::get($urls[0]['clang_id'])->getCode()));
             }
         }
