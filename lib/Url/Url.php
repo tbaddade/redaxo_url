@@ -123,6 +123,15 @@ class Url
     /**
      * @return string
      */
+    public function getPathWithoutSuffix()
+    {
+        $this->removeRewriterSuffix();
+        return $this->uri->getPath();
+    }
+
+    /**
+     * @return string
+     */
     public function getQuery()
     {
         return $this->uri->getQuery();

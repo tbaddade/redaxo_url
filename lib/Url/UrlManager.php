@@ -274,7 +274,7 @@ class UrlManager
                 break;
             }
 
-            $articlePath = $profile->getArticleUrl()->getPath();
+            $articlePath = $profile->getArticleUrl()->getPathWithoutSuffix();
             if ($articlePath == substr($url->getPath(), 0, strlen($articlePath))) {
                 $resolve = true;
                 break;
