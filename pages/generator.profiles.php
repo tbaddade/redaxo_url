@@ -144,15 +144,6 @@ if (!function_exists('url_generate_column_data')) {
             '<code>'.$profile->getColumnName('id').'</code>' . ($profile->getColumnName('clang_id') == '' ? '' : ' - <code>'.$profile->getColumnName('clang_id').'</code>')
         ];
 
-
-        $concatSegmentParts = '';
-        for ($index = 1; $index <= Profile::RESTRICTION_COUNT; ++$index) {
-            if ($profile->getColumnName('segment_part_'.$index) != '') {
-                $concatSegmentParts .= $profile->getSegmentPartSeparators()[$index] ?? '';
-                $concatSegmentParts .= '<code>'.$profile->getColumnName('segment_part_'.$index).'</code>';
-            }
-        }
-
         $concatSegmentParts = '';
         for ($index = 1; $index <= Profile::SEGMENT_PART_COUNT; ++$index) {
             if ($profile->getColumnName('segment_part_'.$index) != '') {
@@ -173,9 +164,9 @@ if (!function_exists('url_generate_column_data')) {
                     }
                 }
                 if ($relation->getSegmentPosition() === 'BEFORE') {
-                    $prepend .= $concatSegmentPartsRelation.Url::getRewriter()->getSuffix();
+                    $prepend .= $concatSegmentPartsRelation;
                 } else {
-                    $append .= $concatSegmentPartsRelation.Url::getRewriter()->getSuffix();
+                    $append .= $concatSegmentPartsRelation;
                 }
             }
         }
@@ -184,9 +175,14 @@ if (!function_exists('url_generate_column_data')) {
         $url = new Url(Url::getRewriter()->getFullUrl($list->getValue('article_id'), $list->getValue('clang_id')));
         $url->withScheme('');
 
+        $segments = $url->getSegments();
+        if ($segments[array_key_last($segments)] === Url::getRewriter()->getSuffix()) {
+            unset($segments[array_key_last($segments)]);
+        }
+
         $dataList[] = [
             rex_i18n::msg('url_generator_url'),
-            $url->getPath().$concatSegmentParts.Url::getRewriter()->getSuffix()
+            implode('/', $segments).'/'.$concatSegmentParts.Url::getRewriter()->getSuffix()
         ];
 
         $dataList[] = [
