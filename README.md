@@ -115,7 +115,7 @@ if ($profiles) {
 
 ### URL_PRE_SAVE
 
-Der Extension Point URL_MANAGER_PRE_SAVE gibt die Möglichkeit eine URL vor dem Speichern in der URL Tabelle zu manipulieren.
+Der Extension Point URL_PRE_SAVE gibt die Möglichkeit eine URL vor dem Speichern in der URL Tabelle zu manipulieren.
 
 #### Beispiel Code URL_PRE_SAVE
 
