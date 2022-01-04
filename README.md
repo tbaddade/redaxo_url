@@ -273,7 +273,7 @@ Dazu kann man ein zusätzliches YFormfeld anlegen der das Indexieren speichert. 
 ## Debugging
 
 
-* Sind alle gewünschten Domains in YRewrite vollständig und korrekt angegeben, einschl. separater Fehler 404-Seite?
+* Sind alle gewünschten Domains in YRewrite vollständig und korrekt angegeben, einschließlich separater 404-Fehlerseite?
 * Wurden Änderungen an der Datenbank vorgenommen, die sich mit dem Löschen des REDAXO-Caches, insb. der Pathlist-Dateien beheben lassen? Insb. Daten, die außerhalb von REDAXO geändert werden, benötigen ein Auffrischen des Caches.
 * Sind die URL-Profile korrekt oder haben sich Änderungen am verknüpften REDAXO-Artikel oder der Struktur der Datenbankfelder ergeben?
 * Sind innerhalb der URL-Profile Einschränkungen vorgenommen worden? Bspw. können Datensätze gefiltert werden, die dann keine URL erzeugen. Die erzeugten URLs lassen sich im REDAXO-Backend überprüfen.
