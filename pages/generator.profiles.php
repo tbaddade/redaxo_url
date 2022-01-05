@@ -247,7 +247,7 @@ if ($func == '') {
     $list->setColumnLabel('data', $this->i18n('url_generator_data'));
     $list->setColumnFormat('data', 'custom', 'url_generate_column_data');
 
-    $list->addColumn('refresh', '<i class="rex-icon rex-icon-delete"></i> '.$this->i18n('url_generator_url_refresh'));
+    $list->addColumn('refresh', '<i class="rex-icon rex-icon-refresh"></i> '.$this->i18n('url_generator_url_refresh'));
     $list->setColumnLabel('refresh', $this->i18n('function'));
     $list->setColumnLayout('refresh', ['<th class="rex-table-action" colspan="3">###VALUE###</th>', '<td class="rex-table-action">###VALUE###</td>']);
     $list->setColumnParams('refresh', ['func' => 'refresh', 'id' => '###id###'] + rex_csrf_token::factory('url_profile_refresh')->getUrlParams());
@@ -512,7 +512,7 @@ if ($func == '') {
                     $name = 'column_segment_part_'.$i.'_separator';
                     /* @var $f rex_form_select_element */
                     $f = $fieldContainer->addGroupedField($group, $type, $name);
-                    $f->setHeader('<div class="addoff-grid-item text-center text-large" data-addoff-size="1">');
+                    $f->setHeader('<div class="addoff-grid-item text-center addoff-text-large" data-addoff-size="1">');
                     $f->setFooter('</div>');
                     $f->setAttribute('disabled', 'true');
                     $select = $f->getSelect();
@@ -524,7 +524,7 @@ if ($func == '') {
                 /* @var $f rex_form_select_element */
                 $f = $fieldContainer->addGroupedField($group, $type, $name);
 
-                // $prependHeader = '<div class="addoff-grid-item text-center text-large" data-addoff-size="1"><b>/</b></div>';
+                // $prependHeader = '<div class="addoff-grid-item text-center addoff-text-large" data-addoff-size="1"><b>/</b></div>';
                 $prependHeader = '';
                 if ($i == 1) {
                     $prependHeader = '
@@ -865,7 +865,7 @@ if ($func == '') {
                         $name = 'column_segment_part_'.$j.'_separator';
                         /* @var $f rex_form_select_element */
                         $f = $fieldContainer->addGroupedField($group, $type, $name);
-                        $f->setHeader('<div class="addoff-grid-item text-center text-large" data-addoff-size="1">');
+                        $f->setHeader('<div class="addoff-grid-item text-center addoff-text-large" data-addoff-size="1">');
                         $f->setFooter('</div>');
                         $f->setAttribute('disabled', 'true');
                         $select = $f->getSelect();
@@ -877,7 +877,7 @@ if ($func == '') {
                     /* @var $f rex_form_select_element */
                     $f = $fieldContainer->addGroupedField($group, $type, $name);
 
-                    // $prependHeader = '<div class="addoff-grid-item text-center text-large" data-addoff-size="1"><b>/</b></div>';
+                    // $prependHeader = '<div class="addoff-grid-item text-center addoff-text-large" data-addoff-size="1"><b>/</b></div>';
                     $prependHeader = '';
                     if ($j == 1) {
                         $prependHeader = '
@@ -943,248 +943,3 @@ if ($func == 'add' || $func == 'edit') {
     }
 }
 ?>
-
-<style>
-    @media (min-width: 75em) {
-        .addoff-grid {
-            display: -webkit-box;
-            display: -ms-flexbox;
-            display: flex;
-            flex-wrap: wrap;
-            flex-direction: row;
-            margin-left: -15px;
-            margin-right: -15px;
-        }
-        .addoff-grid-item {
-            padding: 0 15px;
-        }
-        [data-addoff-size="1"] {
-            width: 8.33333%;
-        }
-        [data-addoff-size="2"] {
-            width: 16.66667%;
-        }
-        [data-addoff-size="3"] {
-            width: 25%;
-        }
-        [data-addoff-size="4"] {
-            width: 33.33333%;
-        }
-        [data-addoff-size="5"] {
-            width: 41.66667%;
-        }
-        [data-addoff-size="6"] {
-            width: 50%;
-        }
-        [data-addoff-size="7"] {
-            width: 58.33333%;
-        }
-        [data-addoff-size="8"] {
-            width: 66.66667%;
-        }
-        [data-addoff-size="9"] {
-            width: 75%;
-        }
-        [data-addoff-size="10"] {
-            width: 83.33333%;
-        }
-        [data-addoff-size="11"] {
-            width: 91.66667%;
-        }
-        [data-addoff-size="12"] {
-            width: 100%;
-        }
-        [data-addoff-size="1of10"] {
-            width: 10%;
-        }
-        [data-addoff-size="2of10"] {
-            width: 20%;
-        }
-        [data-addoff-size="3of10"] {
-            width: 30%;
-        }
-        [data-addoff-shift="1"] {
-            margin-left: 8.33333%;
-        }
-        [data-addoff-shift="2"] {
-            margin-left: 16.66667%;
-        }
-        [data-addoff-shift="3"] {
-            margin-left: 25%;
-        }
-        [data-addoff-shift="4"] {
-            margin-left: 33.33333%;
-        }
-        [data-addoff-shift="5"] {
-            margin-left: 41.66667%;
-        }
-        [data-addoff-shift="6"] {
-            margin-left: 50%;
-        }
-        [data-addoff-shift="7"] {
-            margin-left: 58.33333%;
-        }
-        [data-addoff-shift="8"] {
-            margin-left: 66.66667%;
-        }
-        [data-addoff-shift="9"] {
-            margin-left: 75%;
-        }
-        [data-addoff-shift="10"] {
-            margin-left: 83.33333%;
-        }
-        [data-addoff-shift="11"] {
-            margin-left: 91.66667%;
-        }
-        [data-addoff-shift="12"] {
-            margin-left: 100%;
-        }
-        [data-addoff-shift="-1"] {
-            margin-left: -8.33333%;
-        }
-        [data-addoff-shift="-2"] {
-            margin-left: -16.66667%;
-        }
-        [data-addoff-shift="-3"] {
-            margin-left: -25%;
-        }
-        [data-addoff-shift="-4"] {
-            margin-left: -33.33333%;
-        }
-        [data-addoff-shift="-5"] {
-            margin-left: -41.66667%;
-        }
-        [data-addoff-shift="-6"] {
-            margin-left: -50%;
-        }
-        [data-addoff-shift="-7"] {
-            margin-left: -58.33333%;
-        }
-        [data-addoff-shift="-8"] {
-            margin-left: -66.66667%;
-        }
-        [data-addoff-shift="-9"] {
-            margin-left: -75%;
-        }
-        [data-addoff-shift="-10"] {
-            margin-left: -83.33333%;
-        }
-        [data-addoff-shift="-11"] {
-            margin-left: -91.66667%;
-        }
-        [data-addoff-shift="-12"] {
-            margin-left: -100%;
-        }
-        [data-addoff-shift="1of10"] {
-            margin-left: 10%;
-        }
-        [data-addoff-shift="2of10"] {
-            margin-left: 20%;
-        }
-
-        [data-addoff-grid="8-4"] > .addoff-grid-item:nth-child(1) {
-            width: 66.66667%;
-        }
-
-        [data-addoff-grid="8-4"] > .addoff-grid-item:nth-child(2) {
-            width: 33.33333%;
-        }
-
-        [data-addoff-grid="6-6"] > .addoff-grid-item {
-            width: 50%;
-        }
-
-        [data-addoff-grid="6-3-3"] > .addoff-grid-item:nth-child(1) {
-            width: 50%;
-        }
-
-        [data-addoff-grid="6-3-3"] > .addoff-grid-item:nth-child(2),
-        [data-addoff-grid="6-3-3"] > .addoff-grid-item:nth-child(3) {
-            width: 25%;
-        }
-
-        [data-addoff-grid="4-8"] > .addoff-grid-item:nth-child(1) {
-            width: 33.33333%;
-        }
-
-        [data-addoff-grid="4-8"] > .addoff-grid-item:nth-child(2) {
-            width: 66.66667%;
-        }
-
-        [data-addoff-grid="4-4-4"] > .addoff-grid-item {
-            width: 33.33333%;
-        }
-
-        [data-addoff-grid="3-6-3"] > .addoff-grid-item:nth-child(2) {
-            width: 50%;
-        }
-
-        [data-addoff-grid="3-6-3"] > .addoff-grid-item:nth-child(1),
-        [data-addoff-grid="3-6-3"] > .addoff-grid-item:nth-child(3) {
-            width: 25%;
-        }
-
-        [data-addoff-grid="3-3-6"] > .addoff-grid-item:nth-child(3) {
-            width: 50%;
-        }
-
-        [data-addoff-grid="3-3-6"] > .addoff-grid-item:nth-child(1),
-        [data-addoff-grid="3-3-6"] > .addoff-grid-item:nth-child(2) {
-            width: 25%;
-        }
-
-        [data-addoff-grid="3-3-3-3"] > .addoff-grid-item {
-            width: 25%;
-        }
-    }
-
-    .addoff-grid-item .rex-form-group:not(.rex-form-group-vertical) > dd:first-child {
-        padding-left: 0;
-    }
-
-    .addoff-form-vertical .rex-form-group dt,
-    .addoff-form-vertical .rex-form-group dd {
-        display: block;
-        width: 100%;
-    }
-
-    .addoff-hr {
-        margin-top: 10px;
-        border-color: #3bb594;
-        opacity: .5;
-    }
-
-    .text-large {
-        font-size: 150%;
-    }
-
-
-
-    .addoff-table > thead > tr > th,
-    .addoff-table > thead > tr > td,
-    .addoff-table > tbody > tr > th,
-    .addoff-table > tbody > tr > td {
-        border-color: #C4C8CC;
-    }
-
-    .addoff-data-table.table {
-        margin: -8px 0;
-        background: transparent;
-    }
-
-    .addoff-data-table tr:first-child > * {
-        border-top: 0;
-    }
-
-    .addoff-data-table th {
-        width: 180px;
-        min-width: 180px;
-    }
-    .addoff-data-table > tbody > tr > th,
-    .addoff-data-table > tbody > tr > td {
-        background: transparent;
-    }
-    .addoff-data-table .label-default {
-        background: #ccc;
-    }
-</style>

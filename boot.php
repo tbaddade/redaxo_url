@@ -16,6 +16,8 @@ use Url\Seo;
 use Url\Url;
 use Url\UrlManager;
 
+$addon = rex_addon::get('url');
+
 Generator::boot();
 if (null !== Url::getRewriter()) {
     Url::getRewriter()->articleIdNotFound();
@@ -89,3 +91,8 @@ rex_extension::register('PACKAGES_INCLUDED', function (\rex_extension_point $epP
         }, rex_extension::EARLY);
     }
 }, rex_extension::EARLY);
+
+
+if (rex::isBackend() && rex::getUser()) {
+    rex_view::addCssFile($addon->getAssetsUrl('styles.css'));
+}
