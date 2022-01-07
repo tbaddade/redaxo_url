@@ -235,11 +235,51 @@ Dieser ExtensionPoint wird getriggert, sobald die Tabelle der Urls sich ändert.
 ## SEO-Methoden
 
 ```php
-$seo = new Url\Seo();
+use Url\Seo;
+
+$seo = new Seo();
 echo $seo->getTags();
 ```
 
 Eine Anpassung der einzelnen Tags kann über den Extension Point `URL_SEO_TAGS` erreicht werden.
+
+#### Beispiel
+ 
+```php
+use Url\Seo;
+use Url\Url;
+
+$seo = new Seo();
+$manager = Url::resolveCurrent();
+if ($manager) {
+    \rex_extension::register('URL_SEO_TAGS', function(\rex_extension_point $ep) use ($manager) {
+        $tags = $ep->getSubject();
+
+        $titleValues = [];
+        $article = rex_article::get($manager->getArticleId());
+        $title = strip_tags($tags['title']);
+
+        if ($manager->getSeoTitle()) {
+            $titleValues[] = $manager->getSeoTitle();
+        }
+        if ($article) {
+            $domain = rex_yrewrite::getDomainByArticleId($article->getId());
+            $title = $domain->getTitle();
+            $titleValues[] = $article->getName();
+        }
+        if (count($titleValues)) {
+            $title = rex_escape(str_replace('%T', implode(' / ', $titleValues), $title));
+        }
+        if ('' !== rex::getServerName()) {
+            $title = rex_escape(str_replace('%SN', rex::getServerName(), $title));
+        }
+
+        $tags['title'] = sprintf('<title>%s</title>', $title);
+        $ep->setSubject($tags);
+    });
+}
+$tags = $seo->getTags();
+```
 
 ## Weitere Tipps 
 
