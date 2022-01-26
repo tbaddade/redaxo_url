@@ -1,7 +1,7 @@
 package: url
 version: '2.0.0-dev'
 author: Thomas Blum
-supportpage: www.redaxo.org/de/forum/
+supportpage: 'https://github.com/tbaddade/redaxo_url/issues'
 
 page:
     title: 'translate:url'
