@@ -4,7 +4,12 @@ Url - Changelog
 
 # Changelog
 
-Version 2.0.0 - xx.xx.xxxx
+Version 2.0.1
+---------------------------------
+Bugfix
+* Update funktionierte nicht (@TobiasKrais)
+
+Version 2.0.0
 ---------------------------------
 ## Neu
 - Kompletter Umbau des Addons, sodass Urls jetzt in der Datenbank gespeichert werden
