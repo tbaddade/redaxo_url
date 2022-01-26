@@ -252,6 +252,7 @@ if ($func == '') {
     $list->setColumnLayout('refresh', ['<th class="rex-table-action" colspan="3">###VALUE###</th>', '<td class="rex-table-action">###VALUE###</td>']);
     $list->setColumnParams('refresh', ['func' => 'refresh', 'id' => '###id###'] + rex_csrf_token::factory('url_profile_refresh')->getUrlParams());
     $list->addLinkAttribute('refresh', 'data-confirm', rex_i18n::msg('url_generator_url_refresh') . ' ?');
+    $list->addLinkAttribute('refresh', 'class', 'label label-primary');
 
     $list->addColumn('edit', '<i class="rex-icon rex-icon-edit"></i> '.$this->i18n('edit'));
     $list->setColumnLayout('edit', ['', '<td class="rex-table-action">###VALUE###</td>']);
