@@ -2,7 +2,7 @@
 
 $this->includeFile(__DIR__.'/install.php');
 
-if (rex_string::versionCompare(\rex_addon::get('url')->getVersion(), '1.5', '>=')) {
+if (rex_string::versionCompare(\rex_addon::get('url')->getVersion(), '1.0.1', '<=')) {
     // Upgrade tables form version 1.x to 2.x
     $result = \rex_sql::factory();
     $result->setQuery('SELECT * FROM '.\rex::getTable('url_generate'));
