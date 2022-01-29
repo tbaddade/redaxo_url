@@ -50,7 +50,9 @@ Nach dem der Film mit der eigenen Url aufgerufen wurde (Darstellung der Detailse
 ```php
 // versuche die Url aufzulösen
 $manager = Url\Url::resolveCurrent();
-$movieId = $manager->getDatasetId();
+if($manager) {
+    $movieId = $manager->getDatasetId();
+}
 ```
 
 ### Beispiel Code
