@@ -20,7 +20,7 @@ if (rex_string::versionCompare(\rex_addon::get('url')->getVersion(), '1.0.1', '<
         $namespace = $table_parameters[$table_db_id.'_xxx_'.$table_key.'_url_param_key'] ?: $table_parameters[$table_db_id.'_xxx_'.$table_key.'_id'];
         $namespace_key = $namespace .'-'. $result->getValue('article_id') .'-'. $result->getValue('clang_id');
 
-		if(!in_array($namespace_key, $namespace_keys) {
+		if(!in_array($namespace_key, $namespace_keys)) {
 		    $sql = \rex_sql::factory();
 		    $sql->setTable(\rex::getTable('url_generator_profile'));
 		    $sql->setValue('namespace', $namespace);
