@@ -49,9 +49,10 @@ if (rex_string::versionCompare(\rex_addon::get('url')->getVersion(), '1.0.1', '<
 		}
 		else {
 			// In case update to 2.0.1 failed due to duplicate namespace, article and clang combination: inform user
-			rex_view::warning('Profil mit der Kombination aus Namespace "'. $namespace .'", Artikel ID "'. $result->getValue('article_id')
-							 .'" und Sprach ID "'. $result->getValue('clang_id') .'" existiert doppelt, konnte aber nur 1x importiert werden. '
-							 .'Bitte prüfen Sie Ihre <a href="index.php?page=url/generator/profiles">Profile</a> auf Vollständigkeit.');
+			rex_view::warning(rex_i18n::hasMsg('url_update_duplicate_namespace') ? rex_i18n::msg('url_update_duplicate_namespace') :
+					'Profile with combination of namespace "'. $namespace .'", article id "'. $result->getValue('article_id')
+					.'" and language id "'. $result->getValue('clang_id') .'" existed twice, but only one was imported. '
+					.'Please check your <a href="index.php?page=url/generator/profiles">profiles</a>');
 		}
         $result->next();
     }
