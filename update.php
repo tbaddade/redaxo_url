@@ -49,7 +49,7 @@ if (rex_string::versionCompare(\rex_addon::get('url')->getVersion(), '1.0.1', '<
 		}
 		else {
 			// In case update to 2.0.1 failed due to duplicate namespace, article and clang combination: inform user
-			rex_view::warning(rex_i18n::hasMsg('url_update_duplicate_namespace') ? rex_i18n::msg('url_update_duplicate_namespace') :
+			rex_view::warning(rex_i18n::hasMsg('url_update_duplicate_namespace') ? rex_i18n::msg('url_update_duplicate_namespace', $namespace, $result->getValue('article_id'), $result->getValue('clang_id')) :
 					'Profile with combination of namespace "'. $namespace .'", article id "'. $result->getValue('article_id')
 					.'" and language id "'. $result->getValue('clang_id') .'" existed twice, but only one was imported. '
 					.'Please check your <a href="index.php?page=url/generator/profiles">profiles</a>');
