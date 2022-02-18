@@ -5,6 +5,11 @@ $this->includeFile(__DIR__.'/install.php');
 if (rex_string::versionCompare(\rex_addon::get('url')->getVersion(), '1.0.1', '<=')) {
     // Upgrade tables form version 1.x to 2.x
     $result = \rex_sql::factory();
+	// In case update to 2.0.1 failed due to duplicate namespace, article and clang combination: truncate tables
+    $result->setQuery('TRUNCATE '.\rex::getTable('url_generator_profile'));
+    $result->setQuery('TRUNCATE '.\rex::getTable('url_generator_url'));
+
+	// Read old profiles
     $result->setQuery('SELECT * FROM '.\rex::getTable('url_generate'));
 
 	$namespace_keys = [];
@@ -41,6 +46,12 @@ if (rex_string::versionCompare(\rex_addon::get('url')->getVersion(), '1.0.1', '<
 		    $sql->insert();
 
 			$namespace_keys[] = $namespace_key;
+		}
+		else {
+			// In case update to 2.0.1 failed due to duplicate namespace, article and clang combination: inform user
+			rex_view::warning('Profil mit der Kombination aus Namespace "'. $namespace .'", Artikel ID "'. $result->getValue('article_id')
+							 .'" und Sprach ID "'. $result->getValue('clang_id') .'" existiert doppelt, konnte aber nur 1x importiert werden. '
+							 .'Bitte prüfen Sie Ihre <a href="index.php?page=url/generator/profiles">Profile</a> auf Vollständigkeit.');
 		}
         $result->next();
     }
