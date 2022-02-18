@@ -89,6 +89,8 @@ url_generator_rex_api_delete = Category or articles could not be deleted. In use
 
 url_generator_profile_removed = Profile successfully deleted
 
+url_update_duplicate_namespace = Profile with combination of namespace {0}, article id {1} and language id {2} existed twice, but only one was imported. Please check your <a href="index.php?page=url/generator/profiles">profiles</a>.
+
 url_yform_value_label = Description
 url_yform_value_profil = Profile
 url_yform_value_anchor = Anchor text
