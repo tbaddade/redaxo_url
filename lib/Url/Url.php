@@ -234,6 +234,22 @@ class Url
         return UrlManager::resolveUrl(self::getCurrent());
     }
 
+    /**
+     * @return string
+     */
+    public static function getCurrentUserPath()
+    {
+        $manager = self::resolveCurrent();
+        if ($manager && $manager->isUserPath() && $profile = $manager->getProfile()) {
+            $segments = $manager->getUrl()->getSegments();
+            foreach ($profile->getUserPaths() as $value => $path) {
+                if (in_array($value, $segments)) {
+                    return $path;
+                }
+            }
+        }
+    }      
+    
     // public static function parse($url)
     // {
     //     return new self($url);
