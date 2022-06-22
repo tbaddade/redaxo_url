@@ -89,6 +89,8 @@ url_generator_rex_api_delete = Kategorie oder Artikel wird noch vom URL-AddOn ge
 
 url_generator_profile_removed = Profil wurde erfolgreich gelöscht
 
+url_update_duplicate_namespace = Profil mit der Kombination aus Namespace {0}, Artikel ID {1} und Sprach ID {2} existiert doppelt, konnte aber nur 1x importiert werden. Bitte prüfen Sie Ihre <a href="index.php?page=url/generator/profiles">Profile</a> auf Vollständigkeit.
+
 url_yform_value_label = Bezeichnung
 url_yform_value_profil = Profil
 url_yform_value_anchor = Anker-Text
