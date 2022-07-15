@@ -24,10 +24,13 @@ class Url
     protected $sitemapLastmod = '';
 
     /**
-     * @var \Url\Rewriter\Rewriter
+     * @var Rewriter|null
      */
     private static $rewriter;
 
+    /**
+     * @param string $url
+     */
     public function __construct($url)
     {
         try {
@@ -53,6 +56,9 @@ class Url
         return $this->uri->__toString();
     }
 
+    /**
+     * @return string
+     */
     public function getRequestPath()
     {
         return $this->requestUri->getPath();
@@ -70,18 +76,27 @@ class Url
         return $this->modifyPathSegments($segments, $this->uri->getPathSegments());
     }
 
+    /**
+     * @return self
+     */
     public function withHost($domain)
     {
         $this->uri = $this->uri->withHost($domain);
         return $this;
     }
 
+    /**
+     * @return self
+     */
     public function withQuery($query)
     {
         $this->uri = $this->uri->withQuery($query);
         return $this;
     }
 
+    /**
+     * @return self
+     */
     public function withScheme($scheme)
     {
         $this->uri = $this->uri->withScheme($scheme);
@@ -175,11 +190,17 @@ class Url
         return '/'.implode('/', $segments);
     }
 
+    /**
+     * @return void
+     */
     public function sitemap($value)
     {
         $this->sitemap = $value;
     }
 
+    /**
+     * @return void
+     */
     public function sitemapLastmod($value)
     {
         if (strpos($value, '-')) {
@@ -190,21 +211,33 @@ class Url
         $this->sitemapLastmod = date(DATE_W3C, $value);
     }
 
+    /**
+     * @return Rewriter|null
+     */
     public static function getRewriter()
     {
         return self::$rewriter;
     }
 
+    /**
+     * @return void
+     */
     public static function setRewriter(Rewriter $rewriter)
     {
         self::$rewriter = $rewriter;
     }
 
+    /**
+     * @return self
+     */
     public static function get($url)
     {
         return new self($url);
     }
 
+    /**
+     * @return self
+     */
     public static function getCurrent()
     {
         return new self(
@@ -217,6 +250,9 @@ class Url
         );
     }
 
+    /**
+     * @return self
+     */
     public static function getPrevious()
     {
         return new self(
@@ -239,6 +275,9 @@ class Url
     //     return new self($url);
     // }
 
+    /**
+     * @return self
+     */
     protected function modifyPathSegments(array $arrayA, array $arrayB)
     {
         $this->uri = $this->uri->withPathSegments(array_merge($arrayA, $arrayB));
@@ -253,6 +292,9 @@ class Url
         return $this->uri = $this->uri->withPath($this->uri->getPath().self::$rewriter->getSuffix());
     }
 
+    /**
+     * @return self
+     */
     protected function removeRewriterSuffix()
     {
         $path = $this->uri->getPath();
