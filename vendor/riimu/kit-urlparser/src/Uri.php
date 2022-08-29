@@ -408,7 +408,9 @@ class Uri implements UriInterface
     {
         $formats = array_keys($components);
         $values = array_values($components);
-        $keys = array_keys(array_filter($values, 'strlen'));
+        $keys = array_keys(array_filter($values, function ($value) {
+            return null !== $value && '' !== $value;
+        }));
 
         return array_reduce($keys, function ($string, $key) use ($formats, $values) {
             return sprintf($formats[$key], $string, $values[$key]);

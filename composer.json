@@ -1,0 +1,19 @@
+{
+    "require": {
+        "riimu/kit-urlparser": "dev-patch-1"
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/gharlan/Kit-UrlParser"
+        }
+    ],
+    "scripts": {
+        "post-install-cmd": [
+            "rm -rf vendor/composer && rm -f vendor/autoload.php"
+        ],
+        "post-update-cmd": [
+            "rm -rf vendor/composer && rm -f vendor/autoload.php"
+        ]
+    }
+}
