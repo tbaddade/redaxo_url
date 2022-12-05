@@ -654,7 +654,10 @@ class Profile
                 );
             }
         }
-        return $query;
+        
+        return \rex_extension::registerPoint(new \rex_extension_point('URL_PROFILE_QUERY', $query, [
+            'profile' => $this
+        ]));
     }
 
     /**
