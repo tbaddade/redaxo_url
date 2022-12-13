@@ -36,20 +36,27 @@ class UriParser
     /** Parsing mode that allows UTF-8 characters in some URI components */
     const MODE_UTF8 = 2;
 
-    /** Parsing mode that also converts international domain names to ascii */
+    /**
+     * Parsing mode that also converts international domain names to ascii.
+     * @deprecated Use MODE_IDNA instead
+     * @see UriParser::MODE_IDNA
+     */
     const MODE_IDNA2003 = 4;
+
+    /** Parsing mode that also converts international domain names to ascii */
+    const MODE_IDNA = 4;
 
     /** @var array<string,string> List of methods used to assign the URI components */
     private static $setters = [
-        'scheme'        => 'withScheme',
-        'host'          => 'withHost',
-        'port'          => 'withPort',
-        'path_abempty'  => 'withPath',
+        'scheme' => 'withScheme',
+        'host' => 'withHost',
+        'port' => 'withPort',
+        'path_abempty' => 'withPath',
         'path_absolute' => 'withPath',
         'path_noscheme' => 'withPath',
         'path_rootless' => 'withPath',
-        'query'         => 'withQuery',
-        'fragment'      => 'withFragment',
+        'query' => 'withQuery',
+        'fragment' => 'withFragment',
     ];
 
     /** @var int The current parsing mode */
@@ -76,9 +83,9 @@ class UriParser
      *   query and fragment components of the URI. These characters will be
      *   converted to appropriate percent encoded sequences.
      *
-     * - `MODE_IDNA2003` also allows UTF-8 characters in the domain name and
+     * - `MODE_IDNA` also allows UTF-8 characters in the domain name and
      *   converts the international domain name to ascii according to the IDNA
-     *   2003 standard.
+     *   standard.
      *
      * @param int $mode One of the parsing mode constants
      */
@@ -183,11 +190,12 @@ class UriParser
     {
         if (preg_match('/^[\\x00-\\x7F]*$/', $hostname)) {
             return $hostname;
-        } elseif ($this->mode !== self::MODE_IDNA2003) {
+        } elseif ($this->mode !== self::MODE_IDNA) {
             throw new \InvalidArgumentException("Invalid hostname '$hostname'");
         }
 
-        $hostname = idn_to_ascii($hostname);
+        $mode = defined('INTL_IDNA_VARIANT_UTS46') ? INTL_IDNA_VARIANT_UTS46 : INTL_IDNA_VARIANT_2003;
+        $hostname = idn_to_ascii($hostname, IDNA_DEFAULT, $mode);
 
         if ($hostname === false) {
             throw new \InvalidArgumentException("Invalid hostname '$hostname'");
