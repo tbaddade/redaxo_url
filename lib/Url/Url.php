@@ -251,6 +251,24 @@ class Url
         );
     }
 
+
+    /**
+     * @return array
+     */
+    public static function getCurrentUserPath()
+    {
+        $manager = self::resolveCurrent();
+        if ($manager && $manager->isUserPath() && $profile = $manager->getProfile()) {
+            $segments = $manager->getUrl()->getSegments();
+            foreach ($profile->getUserPaths() as $path => $title) {
+                if (in_array($path, $segments)) {
+                    return ['path' => $path, 'title' => $title];
+                }
+            }
+        }
+        return [];
+    }
+
     /**
      * @return self
      */
