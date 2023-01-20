@@ -218,7 +218,7 @@ class UrlManager
      */
     public function isStructure()
     {
-        return $this->values['is_structure'] === '1' ? true : false;
+        return $this->values['is_structure'] === 1 ? true : false;
     }
 
     /**
@@ -226,7 +226,7 @@ class UrlManager
      */
     public function isUserPath()
     {
-        return $this->values['is_user_path'] === '1' ? true : false;
+        return $this->values['is_user_path'] === 1 ? true : false;
     }
 
     /**
