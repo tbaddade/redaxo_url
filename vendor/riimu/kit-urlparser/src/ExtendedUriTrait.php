@@ -17,8 +17,8 @@ trait ExtendedUriTrait
 {
     /** @var array<string,int> List of known ports for different schemes */
     private static $standardPorts = [
-        'ftp'   => 21,
-        'http'  => 80,
+        'ftp' => 21,
+        'http' => 80,
         'https' => 443,
     ];
 
@@ -157,7 +157,7 @@ trait ExtendedUriTrait
     {
         $segments = $this->getPathSegments();
         $filename = array_pop($segments);
-        $extension = strrchr($filename, '.');
+        $extension = strrchr((string) $filename, '.');
 
         if ($extension === false) {
             return '';

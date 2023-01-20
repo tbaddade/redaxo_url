@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "205322b7a9857f8371447cfe9cab47cf",
+    "content-hash": "7d6b01a20c9b001307d4dd237ca61f36",
     "packages": [
         {
             "name": "psr/http-message",
@@ -58,59 +58,6 @@
                 "source": "https://github.com/php-fig/http-message/tree/master"
             },
             "time": "2016-08-06T14:39:51+00:00"
-        },
-        {
-            "name": "riimu/kit-urlparser",
-            "version": "v2.2.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Riimu/Kit-UrlParser.git",
-                "reference": "483d9807582b2f524564bcbe58017d985e1907e0"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Riimu/Kit-UrlParser/zipball/483d9807582b2f524564bcbe58017d985e1907e0",
-                "reference": "483d9807582b2f524564bcbe58017d985e1907e0",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.6.0",
-                "psr/http-message": "^1.0"
-            },
-            "suggest": {
-                "ext-intl": "Required to parse URIs with IDNs"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Riimu\\Kit\\UrlParser\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Riikka Kalliomäki",
-                    "email": "riikka.kalliomaki@gmail.com",
-                    "homepage": "http://riimu.net"
-                }
-            ],
-            "description": "RFC 3986 compliant url parsing library with PSR-7 Uri component",
-            "homepage": "http://kit.riimu.net",
-            "keywords": [
-                "parser",
-                "psr-7",
-                "rfc3986",
-                "uri",
-                "url"
-            ],
-            "support": {
-                "issues": "https://github.com/Riimu/Kit-UrlParser/issues",
-                "source": "https://github.com/Riimu/Kit-UrlParser/tree/v2.2.0"
-            },
-            "time": "2022-12-13T18:51:30+00:00"
         }
     ],
     "packages-dev": [],
@@ -119,7 +66,9 @@
     "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": [],
+    "platform": {
+        "php": ">=5.6.0"
+    },
     "platform-dev": [],
     "plugin-api-version": "2.3.0"
 }

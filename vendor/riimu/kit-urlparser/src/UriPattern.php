@@ -58,7 +58,7 @@ class UriPattern
      * @param array $matches Provides the matched sub sections from the match
      * @return bool True if the URI matches, false if not
      */
-    public function matchUri($uri, & $matches = [])
+    public function matchUri($uri, &$matches = [])
     {
         if ($this->matchAbsoluteUri($uri, $matches)) {
             return true;
@@ -73,7 +73,7 @@ class UriPattern
      * @param array $matches Provides the matched sub sections from the match
      * @return bool True if the URI matches, false if not
      */
-    public function matchAbsoluteUri($uri, & $matches = [])
+    public function matchAbsoluteUri($uri, &$matches = [])
     {
         return $this->match(self::$absoluteUri, $uri, $matches);
     }
@@ -84,7 +84,7 @@ class UriPattern
      * @param array $matches Provides the matched sub sections from the match
      * @return bool True if the URI matches, false if not
      */
-    public function matchRelativeUri($uri, & $matches = [])
+    public function matchRelativeUri($uri, &$matches = [])
     {
         return $this->match(self::$relativeUri, $uri, $matches);
     }
@@ -95,7 +95,7 @@ class UriPattern
      * @param array $matches Provides the matched sub sections from the match
      * @return bool True if the scheme matches, false if not
      */
-    public function matchScheme($scheme, & $matches = [])
+    public function matchScheme($scheme, &$matches = [])
     {
         return $this->match(self::$scheme, $scheme, $matches);
     }
@@ -106,7 +106,7 @@ class UriPattern
      * @param array $matches Provides the matched sub sections from the match
      * @return bool True if the host matches, false if not
      */
-    public function matchHost($host, & $matches = [])
+    public function matchHost($host, &$matches = [])
     {
         return $this->match(self::$host, $host, $matches);
     }
@@ -118,7 +118,7 @@ class UriPattern
      * @param array $matches The provided list of literal sub patterns
      * @return bool True if the pattern matches, false if not
      */
-    private function match($pattern, $subject, & $matches)
+    private function match($pattern, $subject, &$matches)
     {
         $matches = [];
         $subject = (string) $subject;

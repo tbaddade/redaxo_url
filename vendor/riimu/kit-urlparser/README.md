@@ -26,9 +26,9 @@ and IDN ascii formats.
 
 The API documentation is available at: http://kit.riimu.net/api/urlparser/
 
-[![Travis](https://img.shields.io/travis/Riimu/Kit-UrlParser.svg?style=flat-square)](https://travis-ci.org/Riimu/Kit-UrlParser)
-[![Scrutinizer](https://img.shields.io/scrutinizer/g/Riimu/Kit-UrlParser.svg?style=flat-square)](https://scrutinizer-ci.com/g/Riimu/Kit-UrlParser/)
-[![Scrutinizer Coverage](https://img.shields.io/scrutinizer/coverage/g/Riimu/Kit-UrlParser.svg?style=flat-square)](https://scrutinizer-ci.com/g/Riimu/Kit-UrlParser/)
+[![CI](https://img.shields.io/github/workflow/status/Riimu/Kit-UrlParser/CI/main?style=flat-square)](https://github.com/Riimu/Kit-UrlParser/actions)
+[![Scrutinizer](https://img.shields.io/scrutinizer/quality/g/Riimu/Kit-UrlParser/main?style=flat-square)](https://scrutinizer-ci.com/g/Riimu/Kit-UrlParser/)
+[![codecov](https://img.shields.io/codecov/c/github/Riimu/Kit-UrlParser/main?style=flat-square)](https://codecov.io/gh/Riimu/Kit-UrlParser)
 [![Packagist](https://img.shields.io/packagist/v/riimu/kit-urlparser.svg?style=flat-square)](https://packagist.org/packages/riimu/kit-urlparser)
 
 ## Requirements ##
@@ -329,7 +329,7 @@ echo $uri->getPath(); // Outputs: /f%C3%B6%C3%B6/b%C3%A4r.html
 
 UTF-8 characters in the domain name, however, are a bit more complex issue. The
 parser, however, does provide a rudimentary support for parsing these domain
-names using the IDNA2003 mode. For example:
+names using the IDNA mode. For example:
 
 ```php
 <?php
@@ -337,7 +337,7 @@ names using the IDNA2003 mode. For example:
 require 'vendor/autoload.php';
 
 $parser = new \Riimu\Kit\UrlParser\UriParser();
-$parser->setMode(\Riimu\Kit\UrlParser\UriParser::MODE_IDNA2003);
+$parser->setMode(\Riimu\Kit\UrlParser\UriParser::MODE_IDNA);
 
 $uri = $parser->parse('http://www.fööbär.com');
 echo $uri->getHost(); // Outputs: www.xn--fbr-rla2ga.com
@@ -376,6 +376,6 @@ may encounter are as follows:
 
 ## Credits ##
 
-This library is Copyright (c) 2013-2017 Riikka Kalliomäki.
+This library is Copyright (c) 2013-2022 Riikka Kalliomäki.
 
 See LICENSE for license and copying information.

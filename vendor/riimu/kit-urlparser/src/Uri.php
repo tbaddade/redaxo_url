@@ -95,7 +95,7 @@ class Uri implements UriInterface
     {
         return $this->constructString([
             '%s%s@' => $this->getUserInfo(),
-            '%s%s'  => $this->getHost(),
+            '%s%s' => $this->getHost(),
             '%s:%s' => $this->getPort(),
         ]);
     }
@@ -224,8 +224,8 @@ class Uri implements UriInterface
 
         if (strlen($username) > 0) {
             return $this->with('userInfo', $this->constructString([
-                '%s%s'  => $username,
-                '%s:%s' => rawurlencode($password),
+                '%s%s' => $username,
+                '%s:%s' => rawurlencode((string) $password),
             ]));
         }
 
@@ -391,11 +391,11 @@ class Uri implements UriInterface
     public function __toString()
     {
         return $this->constructString([
-            '%s%s:'  => $this->getScheme(),
+            '%s%s:' => $this->getScheme(),
             '%s//%s' => $this->getAuthority(),
-            '%s%s'   => $this->getNormalizedUriPath(),
-            '%s?%s'  => $this->getQuery(),
-            '%s#%s'  => $this->getFragment(),
+            '%s%s' => $this->getNormalizedUriPath(),
+            '%s?%s' => $this->getQuery(),
+            '%s#%s' => $this->getFragment(),
         ]);
     }
 
@@ -409,7 +409,7 @@ class Uri implements UriInterface
         $formats = array_keys($components);
         $values = array_values($components);
         $keys = array_keys(array_filter($values, function ($value) {
-            return null !== $value && '' !== $value;
+            return $value !== null && $value !== '';
         }));
 
         return array_reduce($keys, function ($string, $key) use ($formats, $values) {

@@ -1,10 +1,15 @@
 # Changelog #
 
-## Unreleased
+## v2.2.0 (2022-12-13) ##
 
+  * Add support for PHP 8.2
+  * Fix passing nulls to string functions
+  * Deprecated `UriParser::MODE_IDNA2003`
+    * Added `UriParser::MODE_IDNA`, which should be used instead
+    * Internally, the parser will now use UTS46 mode whenever it is available
   * Minor bundled autoloader improvements
-  * Minor improvements to the build process
   * Address minor code quality issues in tests
+  * Update CI to use Github Actions
 
 ## v2.1.0 (2017-06-30) ##
 
