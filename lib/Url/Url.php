@@ -240,12 +240,13 @@ class Url
      */
     public static function getCurrent()
     {
+
         return new self(
             sprintf(
                 '%s://%s%s',
                 empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] === 'off' ? 'http' : 'https',
-                $_SERVER['HTTP_HOST'],
-                $_SERVER['REQUEST_URI']
+                ($_SERVER['HTTP_HOST'] ?? ''),
+                ($_SERVER['REQUEST_URI'] ?? '')
             )
         );
     }
@@ -256,7 +257,7 @@ class Url
     public static function getPrevious()
     {
         return new self(
-            isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : ''
+            $_SERVER['HTTP_REFERER'] ?? ''
         );
     }
 
