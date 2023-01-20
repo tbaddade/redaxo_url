@@ -463,6 +463,27 @@ class Profile
     }
 
     /**
+     * @param string $key
+     * @param string $value
+     *
+     * @return array
+     */
+    public function getUrlsAsKeyValuePair(string $key, string $value): array
+    {
+        $urls = $this->getUrls();
+        if (!$urls) {
+            return [];
+        }
+
+        $array = [];
+        foreach ($urls as $url) {
+            $array[$url->getValue($key)] = $url->getValue($value);
+        }
+
+        return $array;
+    }
+
+    /**
      * Returns the profile object for the given id.
      *
      * @param int $id Profile id
@@ -654,7 +675,7 @@ class Profile
                 );
             }
         }
-        
+
         return \rex_extension::registerPoint(new \rex_extension_point('URL_PROFILE_QUERY', $query, [
             'profile' => $this
         ]));

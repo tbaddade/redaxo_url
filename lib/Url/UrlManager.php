@@ -197,6 +197,11 @@ class UrlManager
         return Url::get($this->values['url']);
     }
 
+    public function getValue($key)
+    {
+        return $this->values[$key];
+    }
+
     /**
      * @return bool
      */
