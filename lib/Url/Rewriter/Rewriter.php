@@ -44,6 +44,11 @@ abstract class Rewriter
     abstract public function getSeoTags();
 
     /**
+     * @return string
+     */
+    abstract public function getSeoTagsExtensionPoint();
+
+    /**
      * @param int $article_id
      * @param int $clang_id
      *

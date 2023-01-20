@@ -33,36 +33,31 @@ class Seo
 
     public function getTags()
     {
-        $tags = [];
-        $tags['title'] = $this->rewriterSeo->getTitleTag();
-        $tags['description'] = $this->rewriterSeo->getDescriptionTag();
-        $tags['robots'] = $this->rewriterSeo->getRobotsTag();
-        $tags['canonical'] = $this->rewriterSeo->getCanonicalUrlTag();
-
-        //$tags = $this->rewriterSeo->getTags();
-
         if (!$this->isUrl()) {
-            return implode("\n", $tags);
+            return [];
         }
+        $tags = [];
+        $tagsOg = [];
+        $tagsTwitter = [];
 
         if ($this->manager->getSeoTitle()) {
             $title = $this->normalize($this->manager->getSeoTitle());
             $tags['title'] = '<title>'.$title.'</title>';
-            $tags['og:title'] = '<meta property="og:title" content="'.$title.'" />';
-            $tags['twitter:title'] = '<meta name="twitter:title" content="'.$title.'" />';
+            $tagsOg['og:title'] = '<meta property="og:title" content="'.$title.'" />';
+            $tagsTwitter['twitter:title'] = '<meta name="twitter:title" content="'.$title.'" />';
         }
 
         if ($this->manager->getSeoDescription()) {
             $description = $this->normalize($this->manager->getSeoDescription());
             $tags['description'] = '<meta name="description" content="'.$description.'" />';
-            $tags['og:description'] = '<meta property="og:description" content="'.$description.'" />';
-            $tags['twitter:description'] = '<meta name="twitter:description" content="'.$description.'" />';
+            $tagsOg['og:description'] = '<meta property="og:description" content="'.$description.'" />';
+            $tagsTwitter['twitter:description'] = '<meta name="twitter:description" content="'.$description.'" />';
         }
 
         $fullUrl = $this->getFullUrl();
         $tags['canonical'] = '<link rel="canonical" href="'.$fullUrl.'" />';
-        $tags['og:url'] = '<meta property="og:url" content="'.$fullUrl.'" />';
-        $tags['twitter:url'] = '<meta name="twitter:url" content="'.$fullUrl.'" />';
+        $tagsOg['og:url'] = '<meta property="og:url" content="'.$fullUrl.'" />';
+        $tagsTwitter['twitter:url'] = '<meta name="twitter:url" content="'.$fullUrl.'" />';
 
 
         $items = $this->manager->getHreflang(\rex_clang::getAllIds(true));
@@ -75,7 +70,7 @@ class Seo
             }
         }
 
-        $tags['twitter:card'] = '<meta name="twitter:card" content="summary" />';
+        $tagsTwitter['twitter:card'] = '<meta name="twitter:card" content="summary" />';
 
         if ($this->manager->getSeoImage()) {
             $images = explode(',', $this->manager->getSeoImage());
@@ -87,22 +82,22 @@ class Seo
                 $url->withSolvedScheme();
                 $mediaUrl = $url->getSchemeAndHttpHost().$media->getUrl();
 
-                $tags['twitter:card'] = '<meta name="twitter:card" content="summary_large_image" />';
+                $tagsTwitter['twitter:card'] = '<meta name="twitter:card" content="summary_large_image" />';
 
                 $tags['image'] = '<meta name="image" content="'.$mediaUrl.'" />';
-                $tags['og:image'] = '<meta property="og:image" content="'.$mediaUrl.'" />';
-                $tags['twitter:image'] = '<meta name="twitter:image" content="'.$mediaUrl.'" />';
+                $tagsOg['og:image'] = '<meta property="og:image" content="'.$mediaUrl.'" />';
+                $tagsTwitter['twitter:image'] = '<meta name="twitter:image" content="'.$mediaUrl.'" />';
 
                 if ($media->getWidth()) {
-                    $tags['og:image:width'] = '<meta property="og:image:width" content="'.$media->getWidth().'" />';
+                    $tagsOg['og:image:width'] = '<meta property="og:image:width" content="'.$media->getWidth().'" />';
                 }
                 if ($media->getHeight()) {
-                    $tags['og:image:height'] = '<meta property="og:image:height" content="'.$media->getHeight().'" />';
+                    $tagsOg['og:image:height'] = '<meta property="og:image:height" content="'.$media->getHeight().'" />';
                 }
             }
         }
 
-        $tags = \rex_extension::registerPoint(new \rex_extension_point('URL_SEO_TAGS', $tags));
+        $tags = \rex_extension::registerPoint(new \rex_extension_point('URL_SEO_TAGS', $tags + $tagsOg + $tagsTwitter));
         return implode("\n", $tags);
 
     }

@@ -76,6 +76,14 @@ class Yrewrite extends Rewriter
     }
 
     /**
+     * @return string
+     */
+    public function getSeoTagsExtensionPoint()
+    {
+        return 'YREWRITE_SEO_TAGS';
+    }
+
+    /**
      * @param int $article_id
      * @param int $clang_id
      *

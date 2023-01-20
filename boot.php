@@ -96,3 +96,37 @@ rex_extension::register('PACKAGES_INCLUDED', function (\rex_extension_point $epP
 if (rex::isBackend() && rex::getUser()) {
     rex_view::addCssFile($addon->getAssetsUrl('styles.css'));
 }
+
+if (null !== Url::getRewriter() && Url::getRewriter()->getSeoTagsExtensionPoint()) {
+    rex_extension::register(Url::getRewriter()->getSeoTagsExtensionPoint(), function (rex_extension_point $rewriterExtensionPoint) {
+        $seoTags = $rewriterExtensionPoint->getSubject();
+
+        if (!is_array($seoTags)) {
+            $seoTags = [];
+        }
+
+        \rex_extension::register('URL_SEO_TAGS', function($urlExtensionPoint) use ($rewriterExtensionPoint, $seoTags) {
+            $seoTags = array_merge($seoTags, $urlExtensionPoint->getSubject());
+
+            $bucket = [];
+            $bucketOg = [];
+            $bucketTwitter = [];
+
+            foreach ($seoTags as $key => $value) {
+                if (str_starts_with($key, 'og:')) {
+                    $bucketOg[$key] = $value;
+                } elseif (str_starts_with($key, 'twitter:')) {
+                    $bucketTwitter[$key] = $value;
+                } else {
+                    $bucket[$key] = $value;
+                }
+            }
+            $seoTags = $bucket + $bucketOg + $bucketTwitter;
+            $rewriterExtensionPoint->setSubject($seoTags);
+        });
+
+        $urlSeo = new Seo();
+        $urlSeoTags = $urlSeo->getTags();
+
+    }, rex_extension::EARLY);
+}
