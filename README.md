@@ -116,6 +116,15 @@ if ($profiles) {
 }
 ```
 
+### Beispiel: Auslesen, über welchen Profil-Key der Artikel aufgerufen wurde / die URL generiert wurde
+
+```php
+$manager = Url::resolveCurrent();
+if ($manager && $profile = $manager->getProfile()) {
+    dump($profile->getNamespace());
+}
+```
+
 ## Extension Points
 
 - URL_PRE_SAVE
