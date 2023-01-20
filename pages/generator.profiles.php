@@ -186,8 +186,8 @@ if (!function_exists('url_generate_column_data')) {
         ];
 
         $dataList[] = [
-            rex_i18n::msg('url_generator_namespace_short'),
-            '<code>rex_getUrl(\'\', \'\', [\''.$profile->getNamespace().'\' => {id}])</code><br /><code>->getUrl([\''.$profile->getNamespace().'\' => {id}])</code>'
+            implode('<br />'.str_repeat('&nbsp;', 8), [rex_i18n::msg('url_generator_namespace_short'), rex_i18n::msg('url_function'), rex_i18n::msg('url_method')]),
+            '<br /><code>rex_getUrl(\'\', \'\', [\''.$profile->getNamespace().'\' => {id}])</code><br /><code>->getUrl([\''.$profile->getNamespace().'\' => {id}])</code>'
         ];
 
         $dataList[] = [

@@ -7,6 +7,9 @@ url_data_id = Id des Datensatz
 url_id = Id
 url_language = Sprache
 
+url_function = Funktion
+url_method = Methode
+
 url_generator_profile = Profil
 url_generator_profiles = Profile
 url_generator_urls_generated = generierte URLs
