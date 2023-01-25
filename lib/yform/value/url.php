@@ -31,7 +31,7 @@ class rex_yform_value_url extends rex_yform_value_abstract
                 'label' => ['type' => 'text', 'label' => rex_i18n::msg('url_yform_value_label')],
             ],
             'description' => rex_i18n::msg('url_yform_value_description'),
-            'db_type' => ['none'],
+            'db_type' => ['varchar(191)'],
             'is_searchable' => false,
             'famous' => false,
         ];
