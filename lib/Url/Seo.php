@@ -34,7 +34,7 @@ class Seo
     public function getTags()
     {
         if (!$this->isUrl()) {
-            return [];
+            return '';
         }
         $tags = [];
         $tagsOg = [];
