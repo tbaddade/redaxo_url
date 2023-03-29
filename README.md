@@ -245,10 +245,10 @@ Dieser ExtensionPoint wird getriggert, sobald die Tabelle der Urls sich ändert.
 
 ## SEO-Methoden
 
-```php
-use Url\Seo;
+URL verwendet die Standard-Methode des YRewrite-SEO-Objekts.
 
-$seo = new Seo();
+```php
+$seo = new rex_yrewrite_seo();
 echo $seo->getTags();
 ```
 
