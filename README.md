@@ -21,6 +21,8 @@ REDAXO 5 AddOn zur URL-Generierung für Daten aus den Datenbanktabellen (ehemals
 
 > Hinweis: Benötigt [yrewrite](https://github.com/yakamara/redaxo_yrewrite). 
 
+> Hinweis: der Datenbanknutzer benötigt ein Passwort.
+
 ## Beispiel: Filme
 
 Normalerweise wird ein Film über eine Url wie `/filme/?movie_id=1` geholt.
