@@ -176,8 +176,9 @@ if (!function_exists('url_generate_column_data')) {
         $url->withScheme('');
 
         $segments = $url->getSegments();
-        if ($segments[array_key_last($segments)] === Url::getRewriter()->getSuffix()) {
-            unset($segments[array_key_last($segments)]);
+        $lastKey = array_key_last($segments);
+        if (isset($segments[$lastKey]) && $segments[$lastKey] === Url::getRewriter()->getSuffix()) {
+            unset($segments[$lastKey]);
         }
 
         $dataList[] = [
