@@ -9,5 +9,8 @@
         "post-update-cmd": [
             "rm -rf vendor/composer && rm -f vendor/autoload.php"
         ]
+    },
+    "replace": {
+        "psr/http-message": "*"
     }
 }
