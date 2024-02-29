@@ -112,20 +112,22 @@ class Cache
                         if ($value && $value != '[]') {
                             $index = substr($fieldName, strlen(Profile::RELATION_PREFIX), 1);
                             $params = json_decode($value, true);
-                            foreach ($params as $key => $paramValue) {
-                                switch ($key) {
-                                    case 'column_id':
-                                    case 'column_clang_id':
-                                    case 'column_segment_part_1':
-                                    case 'column_segment_part_2':
-                                    case 'column_segment_part_3':
-                                        $profiles[$id]['table']['relations'][$index]['table']['column_names'][substr($key, strlen('column_'))] = $paramValue;
-                                        break;
-                                    case 'column_segment_part_2_separator':
-                                    case 'column_segment_part_3_separator':
-                                        $indexSeparator = substr($key, strlen('column_segment_part_'), 1);
-                                        $profiles[$id]['table']['relations'][$index]['segment_part_separators'][$indexSeparator] = $paramValue;
-                                        break;
+                            if (is_array($params)) {
+                                foreach ($params as $key => $paramValue) {
+                                    switch ($key) {
+                                        case 'column_id':
+                                        case 'column_clang_id':
+                                        case 'column_segment_part_1':
+                                        case 'column_segment_part_2':
+                                        case 'column_segment_part_3':
+                                            $profiles[$id]['table']['relations'][$index]['table']['column_names'][substr($key, strlen('column_'))] = $paramValue;
+                                            break;
+                                        case 'column_segment_part_2_separator':
+                                        case 'column_segment_part_3_separator':
+                                            $indexSeparator = substr($key, strlen('column_segment_part_'), 1);
+                                            $profiles[$id]['table']['relations'][$index]['segment_part_separators'][$indexSeparator] = $paramValue;
+                                            break;
+                                    }
                                 }
                             }
                         }
