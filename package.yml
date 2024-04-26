@@ -20,7 +20,7 @@ page:
             title: translate:url_generator_help
             pjax: false
             subPath: README.md
-            itemclass: pull-right
+            itemClass: pull-right
 
 requires:
     redaxo: ^5.7.0
