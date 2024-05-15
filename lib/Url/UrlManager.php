@@ -360,7 +360,7 @@ class UrlManager
                 }
 
                 // Prüfen ob die clang ID mit dem Profil übereinstimmt
-                if ($clangId != $profile->getArticleClangId()) {
+                if ($clangId != $profile->getArticleClangId() && $profile->getArticleClangId() != 0) {
                     continue;
                 }
                 
