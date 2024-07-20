@@ -636,12 +636,13 @@ class Profile
         }
 
         // sicherstellen, dass der Datensatz auch Werte in den zu bildenen Spalten für die Url hat
-        // $query->where($this->getColumnNameWithAlias('segment_part_1'), '', '!=');
+        // Wert als CHAR casten, um Fehler bei ungültigen Datumswerten zu vermeiden.
+        // $query->whereRaw('CAST(' . $this->getColumnNameWithAlias('segment_part_1) . ' AS CHAR) != ""
         // $query->whereRaw($this->getColumnNameWithAlias('segment_part_1', true).' IS NOT NULL');
         $whereRawSegmentParts = [];
         for ($index = 1; $index <= self::SEGMENT_PART_COUNT; ++$index) {
             if ($this->getColumnName('segment_part_'.$index) != '') {
-                $whereRawSegmentParts[] = $this->getColumnNameWithAlias('segment_part_'.$index).' != "" AND '.$this->getColumnNameWithAlias('segment_part_'.$index, true).' IS NOT NULL';
+                $whereRawSegmentParts[] = 'CAST(' . $this->getColumnNameWithAlias('segment_part_'.$index) . ' AS CHAR) != "" AND ' . $this->getColumnNameWithAlias('segment_part_'.$index, true) . ' IS NOT NULL';
             }
         }
         $query->whereRaw('('.implode(' OR ', $whereRawSegmentParts).')');
