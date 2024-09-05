@@ -1,4 +1,8 @@
 {
+    "require-dev": {
+      "redaxo/php-cs-fixer-config": "^2.0",
+      "friendsofphp/php-cs-fixer": "^3.14"
+    },
     "require": {
         "riimu/kit-urlparser": "^2.2.0"
     },
@@ -8,9 +12,14 @@
         ],
         "post-update-cmd": [
             "rm -rf vendor/composer && rm -f vendor/autoload.php"
-        ]
+        ],
+        "cs-dry": "php-cs-fixer fix -v --ansi --dry-run --config=.php-cs-fixer.dist.php",
+        "cs-fix": "php-cs-fixer fix -v --ansi --config=.php-cs-fixer.dist.php"
+  
     },
     "replace": {
-        "psr/http-message": "*"
+        "psr/http-message": "*",
+        "psr/log": "*",
+        "psr/container": "*"
     }
 }
