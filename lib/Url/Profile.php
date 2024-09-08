@@ -488,7 +488,7 @@ class Profile
      *
      * @param int $id Profile id
      *
-     * @return self
+     * @return ?self
      */
     public static function get($id)
     {
