@@ -359,6 +359,11 @@ class UrlManager
                     continue;
                 }
 
+                // Prüfen ob die clang ID mit dem Profil übereinstimmt
+                if ($clangId != $profile->getArticleClangId() && $profile->getArticleClangId() != 0) {
+                    continue;
+                }
+                
                 $urlRecord = self::getForRewriteUrl($profile, (int) $urlParamValue, $clangId);
                 if (!$urlRecord) {
                     // Urls erstellen
