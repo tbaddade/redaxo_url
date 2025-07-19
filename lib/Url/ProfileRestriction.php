@@ -13,18 +13,18 @@ namespace Url;
 
 class ProfileRestriction
 {
-    protected $index;
+    protected int|string $index;
 
-    protected $alias;
-    protected $prefix;
+    protected string $alias;
+    protected string $prefix;
 
-    protected $columnName;
+    protected string $columnName;
 
-    protected $comparisonOperator;
-    protected $logicalOperator = 'AND';
-    protected $value;
+    protected string $comparisonOperator;
+    protected string $logicalOperator = 'AND';
+    protected string $value;
 
-    public function __construct($index, $columnName, $comparisonOperator, $value, $logicalOperator)
+    public function __construct(int|string $index, string $columnName, string $comparisonOperator, string $value, string $logicalOperator)
     {
         $this->index = $index;
         $this->alias = Profile::RESTRICTION_PREFIX.$this->index;
@@ -39,7 +39,7 @@ class ProfileRestriction
         }
     }
 
-    public function isValid()
+    public function isValid(): bool
     {
         return $this->columnName != ''
             && $this->value != ''
@@ -47,7 +47,7 @@ class ProfileRestriction
             && isset(Database::getLogicalOperators()[$this->logicalOperator]);
     }
 
-    public function getWhere()
+    public function getWhere(): string
     {
         $value = $this->value;
         switch ($this->comparisonOperator) {
@@ -104,7 +104,7 @@ class ProfileRestriction
         return $where;
     }
 
-    public function getWhereOperator()
+    public function getWhereOperator(): string
     {
         return $this->logicalOperator;
     }

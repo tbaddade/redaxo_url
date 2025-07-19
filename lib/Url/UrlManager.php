@@ -13,14 +13,14 @@ namespace Url;
 
 class UrlManager
 {
-    protected $values;
+    protected array $values;
 
     /**
      * UrlManager constructor.
      *
      * @param array $values
      */
-    private function __construct($values)
+    private function __construct(array $values)
     {
         $this->values = $values;
         if (isset($this->values['seo'])) {
@@ -28,12 +28,12 @@ class UrlManager
         }
     }
 
-    public function getArticleId()
+    public function getArticleId(): int|string|null
     {
         return $this->values['article_id'];
     }
 
-    public function getClangId()
+    public function getClangId(): int|string|null
     {
         return $this->values['clang_id'];
     }
@@ -43,7 +43,7 @@ class UrlManager
      *
      * @throws \rex_sql_exception
      */
-    public function getDataset()
+    public function getDataset(): mixed
     {
         $profile = Profile::get($this->getProfileId());
         if (!$profile) {
@@ -86,19 +86,19 @@ class UrlManager
         return $query->findOne();
     }
 
-    public function getDatasetId()
+    public function getDatasetId(): int|string|null
     {
         return $this->values['data_id'];
     }
 
     /**
-     * @param $clangIds
+     * @param array $clangIds
      *
      * @throws \rex_sql_exception
      *
      * @return null|UrlManager[]
      */
-    public function getHreflang($clangIds)
+    public function getHreflang(array $clangIds): ?array
     {
         $items = UrlManagerSql::getHreflang($this, $clangIds);
 
@@ -113,7 +113,7 @@ class UrlManager
         return $instances;
     }
 
-    public function getLastmod()
+    public function getLastmod(): string|null
     {
         return $this->values['lastmod'];
     }
@@ -121,12 +121,12 @@ class UrlManager
     /**
      * @return null|Profile
      */
-    public function getProfile()
+    public function getProfile(): ?Profile
     {
         return Profile::get($this->getProfileId());
     }
 
-    public function getProfileId()
+    public function getProfileId(): int|string|null
     {
         return $this->values['profile_id'];
     }
@@ -134,7 +134,7 @@ class UrlManager
     /**
      * @return array
      */
-    public function getSeo()
+    public function getSeo(): array
     {
         return $this->values['seo'];
     }
@@ -144,7 +144,7 @@ class UrlManager
      *
      * @return null|mixed
      */
-    public function getSeoDescription()
+    public function getSeoDescription(): mixed
     {
         return $this->getSeoValue('description');
     }
@@ -154,7 +154,7 @@ class UrlManager
      *
      * @return null|mixed
      */
-    public function getSeoImage()
+    public function getSeoImage(): mixed
     {
         return $this->getSeoValue('image');
     }
@@ -164,19 +164,19 @@ class UrlManager
      *
      * @return null|mixed
      */
-    public function getSeoTitle()
+    public function getSeoTitle(): mixed
     {
         return $this->getSeoValue('title');
     }
 
     /**
-     * @param $key
+     * @param string $key
      *
      * @throws \rex_exception
      *
      * @return null|mixed
      */
-    public function getSeoValue($key)
+    public function getSeoValue(string $key): mixed
     {
         if (empty($key)) {
             throw new \rex_exception('Parameter key must not be empty!');
@@ -192,12 +192,12 @@ class UrlManager
     /**
      * @return Url
      */
-    public function getUrl()
+    public function getUrl(): Url
     {
         return Url::get($this->values['url']);
     }
 
-    public function getValue($key)
+    public function getValue(string $key): mixed
     {
         return $this->values[$key];
     }
@@ -205,7 +205,7 @@ class UrlManager
     /**
      * @return bool
      */
-    public function inSitemap()
+    public function inSitemap(): bool
     {
         return $this->values['sitemap'] === 1 ? true : false;
     }
@@ -213,7 +213,7 @@ class UrlManager
     /**
      * @return bool
      */
-    public function isRoot()
+    public function isRoot(): bool
     {
         return $this->isStructure() || $this->isUserPath() ? false : true;
     }
@@ -221,7 +221,7 @@ class UrlManager
     /**
      * @return bool
      */
-    public function isStructure()
+    public function isStructure(): bool
     {
         return $this->values['is_structure'] === 1 ? true : false;
     }
@@ -229,7 +229,7 @@ class UrlManager
     /**
      * @return bool
      */
-    public function isUserPath()
+    public function isUserPath(): bool
     {
         return $this->values['is_user_path'] === 1 ? true : false;
     }
@@ -241,7 +241,7 @@ class UrlManager
      *
      * @return null|UrlManager[]
      */
-    public static function getByProfileId($profileId)
+    public static function getByProfileId(int $profileId): ?array
     {
         $items = UrlManagerSql::getByProfileId($profileId);
 
@@ -263,7 +263,7 @@ class UrlManager
      *
      * @return null|UrlManager
      */
-    public static function resolveUrl(Url $url)
+    public static function resolveUrl(Url $url): ?UrlManager
     {
         // Url nur auflösen (DB-Abfrage), wenn der erste Teil des Url-Pfades auch in einem Profil zu finden ist
         // Prüft ob der erste Teil der übergebenen Url in einem Profil zu finden ist.
@@ -293,7 +293,7 @@ class UrlManager
         $rewriterSuffix = Url::getRewriter()->getSuffix();
         if (\rex::isFrontend() && $rewriterSuffix && substr($url->getRequestPath(), -strlen($rewriterSuffix)) !== $rewriterSuffix) {
             // URL Objekt nachfolgend neu erstellen um Parameter nicht zu verlieren
-            if(count(UrlManagerSql::getByUrl($url)) == 1) {
+            if (count(UrlManagerSql::getByUrl($url)) == 1) {
                 header('HTTP/1.1 301 Moved Permanently');
                 header('Location: '. $url->toString());
                 exit;
@@ -314,7 +314,7 @@ class UrlManager
      *
      * @return null|array
      */
-    public static function getArticleParams()
+    public static function getArticleParams(): ?array
     {
         $current = Url::getCurrent();
         $instance = self::resolveUrl($current);
@@ -333,7 +333,7 @@ class UrlManager
      *
      * @return null|mixed|string
      */
-    public static function getRewriteUrl(\rex_extension_point $ep)
+    public static function getRewriteUrl(\rex_extension_point $ep): mixed
     {
         // Url wurde von einer anderen Extension bereits gesetzt
         if ($ep->getSubject() != '') {
@@ -412,7 +412,7 @@ class UrlManager
         return null;
     }
 
-    public static function getSegmentPartSeparators()
+    public static function getSegmentPartSeparators(): array
     {
         return [
             '/' => '/',
@@ -430,7 +430,7 @@ class UrlManager
      *
      * @return null|UrlManager
      */
-    private static function getForRewriteUrl(Profile $profile, $datasetId, $clangId)
+    private static function getForRewriteUrl(Profile $profile, int $datasetId, int $clangId): ?UrlManager
     {
         $items = UrlManagerSql::getOrigin($profile, $datasetId, $clangId);
 

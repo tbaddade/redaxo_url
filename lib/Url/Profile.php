@@ -82,12 +82,12 @@ class Profile
     private $namespace;
 
     /** @var $relations ProfileRelation[] */
-    private $relations = [];
+    private array $relations = [];
 
     /** @var $restrictions ProfileRestriction[] */
     // private $restrictions = [];
 
-    private $segment_part_separators;
+    private array $segment_part_separators = [];
     private $sitemap_add = false;
     private $sitemap_frequency;
     private $sitemap_priority;
@@ -99,13 +99,15 @@ class Profile
     {
     }
 
-    public function normalize()
+    public function normalize(): void
     {
         for ($index = 1; $index <= self::RELATION_COUNT; ++$index) {
             if ($this->getColumnName(self::RELATION_PREFIX.$index) == '' || !isset($this->table['relations'][$index]['table']['name'])) {
                 unset($this->table['relations'][$index]);
             }
         }
+
+        $this->relations = [];
         foreach ($this->table['relations'] as $index => $values) {
             $this->relations[] = new ProfileRelation($index, $values);
         }
@@ -122,7 +124,7 @@ class Profile
         }
     }
 
-    public function getArticleId()
+    public function getArticleId(): int|string|null
     {
         return $this->article_id;
     }
@@ -130,22 +132,22 @@ class Profile
     /*
      * @return null|int
      */
-    public function getArticleClangId()
+    public function getArticleClangId(): int|null
     {
         return $this->clang_id;
     }
 
-    public function getArticleUrl()
+    public function getArticleUrl(): Url
     {
         return new Url(Url::getRewriter()->getFullUrl($this->getArticleId(), $this->getArticleClangId()));
     }
 
-    public function getId()
+    public function getId(): int
     {
         return (int) $this->id;
     }
 
-    public function getNamespace()
+    public function getNamespace(): string|null
     {
         return $this->namespace;
     }
@@ -153,29 +155,33 @@ class Profile
     /**
      * @return bool
      */
-    public function hasPreSaveCalled()
+    public function hasPreSaveCalled(): bool
     {
         return (bool) $this->ep_pre_save_called;
     }
 
-    public function hasRelations()
+    public function hasRelations(): int
     {
         return count($this->getRelations());
     }
 
-    public function getRelations()
+    /**
+     * @return ProfileRelation[]
+     */
+    public function getRelations(): array
     {
-        return $this->relations;
+        return is_array($this->relations) ? $this->relations : [];
     }
 
-    public function hasRestrictions()
+    public function hasRestrictions(): int
     {
         return count($this->getRestrictions());
     }
 
-    public function getRestrictions()
+    public function getRestrictions(): array
     {
-        return \rex_extension::registerPoint(new \rex_extension_point('URL_PROFILE_RESTRICTION', $this->table['restrictions'], [
+        $restrictions = $this->table['restrictions'] ?? [];
+        return \rex_extension::registerPoint(new \rex_extension_point('URL_PROFILE_RESTRICTION', $restrictions, [
              'profile' => $this
         ]));
     }
@@ -183,15 +189,15 @@ class Profile
     /**
      * @return array
      */
-    public function getSegmentPartSeparators()
+    public function getSegmentPartSeparators(): array
     {
-        return $this->segment_part_separators;
+        return is_array($this->segment_part_separators) ? $this->segment_part_separators : [];
     }
 
     /**
      * @return bool
      */
-    public function appendStructureCategories()
+    public function appendStructureCategories(): bool
     {
         return (bool) $this->append_structure_categories;
     }
@@ -199,7 +205,7 @@ class Profile
     /**
      * @return string
      */
-    public function appendUserPaths()
+    public function appendUserPaths(): string
     {
         return $this->append_user_paths;
     }
@@ -207,7 +213,7 @@ class Profile
     /**
      * @return array
      */
-    public function getUserPaths()
+    public function getUserPaths(): array
     {
         $array = [];
         $lines = explode("\n", $this->append_user_paths);
@@ -225,42 +231,42 @@ class Profile
     /**
      * @return bool
      */
-    public function inSitemap()
+    public function inSitemap(): bool
     {
         return (bool) $this->sitemap_add;
     }
 
-    public function getSitemapFrequency()
+    public function getSitemapFrequency(): string|null
     {
         return $this->sitemap_frequency;
     }
 
-    public function getSitemapPriority()
+    public function getSitemapPriority(): string|null
     {
         return $this->sitemap_priority;
     }
 
-    public function getDatabaseId()
+    public function getDatabaseId(): int
     {
         return (int) $this->table['dbid'];
     }
 
-    public function getTableName()
+    public function getTableName(): string
     {
         return $this->table['name'];
     }
 
-    public function addColumnName($column)
+    public function addColumnName(string $column): string
     {
         return $this->table['column_names'][$column] = $column;
     }
 
-    public function getColumnName($column)
+    public function getColumnName(string $column): string
     {
         return $this->table['column_names'][$column];
     }
 
-    public function getColumnNameWithAlias($column, $backtick = false)
+    public function getColumnNameWithAlias(string $column, bool $backtick = false): string
     {
         $format = '%s.%s';
         if ($backtick) {
@@ -269,7 +275,7 @@ class Profile
         return sprintf($format, self::ALIAS, $this->getColumnName($column));
     }
 
-    public function buildUrls()
+    public function buildUrls(): void
     {
         $items = $this->getDatasets();
         foreach ($items as $item) {
@@ -277,7 +283,7 @@ class Profile
         }
     }
 
-    public function buildUrlsByDatasetId($datasetId)
+    public function buildUrlsByDatasetId(int|string $datasetId): void
     {
         $items = $this->getDataset('id', $datasetId);
         foreach ($items as $item) {
@@ -288,9 +294,9 @@ class Profile
     /**
      * @param \rex_yform_manager_dataset $dataset
      *
-     * @ return array with Url Objects, A data set can return more than one url object. (Dataset url, Append own paths, Append categories)
+     * @return void
      */
-    public function createAndSaveUrls(\rex_yform_manager_dataset $dataset)
+    public function createAndSaveUrls(\rex_yform_manager_dataset $dataset): void
     {
         $articleId = $this->getArticleId();
         $clangId = $this->getArticleClangId();
@@ -448,7 +454,7 @@ class Profile
         return $this;
     }
 
-    public function deleteUrlsByDatasetId($datasetId)
+    public function deleteUrlsByDatasetId(int|string $datasetId): self
     {
         UrlManagerSql::deleteByProfileIdAndDatasetId($this->getId(), $datasetId);
         return $this;
@@ -457,7 +463,7 @@ class Profile
     /**
      * @return null|UrlManager[]
      */
-    public function getUrls()
+    public function getUrls(): ?array
     {
         return UrlManager::getByProfileId($this->getId());
     }
@@ -490,7 +496,7 @@ class Profile
      *
      * @return ?self
      */
-    public static function get($id)
+    public static function get(int $id): ?self
     {
         if (self::exists($id)) {
             return self::$profiles[$id];
@@ -503,7 +509,7 @@ class Profile
      *
      * @return self[]
      */
-    public static function getAll()
+    public static function getAll(): array
     {
         self::checkCache();
         return self::$profiles;
@@ -514,11 +520,12 @@ class Profile
      *
      * @return array
      */
-    public static function getAllArticleIds()
+    public static function getAllArticleIds(): array
     {
         self::checkCache();
 
-        return array_unique(array_map(function (self $profile) {
+        return array_unique(
+            array_map(function (self $profile) {
                 return $profile->getArticleId();
             }, self::$profiles)
         );
@@ -532,7 +539,7 @@ class Profile
      *
      * @return self[]
      */
-    public static function getByArticleId($articleId, $clangId)
+    public static function getByArticleId(int $articleId, int $clangId): array
     {
         self::checkCache();
 
@@ -553,7 +560,7 @@ class Profile
      *
      * @return self[]
      */
-    public static function getByNamespace($namespace)
+    public static function getByNamespace(string $namespace): array
     {
         self::checkCache();
 
@@ -570,7 +577,7 @@ class Profile
      *
      * @return self[]
      */
-    public static function getByTableName($tableName, $dbId = 1)
+    public static function getByTableName(string $tableName, int $dbId = 1): array
     {
         self::checkCache();
 
@@ -586,13 +593,13 @@ class Profile
      *
      * @return bool
      */
-    public static function exists($id)
+    public static function exists(int $id): bool
     {
         self::checkCache();
         return isset(self::$profiles[$id]);
     }
 
-    protected function getDataset($primaryColumnName, $primaryId)
+    protected function getDataset(string $primaryColumnName, int|string $primaryId): array
     {
         $query = $this->buildQuery();
         $query->where($this->getColumnNameWithAlias($primaryColumnName), $primaryId);
@@ -600,14 +607,14 @@ class Profile
         return $query->find();
     }
 
-    protected function getDatasets()
+    protected function getDatasets(): array
     {
         $query = $this->buildQuery();
         // $items = \rex_sql::factory()->setDebug()->getArray($query->getQuery(), $query->getParams());
         return $query->find();
     }
 
-    protected function buildQuery()
+    protected function buildQuery(): object
     {
         $query = \rex_yform_manager_query::get($this->getTableName());
         $query->alias(self::ALIAS);
@@ -687,7 +694,7 @@ class Profile
      *
      * @throws \rex_exception
      */
-    private static function checkCache()
+    private static function checkCache(): void
     {
         if (self::$cacheLoaded) {
             return;
@@ -714,7 +721,7 @@ class Profile
     /**
      * Resets the intern cache of this class.
      */
-    public static function reset()
+    public static function reset(): void
     {
         self::$cacheLoaded = false;
         self::$profiles = [];

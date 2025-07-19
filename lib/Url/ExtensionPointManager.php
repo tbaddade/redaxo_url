@@ -41,14 +41,14 @@ class ExtensionPointManager
      *
      * @param \rex_extension_point $extensionPoint
      */
-    public function __construct($extensionPoint)
+    public function __construct(\rex_extension_point $extensionPoint)
     {
         $this->extensionPoint = $extensionPoint;
         $this->normalize();
         return $this;
     }
 
-    public function __get($name)
+    public function __get(string $name): mixed
     {
         if (method_exists($this, $name)) {
             return $this->$name();
@@ -59,37 +59,37 @@ class ExtensionPointManager
         return null;
     }
 
-    public function getMode()
+    public function getMode(): int|string|null
     {
         return $this->mode;
     }
 
-    public function getDatasetPrimaryId()
+    public function getDatasetPrimaryId(): int|string|null
     {
         return $this->dataPrimaryId;
     }
 
-    public function getDatasetPrimaryColumnName()
+    public function getDatasetPrimaryColumnName(): string|null
     {
         return $this->dataPrimaryColumnName;
     }
 
-    public function getDatasetTableName()
+    public function getDatasetTableName(): string|null
     {
         return $this->dataTableName;
     }
 
-    public function getStructureArticleId()
+    public function getStructureArticleId(): int|string|null
     {
         return $this->structureArticleId;
     }
 
-    public function getStructureClangId()
+    public function getStructureClangId(): int|string|null
     {
         return $this->structureClangId;
     }
 
-    protected function normalize()
+    protected function normalize(): void
     {
         switch ($this->extensionPoint->getName()) {
             case 'ART_ADDED':
@@ -117,7 +117,7 @@ class ExtensionPointManager
             case 'CLANG_ADDED':
             case 'CLANG_STATUS':
             case 'CLANG_UPDATED':
-            // case 'CAT_UPDATED':
+                // case 'CAT_UPDATED':
                 $this->setMode(self::MODE_UPDATE_URL_ALL);
                 break;
 
@@ -189,37 +189,37 @@ class ExtensionPointManager
         }
     }
 
-    protected function setMode($mode)
+    protected function setMode(int|string $mode): void
     {
         $this->mode = $mode;
     }
 
-    protected function setDatasetEditMode($mode)
+    protected function setDatasetEditMode(bool $mode): void
     {
         $this->dataEditMode = $mode;
     }
 
-    protected function setDatasetPrimaryId($id)
+    protected function setDatasetPrimaryId(int|string $id): void
     {
         $this->dataPrimaryId = $id;
     }
 
-    protected function setDatasetPrimaryColumnName($key)
+    protected function setDatasetPrimaryColumnName(string $key): void
     {
         $this->dataPrimaryColumnName = $key;
     }
 
-    protected function setDatasetTableName($tableName)
+    protected function setDatasetTableName(string $tableName): void
     {
         $this->dataTableName = $tableName;
     }
 
-    protected function setStructureArticleId($id)
+    protected function setStructureArticleId(int|string $id): void
     {
         $this->structureArticleId = $id;
     }
 
-    protected function setStructureClangId($clang_id)
+    protected function setStructureClangId(int|string $clang_id): void
     {
         if (count(\rex_clang::getAll()) == 1) {
             $clang_id = 1;
