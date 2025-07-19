@@ -10,7 +10,8 @@
  */
 
 \rex_sql_table::get(
-    \rex::getTable('url_generator_profile'))
+    \rex::getTable('url_generator_profile')
+)
     ->ensurePrimaryIdColumn()
     ->ensureColumn(new \rex_sql_column('namespace', 'VARCHAR(255)'))
     ->ensureColumn(new \rex_sql_column('article_id', 'INT(11)'))
@@ -32,7 +33,8 @@
     ->ensure();
 
 \rex_sql_table::get(
-    \rex::getTable('url_generator_url'))
+    \rex::getTable('url_generator_url')
+)
     ->ensurePrimaryIdColumn()
     ->ensureColumn(new \rex_sql_column('profile_id', 'INT(11)'))
     ->ensureColumn(new \rex_sql_column('article_id', 'INT(11)'))
@@ -49,14 +51,17 @@
     ->ensureColumn(new \rex_sql_column('createuser', 'VARCHAR(255)'))
     ->ensureColumn(new \rex_sql_column('updatedate', 'DATETIME'))
     ->ensureColumn(new \rex_sql_column('updateuser', 'VARCHAR(255)'))
-    ->removeIndex('url')
     ->ensure();
 
 $sql = \rex_sql::factory();
 $sql->setQuery('UPDATE '.\rex::getTable('url_generator_url').' SET url_hash = SHA1(url) WHERE url_hash = ""');
 
 \rex_sql_table::get(
-    \rex::getTable('url_generator_url'))
+    \rex::getTable('url_generator_url')
+)
     ->ensureIndex(new \rex_sql_index('url_hash', ['url_hash'], \rex_sql_index::UNIQUE))
     ->ensureIndex(new \rex_sql_index('url_find', ['profile_id', 'clang_id', 'data_id']))
     ->ensure();
+
+// Add index for url column to speed up queries - needs restriction on length due to MySQL index length limit for TEXT columns
+$sql->setQuery('ALTER TABLE `rex_url_generator_url` ADD INDEX `url` (`url`(255))');
