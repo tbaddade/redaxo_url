@@ -87,6 +87,10 @@ if (!function_exists('url_generate_column_data')) {
 
         $profile = Profile::get($list->getValue('id'));
 
+        if (!$profile) {
+            return '<div class="alert alert-warning">Profil nicht gefunden.</div>';
+        }
+
         $articleList = [];
         $dataList = [];
         $infoList = [

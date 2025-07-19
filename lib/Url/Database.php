@@ -15,7 +15,7 @@ class Database
 {
     const DATABASE_TABLE_SEPARATOR = '_xxx_';
 
-    public static function getAll()
+    public static function getAll(): array
     {
         $dbConfigs = \rex::getProperty('db');
         foreach ($dbConfigs as $dbId => $dbConfig) {
@@ -38,7 +38,7 @@ class Database
         return $dbConfigs;
     }
 
-    public static function getSupportedTables()
+    public static function getSupportedTables(): array
     {
         $dbConfigs = self::getAll();
         $supportedTables = [];
@@ -64,7 +64,7 @@ class Database
         return $supportedTables;
     }
 
-    public static function getLogicalOperators()
+    public static function getLogicalOperators(): array
     {
         return [
             'AND' => 'AND',
@@ -72,7 +72,7 @@ class Database
         ];
     }
 
-    public static function getComparisonOperators()
+    public static function getComparisonOperators(): array
     {
         return [
             '=' => '=',
@@ -95,7 +95,7 @@ class Database
         ];
     }
 
-    public static function getComparisonOperatorsForEmptyValue()
+    public static function getComparisonOperatorsForEmptyValue(): array
     {
         return [
             '= ""',
@@ -105,12 +105,12 @@ class Database
         ];
     }
 
-    public static function merge($database, $table)
+    public static function merge(int|string $database, string $table): string
     {
         return implode(self::DATABASE_TABLE_SEPARATOR, [$database, $table]);
     }
 
-    public static function split($value)
+    public static function split(string $value): array
     {
         return explode(self::DATABASE_TABLE_SEPARATOR, $value);
     }

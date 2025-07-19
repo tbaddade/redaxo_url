@@ -17,21 +17,21 @@ use Url\Rewriter\Rewriter;
 
 class Url
 {
-    public $uri;
-    public $requestUri;
+    public Uri $uri;
+    public Uri $requestUri;
 
-    protected $sitemap = false;
-    protected $sitemapLastmod = '';
+    protected bool $sitemap = false;
+    protected string $sitemapLastmod = '';
 
     /**
      * @var Rewriter|null
      */
-    private static $rewriter;
+    private static ?Rewriter $rewriter = null;
 
     /**
      * @param string $url
      */
-    public function __construct($url)
+    public function __construct(string $url)
     {
         try {
             $this->uri = (new Uri($url, UriParser::MODE_UTF8));
@@ -42,7 +42,7 @@ class Url
         $this->removeRewriterSuffix();
     }
 
-    public function __call($method, $arguments)
+    public function __call(string $method, array $arguments): mixed
     {
         return $this->uri->$method(...$arguments);
     }
@@ -50,7 +50,7 @@ class Url
     /**
      * @return string
      */
-    public function toString()
+    public function toString(): string
     {
         $this->appendRewriterSuffix();
         return $this->uri->__toString();
@@ -59,18 +59,18 @@ class Url
     /**
      * @return string
      */
-    public function getRequestPath()
+    public function getRequestPath(): string
     {
         return $this->requestUri->getPath();
     }
 
-    public function appendPathSegments(array $segments, $clangId = 1)
+    public function appendPathSegments(array $segments, int $clangId = 1): self
     {
         $segments = $this->normalize($segments, $clangId);
         return $this->modifyPathSegments($this->uri->getPathSegments(), $segments);
     }
 
-    public function prependPathSegments(array $segments, $clangId = 1)
+    public function prependPathSegments(array $segments, int $clangId = 1): self
     {
         $segments = $this->normalize($segments, $clangId);
         return $this->modifyPathSegments($segments, $this->uri->getPathSegments());
@@ -79,7 +79,7 @@ class Url
     /**
      * @return self
      */
-    public function withHost($domain)
+    public function withHost(string $domain): self
     {
         $this->uri = $this->uri->withHost($domain);
         return $this;
@@ -88,7 +88,7 @@ class Url
     /**
      * @return self
      */
-    public function withQuery($query)
+    public function withQuery(string $query): self
     {
         $this->uri = $this->uri->withQuery($query);
         return $this;
@@ -97,13 +97,13 @@ class Url
     /**
      * @return self
      */
-    public function withScheme($scheme)
+    public function withScheme(string $scheme): self
     {
         $this->uri = $this->uri->withScheme($scheme);
         return $this;
     }
 
-    public function withSolvedScheme()
+    public function withSolvedScheme(): self
     {
         return $this->withScheme(self::getRewriter()->getSchemeByDomain($this->getDomain()) ?: (self::getRewriter()->isHttps() ? 'https' : 'http'));
     }
@@ -113,7 +113,7 @@ class Url
      *
      * @return string
      */
-    public function getSchemeAndHttpHost()
+    public function getSchemeAndHttpHost(): string
     {
         return $this->uri->getScheme().'://'.$this->uri->getHost();
     }
@@ -121,7 +121,7 @@ class Url
     /**
      * @return string
      */
-    public function getDomain()
+    public function getDomain(): string
     {
         return $this->uri->getHost();
     }
@@ -129,7 +129,7 @@ class Url
     /**
      * @return string
      */
-    public function getPath()
+    public function getPath(): string
     {
         $this->appendRewriterSuffix();
         return $this->uri->getPath();
@@ -138,7 +138,7 @@ class Url
     /**
      * @return string
      */
-    public function getPathWithoutSuffix()
+    public function getPathWithoutSuffix(): string
     {
         $this->removeRewriterSuffix();
         return $this->uri->getPath();
@@ -147,12 +147,12 @@ class Url
     /**
      * @return string
      */
-    public function getQuery()
+    public function getQuery(): string
     {
         return $this->uri->getQuery();
     }
 
-    public function getSegment(int $index, $default = null)
+    public function getSegment(int $index, mixed $default = null): mixed
     {
         $segments = $this->getSegments();
         if ($index < 0) {
@@ -162,7 +162,7 @@ class Url
         return $segments[$index - 1] ?? $default;
     }
 
-    public function getSegments()
+    public function getSegments(): array
     {
         $this->appendRewriterSuffix();
         return $this->uri->getPathSegments();
@@ -173,7 +173,7 @@ class Url
      *
      * @return string
      */
-    public function getFileName()
+    public function getFileName(): string
     {
         return $this->getSegment(-1);
     }
@@ -183,7 +183,7 @@ class Url
      *
      * @return string
      */
-    public function getDirName()
+    public function getDirName(): string
     {
         $segments = $this->uri->getPathSegments();
         array_pop($segments);
@@ -193,7 +193,7 @@ class Url
     /**
      * @return void
      */
-    public function sitemap($value)
+    public function sitemap(bool $value): void
     {
         $this->sitemap = $value;
     }
@@ -201,7 +201,7 @@ class Url
     /**
      * @return void
      */
-    public function sitemapLastmod($value)
+    public function sitemapLastmod(string|int $value): void
     {
         if (strpos($value, '-')) {
             // mysql date
@@ -214,7 +214,7 @@ class Url
     /**
      * @return Rewriter|null
      */
-    public static function getRewriter()
+    public static function getRewriter(): ?Rewriter
     {
         return self::$rewriter;
     }
@@ -222,7 +222,7 @@ class Url
     /**
      * @return void
      */
-    public static function setRewriter(Rewriter $rewriter)
+    public static function setRewriter(Rewriter $rewriter): void
     {
         self::$rewriter = $rewriter;
     }
@@ -230,7 +230,7 @@ class Url
     /**
      * @return self
      */
-    public static function get($url)
+    public static function get(string $url): self
     {
         return new self($url);
     }
@@ -238,7 +238,7 @@ class Url
     /**
      * @return self
      */
-    public static function getCurrent()
+    public static function getCurrent(): self
     {
 
         return new self(
@@ -255,7 +255,7 @@ class Url
     /**
      * @return array
      */
-    public static function getCurrentUserPath()
+    public static function getCurrentUserPath(): array
     {
         $manager = self::resolveCurrent();
         if ($manager && $manager->isUserPath() && $profile = $manager->getProfile()) {
@@ -272,7 +272,7 @@ class Url
     /**
      * @return self
      */
-    public static function getPrevious()
+    public static function getPrevious(): self
     {
         return new self(
             $_SERVER['HTTP_REFERER'] ?? ''
@@ -284,7 +284,7 @@ class Url
      *
      * @return null|UrlManager
      */
-    public static function resolveCurrent()
+    public static function resolveCurrent(): ?UrlManager
     {
         return UrlManager::resolveUrl(self::getCurrent());
     }
@@ -297,7 +297,7 @@ class Url
     /**
      * @return self
      */
-    protected function modifyPathSegments(array $arrayA, array $arrayB)
+    protected function modifyPathSegments(array $arrayA, array $arrayB): self
     {
         $this->uri = $this->uri->withPathSegments(array_merge($arrayA, $arrayB));
         // Path neu setzen, da der Path den / am Anfang durch withPathSegments verloren hat
@@ -305,7 +305,7 @@ class Url
         return $this;
     }
 
-    protected function appendRewriterSuffix()
+    protected function appendRewriterSuffix(): Uri
     {
         $this->removeRewriterSuffix();
         return $this->uri = $this->uri->withPath($this->uri->getPath().self::$rewriter->getSuffix());
@@ -314,7 +314,7 @@ class Url
     /**
      * @return self
      */
-    protected function removeRewriterSuffix()
+    protected function removeRewriterSuffix(): self
     {
         $path = $this->uri->getPath();
         $suffix = self::$rewriter->getSuffix();
@@ -325,7 +325,7 @@ class Url
         return $this;
     }
 
-    private function normalize($sick, $clangId = 1)
+    private function normalize(array|string $sick, int $clangId = 1): array
     {
         if (is_string($sick)) {
             $sick = [$sick];

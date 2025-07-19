@@ -18,7 +18,7 @@ class Cache
      *
      * @throws \rex_exception
      */
-    public static function generateProfiles()
+    public static function generateProfiles(): void
     {
         $sql = \rex_sql::factory();
         $sql->setQuery('SELECT * FROM '.\rex::getTable(Profile::TABLE_NAME).' ORDER BY `table_name`');
@@ -145,7 +145,7 @@ class Cache
         }
     }
 
-    public static function deleteProfiles()
+    public static function deleteProfiles(): void
     {
         Profile::reset();
         

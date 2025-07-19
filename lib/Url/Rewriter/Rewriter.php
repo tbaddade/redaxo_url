@@ -16,37 +16,37 @@ abstract class Rewriter
     /**
      * @return string
      */
-    abstract public function articleIdNotFound();
+    abstract public function articleIdNotFound(): string;
 
     /**
      * @return string
      */
-    abstract public function getSitemapExtensionPoint();
+    abstract public function getSitemapExtensionPoint(): string;
 
     /**
      * @return array
      */
-    abstract public function getSitemapFrequency();
+    abstract public function getSitemapFrequency(): array;
 
     /**
      * @return array
      */
-    abstract public function getSitemapPriority();
+    abstract public function getSitemapPriority(): array;
 
     /**
      * @return object
      */
-    abstract public function getSeoInstance();
+    abstract public function getSeoInstance(): object;
 
     /**
      * @return string
      */
-    abstract public function getSeoTags();
+    abstract public function getSeoTags(): string;
 
     /**
      * @return string
      */
-    abstract public function getSeoTagsExtensionPoint();
+    abstract public function getSeoTagsExtensionPoint(): string;
 
     /**
      * @param int $article_id
@@ -54,31 +54,31 @@ abstract class Rewriter
      *
      * @return string
      */
-    abstract public function getFullUrl($article_id, $clang_id);
+    abstract public function getFullUrl(int $article_id, int $clang_id): string;
 
     /**
      * @param string $path
      *
      * @return string
      */
-    abstract public function getFullPath($path);
+    abstract public function getFullPath(string $path): string;
 
     /**
      * @return string
      */
-    abstract public function getSuffix();
+    abstract public function getSuffix(): string;
 
     /**
      * @param string $domain
      *
      * @return string
      */
-    abstract public function getSchemeByDomain($domain);
+    abstract public function getSchemeByDomain(string $domain): string;
 
     /**
      * @return bool
      */
-    abstract public function isHttps();
+    abstract public function isHttps(): bool;
 
     /**
      * @param string  $string
@@ -86,5 +86,5 @@ abstract class Rewriter
      *
      * @return string
      */
-    abstract public function normalize($string, $clangId);
+    abstract public function normalize(string $string, int $clangId): string;
 }
