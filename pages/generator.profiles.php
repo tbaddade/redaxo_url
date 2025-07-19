@@ -16,6 +16,8 @@ use Url\Url;
 use Url\UrlManager;
 use Url\UrlManagerSql;
 
+/** @var rex_addon $this */
+
 $id = rex_request('id', 'int');
 $func = rex_request('func', 'string');
 $action = rex_request('action', 'string');
@@ -27,7 +29,7 @@ if ($action == 'cache') {
 
 $a = [];
 
-if ($func == 'delete' && $id > 0) {
+if ($func === 'delete' && $id > 0) {
     if (!rex_csrf_token::factory('url_profile_delete')->isValid()) {
         $message = rex_view::error(rex_i18n::msg('csrf_token_invalid'));
     } else {

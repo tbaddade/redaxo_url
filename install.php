@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+/** @var rex_addon $this */
+
 \rex_sql_table::get(
     \rex::getTable('url_generator_profile')
 )
