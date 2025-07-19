@@ -19,15 +19,14 @@ class Database
     {
         $dbConfigs = \rex::getProperty('db');
         foreach ($dbConfigs as $dbId => $dbConfig) {
-            if ('' !== $dbConfig['host'] && '' !== $dbConfig['login'] && '' !== $dbConfig['name']) {
-                // checkDbConnection recht langsam, daher immer true
-                //$connection = \rex_sql::checkDbConnection(
-                //    $dbConfig['host'],
-                //    $dbConfig['login'],
-                //    $dbConfig['password'],
-                //    $dbConfig['name']
-                //);
-                $connection = true;
+            if ('' !== $dbConfig['host'] && $dbConfig['host'] !== null && '' !== $dbConfig['login'] && $dbConfig['login'] !== null && '' !== $dbConfig['name'] && $dbConfig['name'] !== null && $dbConfig['password'] !== null) {
+                // checkDbConnection recht langsam, aber besser als Fehler
+                $connection = \rex_sql::checkDbConnection(
+                    $dbConfig['host'],
+                    $dbConfig['login'],
+                    $dbConfig['password'],
+                    $dbConfig['name']
+                );
                 if ($connection !== true) {
                     unset($dbConfigs[$dbId]);
                 }
