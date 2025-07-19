@@ -11,6 +11,9 @@
 
 namespace Url;
 
+use rex_yform_manager_collection;
+use rex_yform_manager_dataset;
+
 class Profile
 {
     const TABLE_NAME = 'url_generator_profile';
@@ -599,7 +602,7 @@ class Profile
         return isset(self::$profiles[$id]);
     }
 
-    protected function getDataset(string $primaryColumnName, int|string $primaryId): array
+    protected function getDataset(string $primaryColumnName, int|string $primaryId): rex_yform_manager_dataset
     {
         $query = $this->buildQuery();
         $query->where($this->getColumnNameWithAlias($primaryColumnName), $primaryId);
@@ -607,7 +610,7 @@ class Profile
         return $query->find();
     }
 
-    protected function getDatasets(): array
+    protected function getDatasets(): rex_yform_manager_collection
     {
         $query = $this->buildQuery();
         // $items = \rex_sql::factory()->setDebug()->getArray($query->getQuery(), $query->getParams());
