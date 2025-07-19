@@ -13,13 +13,39 @@ namespace Url;
 
 class VideoUrl extends Url
 {
+
+    /**
+     * @var string $aspectRatio The aspect ratio of the video (e.g., '16:9').
+     * @api
+     *
+     */
     public string $aspectRatio = '16:9';
+    /**
+     * @var bool $autoPlay Whether the video should start playing automatically.
+     * @api
+     *
+     */
     public bool $autoPlay = false;
+    /**
+     * @var bool $fullscreen Whether fullscreen mode is enabled for the video.
+     * @api
+     *
+     */
     public bool $fullscreen = true;
+    /**
+     * @var bool $related Whether to show related videos after playback ends.
+     * @api
+     *
+     */
     public bool $related = false;
+    /**
+     * @var array $urlParams Additional URL parameters for the video.
+     * @api
+     */
     public array $urlParams = [];
 
     /**
+     * @api
      * Returns a embed code.
      *
      * @return string the embed url
@@ -37,6 +63,7 @@ class VideoUrl extends Url
     }
 
     /**
+     * @api
      * Returns a embed code.
      *
      * @return string the embed url
@@ -53,6 +80,7 @@ class VideoUrl extends Url
     }
 
     /**
+     * @api
      * Builds a embed url from a video id.
      *
      * @return string|null the embed url
@@ -70,6 +98,7 @@ class VideoUrl extends Url
     }
 
     /*
+     * @api
      * @return null|string Null on failure, the video's id on success
      */
     public function getId(): ?string
@@ -85,6 +114,7 @@ class VideoUrl extends Url
     }
 
     /**
+     * @api
      * @return null|string Null on failure to match, the service's name on success
      */
     public function getService(): ?string
@@ -138,6 +168,7 @@ class VideoUrl extends Url
     }
 
     /**
+     * @api
      * Parses various vimeo urls and returns video identifier.
      *
      * @return string The url's id
@@ -148,6 +179,7 @@ class VideoUrl extends Url
     }
 
     /**
+     * @api
      * Get a Vimeo thumbnail url from a video id.
      *
      * @return null|string The thumbnail url
@@ -163,6 +195,7 @@ class VideoUrl extends Url
     }
 
     /**
+     * @api
      * Builds a Youtube embed url from a video id.
      *
      * @return string The url's id
@@ -183,6 +216,7 @@ class VideoUrl extends Url
     }
 
     /**
+     * @api
      * Parses various youtube urls and returns video identifier.
      *
      * @return string the url's id
@@ -202,6 +236,7 @@ class VideoUrl extends Url
     }
 
     /**
+     * @api
      * Get a Youtube thumbnail url from a video id.
      *
      * @return string The thumbnail url
@@ -212,6 +247,7 @@ class VideoUrl extends Url
     }
 
     /**
+     * @api
      * @return bool
      */
     public function isVimeo(): bool
@@ -220,6 +256,7 @@ class VideoUrl extends Url
     }
 
     /**
+     * @api
      * @return bool
      */
     public function isYoutube(): bool
@@ -228,6 +265,7 @@ class VideoUrl extends Url
     }
 
     /**
+     * @api
      * @param $aspectRatio string
      *
      * @throws \rex_exception
@@ -242,6 +280,7 @@ class VideoUrl extends Url
     }
 
     /**
+     * @api
      * @param $autoPlay bool
      */
     public function setAutoPlay(bool $autoPlay = true): void

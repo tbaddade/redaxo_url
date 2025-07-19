@@ -17,6 +17,8 @@ use Url\UrlManagerSql;
 $id = rex_request('id', 'int');
 $func = rex_request('func', 'string');
 
+/** @var rex_addon $this */
+
 if (!function_exists('url_generate_column_table')) {
     function url_generate_column_table($params)
     {
