@@ -12,7 +12,7 @@ use Url\UrlManagerSql;
 
 class rex_yform_value_url extends rex_yform_value_abstract
 {
-    public function enterObject()
+    public function enterObject(): void
     {
     }
 
@@ -21,6 +21,9 @@ class rex_yform_value_url extends rex_yform_value_abstract
         return 'url|name|label|title|notice';
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getDefinitions(): array
     {
         return [
@@ -37,7 +40,12 @@ class rex_yform_value_url extends rex_yform_value_abstract
         ];
     }
 
-    public static function getListValue($params): ?string
+    /**
+     * @api
+     * @param array $params
+     * @return string|null
+     */
+    public static function getListValue(array $params): ?string
     {
         if (!isset($params['params']['field']['table_name'])) {
             return null;
@@ -45,7 +53,7 @@ class rex_yform_value_url extends rex_yform_value_abstract
 
         $table = $params['params']['field']['table_name'];
         $profiles = Profile::getByTableName($table);
-        if (!count($profiles)) {
+        if (count($profiles) === 0) {
             return null;
         }
 
@@ -59,7 +67,7 @@ class rex_yform_value_url extends rex_yform_value_abstract
             $manager->setStructure(false);
             $manager->setUserPath(false);
             $urls = $manager->fetch();
-            if (1 == count($urls)) {
+            if (count($urls) === 1) {
                 $return[] = sprintf('<a style="white-space: nowrap;" href="%s" target="_blank"><i class="rex-icon rex-icon-view"></i> %s</a>', $urls[0]['url'], rex_i18n::msg('url_generator_show_dataset', rex_clang::get($urls[0]['clang_id'])->getCode()));
             }
         }

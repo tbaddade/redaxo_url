@@ -20,7 +20,11 @@ $func = rex_request('func', 'string');
 /** @var rex_addon $this */
 
 if (!function_exists('url_generate_column_table')) {
-    function url_generate_column_table($params)
+    /**
+     * @param array{list: rex_list} $params
+     * @return string
+     */
+    function url_generate_column_table(array $params): string
     {
         /** @var rex_list $list */
         $list = $params['list'];
@@ -29,12 +33,16 @@ if (!function_exists('url_generate_column_table')) {
     }
 }
 if (!function_exists('url_generate_column_article')) {
-    function url_generate_column_article($params)
+    /**
+     * @param array{list: rex_list} $params
+     * @return string|null
+     */
+    function url_generate_column_article(array $params): ?string
     {
         /** @var rex_list $list */
         $list = $params['list'];
         $article = rex_article::get($list->getValue('article_id'), $list->getValue('clang_id'));
-        if (!$article) {
+        if ($article === null) {
             return null;
         }
         $backendUrl = rex_url::backendPage('/content/edit', ['category_id' => $article->getCategoryId(), 'article_id' => $article->getId(), 'clang' => $article->getClangId(), 'mode' => 'edit']);
@@ -42,12 +50,16 @@ if (!function_exists('url_generate_column_article')) {
     }
 }
 if (!function_exists('url_generate_column_clang')) {
-    function url_generate_column_clang($params)
+    /**
+     * @param array{list: rex_list} $params
+     * @return string|null
+     */
+    function url_generate_column_clang(array $params): ?string
     {
         /** @var rex_list $list */
         $list = $params['list'];
         $clang = rex_clang::get($list->getValue('clang_id'));
-        if (!$clang) {
+        if ($clang === null) {
             return null;
         }
         $backendUrl = rex_url::backendPage('/system/lang', ['clang_id' => $clang->getId(), 'func' => 'editclang']);
@@ -56,8 +68,8 @@ if (!function_exists('url_generate_column_clang')) {
 }
 
 
-if ($func == '') {
-    $orderBy = rex_request('sort', 'string', '') == '' ? 'ORDER BY `p`.`namespace`, `u`.`article_id`, `u`.`data_id`, `u`.`clang_id`' : '';
+if ($func === '') {
+    $orderBy = rex_request('sort', 'string', '') === '' ? 'ORDER BY `p`.`namespace`, `u`.`article_id`, `u`.`data_id`, `u`.`clang_id`' : '';
     $query = '  SELECT      `u`.`id`,
                             `u`.`profile_id`,
                             `p`.`table_name`,

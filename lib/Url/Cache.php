@@ -109,7 +109,7 @@ class Cache
                     case 'relation_2_table_parameters':
                     case 'relation_3_table_parameters':
                         $value = $profile->getValue($fieldName);
-                        if ($value && $value != '[]') {
+                        if ($value && $value !== '[]') {
                             $index = substr($fieldName, strlen(Profile::RELATION_PREFIX), 1);
                             $params = json_decode($value, true);
                             if (is_array($params)) {

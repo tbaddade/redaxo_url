@@ -23,7 +23,7 @@ $func = rex_request('func', 'string');
 $action = rex_request('action', 'string');
 $message = '';
 
-if ($action == 'cache') {
+if ($action === 'cache') {
     Cache::deleteProfiles();
 }
 
@@ -34,29 +34,28 @@ if ($func === 'delete' && $id > 0) {
         $message = rex_view::error(rex_i18n::msg('csrf_token_invalid'));
     } else {
         $profile = Profile::get($id);
-        if ($profile) {
+        if ($profile !== null) {
             $profile->deleteUrls();
 
             $sql = rex_sql::factory()
                 ->setTable(rex::getTable(Profile::TABLE_NAME))
                 ->setWhere('id = :id', ['id' => $id]);
-            if ($sql->delete()) {
-                $message .= rex_view::success(rex_i18n::msg('url_generator_profile_removed'));
-            }
+            $sql->delete();
+            $message .= rex_view::success(rex_i18n::msg('url_generator_profile_removed'));
             Cache::deleteProfiles();
         }
     }
     $func = '';
 }
 
-if (($func == 'refresh' && $id > 0) || $func == 'refresh_all') {
+if (($func === 'refresh' && $id > 0) || $func === 'refresh_all') {
     if (!rex_csrf_token::factory('url_profile_refresh')->isValid()) {
         $message = rex_view::error(rex_i18n::msg('csrf_token_invalid'));
     } else {
         switch ($func) {
             case 'refresh':
                 $profile = Profile::get($id);
-                if ($profile) {
+                if ($profile !== null) {
                     $profile->deleteUrls();
                     $profile->buildUrls();
                     $message .= rex_view::success(rex_i18n::msg('url_generator_url_refreshed', $id));
@@ -65,7 +64,7 @@ if (($func == 'refresh' && $id > 0) || $func == 'refresh_all') {
             case 'refresh_all':
                 UrlManagerSql::deleteAll();
                 $profiles = Profile::getAll();
-                if ($profiles) {
+                if (count($profiles) > 0) {
                     foreach ($profiles as $profile) {
                         $profile->buildUrls();
                         $message .= rex_view::success(rex_i18n::msg('url_generator_url_refreshed', $profile->getId()));
@@ -77,19 +76,23 @@ if (($func == 'refresh' && $id > 0) || $func == 'refresh_all') {
     $func = '';
 }
 
-if ($message != '') {
+if ($message !== '') {
     echo $message;
 }
 
 if (!function_exists('url_generate_column_data')) {
-    function url_generate_column_data($params)
+    /**
+     * @param array $params
+     * @return string
+     */
+    function url_generate_column_data(array $params): string
     {
         /** @var rex_list $list */
         $list = $params['list'];
 
         $profile = Profile::get($list->getValue('id'));
 
-        if (!$profile) {
+        if ($profile === null) {
             return '<div class="alert alert-warning">Profil nicht gefunden.</div>';
         }
 
@@ -110,7 +113,7 @@ if (!function_exists('url_generate_column_data')) {
         ];
 
         $article = rex_article::get($profile->getArticleId(), $profile->getArticleClangId());
-        if ($article) {
+        if ($article !== null) {
             $articleList[] = [
                 rex_i18n::msg('url_generator_domain'),
                 \rex_yrewrite::getDomainByArticleId($article->getId(), $article->getClangId()),
@@ -147,12 +150,12 @@ if (!function_exists('url_generate_column_data')) {
 
         $dataList[] = [
             rex_i18n::msg('url_generator_identify_record'),
-            '<code>'.$profile->getColumnName('id').'</code>' . ($profile->getColumnName('clang_id') == '' ? '' : ' - <code>'.$profile->getColumnName('clang_id').'</code>')
+            '<code>'.$profile->getColumnName('id').'</code>' . ($profile->getColumnName('clang_id') === '' ? '' : ' - <code>'.$profile->getColumnName('clang_id').'</code>')
         ];
 
         $concatSegmentParts = '';
         for ($index = 1; $index <= Profile::SEGMENT_PART_COUNT; ++$index) {
-            if ($profile->getColumnName('segment_part_'.$index) != '') {
+            if ($profile->getColumnName('segment_part_'.$index) !== '') {
                 $concatSegmentParts .= $profile->getSegmentPartSeparators()[$index] ?? '';
                 $concatSegmentParts .= '<code>'.$profile->getColumnName('segment_part_'.$index).'</code>';
             }
@@ -160,11 +163,11 @@ if (!function_exists('url_generate_column_data')) {
 
         $append = '';
         $prepend = '';
-        if ($profile->hasRelations()) {
+        if ($profile->hasRelations() > 0) {
             foreach ($profile->getRelations() as $relation) {
                 $concatSegmentPartsRelation = '';
                 for ($index = 1; $index <= Profile::SEGMENT_PART_COUNT; ++$index) {
-                    if ($relation->getColumnName('segment_part_'.$index) != '') {
+                    if ($relation->getColumnName('segment_part_'.$index) !== '') {
                         $concatSegmentPartsRelation .= $relation->getSegmentPartSeparators()[$index] ?? '';
                         $concatSegmentPartsRelation .= '<code>'.$relation->getColumnNameWithAlias('segment_part_'.$index).'</code>';
                     }
@@ -228,7 +231,7 @@ if (!function_exists('url_generate_column_data')) {
         return $return;
     }
 }
-if ($func == '') {
+if ($func === '') {
     $query = '  SELECT      `id`,
                             `article_id`,
                             `clang_id`
@@ -279,8 +282,8 @@ if ($func == '') {
     $content = $fragment->parse('core/page/section.php');
 
     echo $content;
-} elseif ($func == 'add' || $func == 'edit') {
-    $title = $func == 'edit' ? $this->i18n('edit') : $this->i18n('add');
+} elseif ($func === 'add' || $func === 'edit') {
+        $title = $func === 'edit' ? $this->i18n('edit') : $this->i18n('add');
 
     rex_extension::register('REX_FORM_CONTROL_FIELDS', function (rex_extension_point $ep) {
         $controlFields = $ep->getSubject();
@@ -292,7 +295,7 @@ if ($func == '') {
     $form->addParam('id', $id);
     $form->addParam('action', 'cache');
     $form->setApplyUrl(rex_url::currentBackendPage());
-    $form->setEditMode($func == 'edit');
+    $form->setEditMode($func === 'edit');
 
     $form->addFieldset($this->i18n('url_generator_article_legend'));
     $form->addErrorMessage(REX_FORM_ERROR_VIOLATE_UNIQUE_KEY, $this->i18n('url_generator_namespace_error'));
@@ -390,7 +393,7 @@ if ($func == '') {
 
     $fields = [];
     foreach ($supportedTables as $DBID => $databases) {
-        $fieldTableSelect->addOptGroup($databases['name']);
+        $fieldTableSelect->addOptgroup($databases['name']);
         foreach ($databases['tables'] as $table) {
             $fieldTableSelect->addOption($table['name'], $table['name_unique']);
             foreach ($table['columns'] as $column) {
@@ -406,7 +409,8 @@ if ($func == '') {
 
             $type = 'select';
             $name = 'column_id';
-            /* @var $f rex_form_select_element */
+            /** @var rex_form_select_element $f */
+
             $f = $fieldContainer->addGroupedField($group, $type, $name);
             $f->setHeader('
                 <hr class="addoff-hr">
@@ -425,7 +429,8 @@ if ($func == '') {
             if (count(rex_clang::getAll()) >= 2) {
                 $type = 'select';
                 $name = 'column_clang_id';
-                /* @var $f rex_form_select_element */
+                /** @var rex_form_select_element $f */
+
                 $f = $fieldContainer->addGroupedField($group, $type, $name);
                 $f->setHeader('
                         <div class="addoff-grid-item" data-addoff-size="3">');
@@ -448,7 +453,8 @@ if ($func == '') {
                 if ($i > 1) {
                     $type = 'select';
                     $name = 'restriction_'.$i.'_logical_operator';
-                    /* @var $f rex_form_select_element */
+                    /** @var rex_form_select_element $f */
+
                     $f = $fieldContainer->addGroupedField($group, $type, $name);
                     $f->setHeader('
                                 <div class="addoff-grid">
@@ -464,7 +470,7 @@ if ($func == '') {
 
                 $type = 'select';
                 $name = 'restriction_'.$i.'_column';
-                /* @var $f rex_form_select_element */
+                /** @var rex_form_select_element $f */
                 $f = $fieldContainer->addGroupedField($group, $type, $name);
 
                 $prependHeader = '';
@@ -491,7 +497,8 @@ if ($func == '') {
 
                 $type = 'select';
                 $name = 'restriction_'.$i.'_comparison_operator';
-                /* @var $f rex_form_select_element */
+                /** @var rex_form_select_element $f */
+
                 $f = $fieldContainer->addGroupedField($group, $type, $name);
                 $f->setHeader('<div class="addoff-grid-item" data-addoff-size="1of10">');
                 $f->setFooter('</div>');
@@ -518,7 +525,8 @@ if ($func == '') {
                 if ($i > 1) {
                     $type = 'select';
                     $name = 'column_segment_part_'.$i.'_separator';
-                    /* @var $f rex_form_select_element */
+                    /** @var rex_form_select_element $f */
+
                     $f = $fieldContainer->addGroupedField($group, $type, $name);
                     $f->setHeader('<div class="addoff-grid-item text-center addoff-text-large" data-addoff-size="1">');
                     $f->setFooter('</div>');
@@ -529,7 +537,8 @@ if ($func == '') {
 
                 $type = 'select';
                 $name = 'column_segment_part_'.$i;
-                /* @var $f rex_form_select_element */
+                /** @var rex_form_select_element $f */
+
                 $f = $fieldContainer->addGroupedField($group, $type, $name);
 
                 // $prependHeader = '<div class="addoff-grid-item text-center addoff-text-large" data-addoff-size="1"><b>/</b></div>';
@@ -582,7 +591,8 @@ if ($func == '') {
 
                 $type = 'select';
                 $name = 'relation_'.$i.'_column';
-                /* @var $f rex_form_select_element */
+                /** @var rex_form_select_element $f */
+
                 $f = $fieldContainer->addGroupedField($group, $type, $name);
                 $f->setHeader(
                         $prependHeader.'
@@ -601,7 +611,8 @@ if ($func == '') {
 
                 $type = 'select';
                 $name = 'relation_'.$i.'_position';
-                /* @var $f rex_form_select_element */
+                /** @var rex_form_select_element $f */
+
                 $f = $fieldContainer->addGroupedField($group, $type, $name);
                 $f->setHeader('
                                 <div class="addoff-grid-item" data-addoff-size="2of10">');
@@ -647,7 +658,8 @@ if ($func == '') {
 
             $type = 'select';
             $name = 'append_structure_categories';
-            /* @var $f rex_form_select_element */
+            /** @var rex_form_select_element $f */
+
             $f = $fieldContainer->addGroupedField($group, $type, $name);
             $f->setHeader('
                     <div class="addoff-grid-item" data-addoff-size="3">');
@@ -661,7 +673,8 @@ if ($func == '') {
 
             $type = 'select';
             $name = 'column_seo_title';
-            /* @var $f rex_form_select_element */
+            /** @var rex_form_select_element $f */
+
             $f = $fieldContainer->addGroupedField($group, $type, $name);
             $f->setHeader('
                 <hr class="addoff-hr">
@@ -680,7 +693,8 @@ if ($func == '') {
 
             $type = 'select';
             $name = 'column_seo_description';
-            /* @var $f rex_form_select_element */
+            /** @var rex_form_select_element $f */
+
             $f = $fieldContainer->addGroupedField($group, $type, $name);
             $f->setHeader('
                     <div class="addoff-grid-item" data-addoff-size="3">');
@@ -694,7 +708,8 @@ if ($func == '') {
 
             $type = 'select';
             $name = 'column_seo_image';
-            /* @var $f rex_form_select_element */
+            /** @var rex_form_select_element $f */
+
             $f = $fieldContainer->addGroupedField($group, $type, $name);
             $f->setHeader('
                     <div class="addoff-grid-item" data-addoff-size="3">');
@@ -709,7 +724,8 @@ if ($func == '') {
 
             $type = 'select';
             $name = 'sitemap_add';
-            /* @var $f rex_form_select_element */
+            /** @var rex_form_select_element $f */
+
             $f = $fieldContainer->addGroupedField($group, $type, $name);
             $f->setHeader('
                 <hr class="addoff-hr">
@@ -727,7 +743,8 @@ if ($func == '') {
 
             $type = 'select';
             $name = 'sitemap_frequency';
-            /* @var $f rex_form_select_element */
+            /** @var rex_form_select_element $f */
+
             $f = $fieldContainer->addGroupedField($group, $type, $name);
             $f->setHeader('
                     <div class="addoff-grid-item" data-addoff-size="2">');
@@ -740,7 +757,8 @@ if ($func == '') {
 
             $type = 'select';
             $name = 'sitemap_priority';
-            /* @var $f rex_form_select_element */
+            /** @var rex_form_select_element $f */
+
             $f = $fieldContainer->addGroupedField($group, $type, $name);
             $f->setHeader('
                     <div class="addoff-grid-item" data-addoff-size="2">');
@@ -753,7 +771,8 @@ if ($func == '') {
 
             $type = 'select';
             $name = 'column_sitemap_lastmod';
-            /* @var $f rex_form_select_element */
+            /** @var rex_form_select_element $f */
+
             $f = $fieldContainer->addGroupedField($group, $type, $name);
             $f->setHeader('
                     <div class="addoff-grid-item" data-addoff-size="3">');
@@ -803,7 +822,7 @@ if ($func == '') {
 
         $fields = [];
         foreach ($supportedTables as $DBID => $databases) {
-            $fieldRelationTableSelect->addOptGroup($databases['name']);
+            $fieldRelationTableSelect->addOptgroup($databases['name']);
             foreach ($databases['tables'] as $table) {
                 $mergedTableName = Database::merge('relation_'.$i, $table['name_unique']);
                 $fieldRelationTableSelect->addOption($table['name'], $mergedTableName);
@@ -826,7 +845,8 @@ if ($func == '') {
 
                 $type = 'select';
                 $name = 'column_id';
-                /* @var $f rex_form_select_element */
+                /** @var rex_form_select_element $f */
+
                 $f = $fieldContainer->addGroupedField($group, $type, $name);
                 $f->setHeader('
                     <hr class="addoff-hr" />
@@ -845,7 +865,8 @@ if ($func == '') {
                 if (count(rex_clang::getAll()) >= 2) {
                     $type = 'select';
                     $name = 'column_clang_id';
-                    /* @var $f rex_form_select_element */
+                    /** @var rex_form_select_element $f */
+
                     $f = $fieldContainer->addGroupedField($group, $type, $name);
                     $f->setHeader('
                             <div class="addoff-grid-item" data-addoff-size="3">');
@@ -871,7 +892,8 @@ if ($func == '') {
                     if ($j > 1) {
                         $type = 'select';
                         $name = 'column_segment_part_'.$j.'_separator';
-                        /* @var $f rex_form_select_element */
+                        /** @var rex_form_select_element $f */
+
                         $f = $fieldContainer->addGroupedField($group, $type, $name);
                         $f->setHeader('<div class="addoff-grid-item text-center addoff-text-large" data-addoff-size="1">');
                         $f->setFooter('</div>');
@@ -882,12 +904,13 @@ if ($func == '') {
 
                     $type = 'select';
                     $name = 'column_segment_part_'.$j;
-                    /* @var $f rex_form_select_element */
+                    /** @var rex_form_select_element $f */
+
                     $f = $fieldContainer->addGroupedField($group, $type, $name);
 
                     // $prependHeader = '<div class="addoff-grid-item text-center addoff-text-large" data-addoff-size="1"><b>/</b></div>';
                     $prependHeader = '';
-                    if ($j == 1) {
+                    if ($j === 1) {
                         $prependHeader = '
                         <hr class="addoff-hr" />
                         <div class="addoff-grid">
@@ -929,7 +952,7 @@ if ($func == '') {
     echo $content;
 }
 
-if ($func == 'add' || $func == 'edit') {
+if ($func === 'add' || $func === 'edit') {
     for ($i = 1; $i <= Profile::RELATION_COUNT; ++$i) {
         ?>
     <script type="text/javascript">

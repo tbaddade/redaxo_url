@@ -24,7 +24,7 @@ if (null !== Url::getRewriter()) {
 }
 
 rex_extension::register('PACKAGES_INCLUDED', function (\rex_extension_point $epPackagesIncluded) {
-    if (rex::isBackend() && rex::getUser()) {
+    if (rex::isBackend() && rex::getUser() !== null) {
         $extensionPoints = [
             'ART_ADDED', 'ART_DELETED', 'ART_MOVED', 'ART_STATUS', 'ART_UPDATED',
             'CAT_ADDED', 'CAT_DELETED', 'CAT_MOVED', 'CAT_STATUS', 'CAT_UPDATED',
@@ -65,9 +65,9 @@ rex_extension::register('PACKAGES_INCLUDED', function (\rex_extension_point $epP
 
         // Profilartikel - löschen nicht erlauben
         $rexApiCall = rex_request(rex_api_function::REQ_CALL_PARAM, 'string', '');
-        if (($rexApiCall == 'category_delete' && in_array(rex_request('category-id', 'int'), $profileArticleIds)) ||
-            ($rexApiCall == 'article_delete' && in_array(rex_request('article_id', 'int'), $profileArticleIds))) {
-            $_REQUEST[rex_api_function::REQ_CALL_PARAM] = '';
+        if ((($rexApiCall === 'category_delete') && in_array(rex_request('category-id', 'int'), $profileArticleIds, true)) ||
+            (($rexApiCall === 'article_delete') && in_array(rex_request('article_id', 'int'), $profileArticleIds, true))) {
+            rex_request::request(rex_api_function::REQ_CALL_PARAM, 'string', '');
             rex_extension::register('PAGE_TITLE_SHOWN', function (\rex_extension_point $ep) {
                 $subject = $ep->getSubject();
                 $ep->setSubject(rex_view::error(rex_i18n::msg('url_generator_rex_api_delete')).$subject);
@@ -79,7 +79,7 @@ rex_extension::register('PACKAGES_INCLUDED', function (\rex_extension_point $epP
         return UrlManager::getRewriteUrl($ep);
     }, rex_extension::EARLY);
 
-    if (null !== Url::getRewriter() && Url::getRewriter()->getSitemapExtensionPoint()) {
+    if (null !== Url::getRewriter() && Url::getRewriter()->getSitemapExtensionPoint() !== '') {
         rex_extension::register(Url::getRewriter()->getSitemapExtensionPoint(), function (rex_extension_point $ep) {
             $sitemap = $ep->getSubject();
             if (is_array($sitemap)) {
@@ -93,11 +93,11 @@ rex_extension::register('PACKAGES_INCLUDED', function (\rex_extension_point $epP
 }, rex_extension::EARLY);
 
 
-if (rex::isBackend() && rex::getUser()) {
+if (rex::isBackend() && rex::getUser() !== null) {
     rex_view::addCssFile($addon->getAssetsUrl('styles.css'));
 }
 
-if (null !== Url::getRewriter() && Url::getRewriter()->getSeoTagsExtensionPoint()) {
+if (null !== Url::getRewriter() && Url::getRewriter()->getSeoTagsExtensionPoint() !== '') {
     rex_extension::register(Url::getRewriter()->getSeoTagsExtensionPoint(), function (rex_extension_point $rewriterExtensionPoint) {
         $seoTags = $rewriterExtensionPoint->getSubject();
 

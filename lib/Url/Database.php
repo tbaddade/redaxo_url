@@ -13,13 +13,25 @@ namespace Url;
 
 class Database
 {
+    /**
+     * @internal
+     */
     const DATABASE_TABLE_SEPARATOR = '_xxx_';
 
+    /**
+     * @return array<int, array<string, mixed>>
+     * @internal
+     */
     public static function getAll(): array
     {
         $dbConfigs = \rex::getProperty('db');
         foreach ($dbConfigs as $dbId => $dbConfig) {
-            if ('' !== $dbConfig['host'] && $dbConfig['host'] !== null && '' !== $dbConfig['login'] && $dbConfig['login'] !== null && '' !== $dbConfig['name'] && $dbConfig['name'] !== null && $dbConfig['password'] !== null) {
+            if (
+                trim($dbConfig['host']) !== '' &&
+                trim($dbConfig['login']) !== '' &&
+                trim($dbConfig['name']) !== '' &&
+                isset($dbConfig['password'])
+            ) {
                 // checkDbConnection recht langsam, aber besser als Fehler
                 $connection = \rex_sql::checkDbConnection(
                     $dbConfig['host'],
@@ -37,6 +49,9 @@ class Database
         return $dbConfigs;
     }
 
+    /**
+     * @return array<int|string, array<string, mixed>>
+     */
     public static function getSupportedTables(): array
     {
         $dbConfigs = self::getAll();
@@ -68,6 +83,9 @@ class Database
         return $supportedTables;
     }
 
+    /**
+     * @return array<string, string>
+     */
     public static function getLogicalOperators(): array
     {
         return [
@@ -76,6 +94,9 @@ class Database
         ];
     }
 
+    /**
+     * @return array<string, string>
+     */
     public static function getComparisonOperators(): array
     {
         return [
@@ -99,6 +120,9 @@ class Database
         ];
     }
 
+    /**
+     * @return array<int, string>
+     */
     public static function getComparisonOperatorsForEmptyValue(): array
     {
         return [
@@ -109,13 +133,16 @@ class Database
         ];
     }
 
-    public static function merge(int|string $database, string $table): string
-    {
-        return implode(self::DATABASE_TABLE_SEPARATOR, [$database, $table]);
-    }
-
+    /**
+     * @return array<int, string>
+     */
     public static function split(string $value): array
     {
         return explode(self::DATABASE_TABLE_SEPARATOR, $value);
+    }
+
+    public static function merge(int|string $database, string $table): string
+    {
+        return implode(self::DATABASE_TABLE_SEPARATOR, [$database, $table]);
     }
 }

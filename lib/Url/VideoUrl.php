@@ -39,7 +39,7 @@ class VideoUrl extends Url
      */
     public bool $related = false;
     /**
-     * @var array $urlParams Additional URL parameters for the video.
+     * @var array<string, bool|string> $urlParams Additional URL parameters for the video.
      * @api
      */
     public array $urlParams = [];
@@ -119,11 +119,11 @@ class VideoUrl extends Url
      */
     public function getService(): ?string
     {
-        $url = $this->getFullUrl();
+        $url = method_exists($this, 'getFullUrl') ? $this->getFullUrl() : '';
         if (preg_match('%vimeo%i', $url)) {
             return 'vimeo';
         }
-        if (preg_match('%youtube|youtu\.be%i', $url)) {
+        if (preg_match('%youtube|youtu\\.be%i', $url)) {
             return 'youtube';
         }
 
@@ -134,6 +134,7 @@ class VideoUrl extends Url
      * Get a thumbnail url from a video id.
      *
      * @return null|string the thumbnail url
+     * @api
      */
     public function getThumbnailUrl(): ?string
     {
@@ -162,7 +163,7 @@ class VideoUrl extends Url
             $params['autoplay'] = '1';
         }
         $params = array_merge($params, $this->urlParams);
-        $params = count($params) ? '?'.\rex_string::buildQuery($params) : '';
+        $params = count($params) > 0 ? '?'.\rex_string::buildQuery($params) : '';
 
         return 'https://player.vimeo.com/video/'.$this->getVimeoId().$params;
     }
@@ -210,7 +211,7 @@ class VideoUrl extends Url
 
         $params['rel'] = $this->related ? '1' : '0';
         $params = array_merge($params, $this->urlParams);
-        $params = count($params) ? '?'.\rex_string::buildQuery($params) : '';
+        $params = count($params) > 0 ? '?'.\rex_string::buildQuery($params) : '';
 
         return 'https://youtube.com/embed/'.$this->getYoutubeId().$params;
     }
@@ -223,12 +224,12 @@ class VideoUrl extends Url
      */
     public function getYoutubeId(): string
     {
-        $url = $this->getUrl();
+        $url = method_exists($this, 'getUrl') ? $this->getUrl() : '';
         $urlParamKeys = ['v', 'vi'];
 
         foreach ($urlParamKeys as $urlParamKey) {
-            if ($this->hasQueryParameter($urlParamKey)) {
-                return $this->getQueryParameter($urlParamKey);
+            if (method_exists($this, 'hasQueryParameter') && $this->hasQueryParameter($urlParamKey)) {
+                return method_exists($this, 'getQueryParameter') ? $this->getQueryParameter($urlParamKey) : '';
             }
         }
 
@@ -252,7 +253,7 @@ class VideoUrl extends Url
      */
     public function isVimeo(): bool
     {
-        return $this->getService() == 'vimeo';
+        return $this->getService() === 'vimeo';
     }
 
     /**
@@ -261,7 +262,7 @@ class VideoUrl extends Url
      */
     public function isYoutube(): bool
     {
-        return $this->getService() == 'youtube';
+        return $this->getService() === 'youtube';
     }
 
     /**
@@ -272,7 +273,7 @@ class VideoUrl extends Url
      */
     public function setAspectRatio(string $aspectRatio): void
     {
-        if (count(explode(':', $aspectRatio)) != 2) {
+        if (count(explode(':', $aspectRatio)) !== 2) {
             throw new \rex_exception('$aspectRatio is expected to define two numbers separate by a colon, "'.$aspectRatio.'" given!');
         }
 
@@ -289,9 +290,8 @@ class VideoUrl extends Url
     }
 
     /**
+     * @api
      * @param $fullscreen bool
-     *
-     * @throws \rex_exception
      */
     public function setFullscreen(bool $fullscreen = true): void
     {
@@ -299,9 +299,8 @@ class VideoUrl extends Url
     }
 
     /**
+     * @api
      * @param $related bool
-     *
-     * @throws \rex_exception
      */
     public function setRelated(bool $related = true): void
     {
@@ -309,6 +308,7 @@ class VideoUrl extends Url
     }
 
     /**
+     * @api
      * @param $key string
      * @param $value bool|string
      */
