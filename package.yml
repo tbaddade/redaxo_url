@@ -7,7 +7,7 @@ page:
     title: 'translate:url'
     perm: admin[]
     pjax: false
-    icon: rex-icon fa fa-anchor
+    icon: rex-icon fa fa-link
     subpages:
         generator:
             title: 'translate:generator'
