@@ -4,25 +4,31 @@
 
 ## Beschreibung
 
-REDAXO 5 AddOn zur URL-Generierung für Daten aus den Datenbanktabellen
+REDAXO 5 AddOn, um aus Datensätzen in Tabellen SEO-freundliche URLs zu generieren.
 
 ## Features
 
-* Generieren von suchmaschinenfreundlichen URLs anhand von Datenbanktabellen und eines REDAXO-Artikels, z.B: `www.example.org/artikel/datensatz/` anstelle von `www.example.org/artikel/?id=1`
-* Automatische Oberkategorien anhand von Relationen `www.example.org/kategorie/datensatz/` möglich
+* Generiert URLs anhand Datensätzen und eines REDAXO-Artikels, z.B.: `www.example.org/artikel/datensatz/` statt `www.example.org/artikel/?id=1`
+* Verwendung von Relationen für Kategorien und Unterkategorien möglich, z.B.: `www.example.org/kategorie-datensatz/datensatz/`
 * Mit und ohne YForm-Tabellen nutzbar
-* Zusätzliche Methoden für `<title />`-Felder, SEO- und OpenGraph-Metadaten wie `description` und `og:image`
-* Integration in die `sitemap.xml` von YRewrite
-* Multi-Domain fähig
+* Integration in YRewrite
+  * Zusätzliche Methoden für `<title />`-Felder, SEO- und OpenGraph-Metadaten wie `description` und `og:image`
+  * Integration in die `sitemap.xml` von YRewrite
+  * Unterstützt Multidomain-Konfiguration
+  * Untersützt Mehrsprachigkeit (REDAXO clang)
 * URLs werden vom Addon `search_it` erkannt und Inhalte indexiert
+
+## Add-ons, die auf URL setzen
+
+*
 
 ## Installation
 
-* Download von GitHub als ZIP, entpacken und in den Ordner `src/addons/` kopieren. Bei Update reinstallieren.
+Unter <https://github.com/alexplusde/url/releases> werden Releases dieses Addons bereitgestellt, diese entpacken und in den Ordner `src/addons/` kopieren.
 
-> Hinweis: Benötigt [yrewrite](https://github.com/yakamara/redaxo_yrewrite).
+> **Hinweis:** Bei Update reinstallieren.
 
-## Beispiel: Filme
+## Beispiel: News
 
 Normalerweise wird ein Film über eine Url wie `/filme/?movie_id=1` geholt.
 
