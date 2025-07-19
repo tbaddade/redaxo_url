@@ -1,12 +1,14 @@
 # Url AddOn für REDAXO 5
 
+> Fork von <https://github.com/tbaddade/redaxo_url/> mit dem Ziel, das Add-on kontinuierlich zu verbessern und Fehler schnell zu beheben und zu releasen.
+
 ## Beschreibung
 
-REDAXO 5 AddOn zur URL-Generierung für Daten aus den Datenbanktabellen (ehemals Url Control, ehemals Frau Schultze)
+REDAXO 5 AddOn zur URL-Generierung für Daten aus den Datenbanktabellen
 
 ## Features
 
-* Generieren von suchmaschinenfreundlichen URLs anhand von Datenbanktabellen und eines REDAXO-Artikels, z.B: `www.example.org/artikel/datensatz/` anstelle von `www.example.org/artikel/?id=1` 
+* Generieren von suchmaschinenfreundlichen URLs anhand von Datenbanktabellen und eines REDAXO-Artikels, z.B: `www.example.org/artikel/datensatz/` anstelle von `www.example.org/artikel/?id=1`
 * Automatische Oberkategorien anhand von Relationen `www.example.org/kategorie/datensatz/` möglich
 * Mit und ohne YForm-Tabellen nutzbar
 * Zusätzliche Methoden für `<title />`-Felder, SEO- und OpenGraph-Metadaten wie `description` und `og:image`
@@ -16,10 +18,9 @@ REDAXO 5 AddOn zur URL-Generierung für Daten aus den Datenbanktabellen (ehemals
 
 ## Installation
 
-* Via Install AddOn im Backend herunterladen
-* AddOn installieren und aktivieren
+* Download von GitHub als ZIP, entpacken und in den Ordner `src/addons/` kopieren. Bei Update reinstallieren.
 
-> Hinweis: Benötigt [yrewrite](https://github.com/yakamara/redaxo_yrewrite). 
+> Hinweis: Benötigt [yrewrite](https://github.com/yakamara/redaxo_yrewrite).
 
 ## Beispiel: Filme
 
@@ -28,10 +29,10 @@ Normalerweise wird ein Film über eine Url wie `/filme/?movie_id=1` geholt.
 Mit dem AddOn ist es möglich Urls wie `/filme/the-big-lebowski/` zu erzeugen.
 
 Der REDAXO Artikel `/the-big-lebowski/` selbst existiert dabei nicht. Es wird alles im REDAXO Artikel `/filme/` abgehandelt.
-**The Big Lebowski** ist dabei der Titel eines Filmes, welcher in einer eigenen Datenbanktabelle hinterlegt wurde. 
+**The Big Lebowski** ist dabei der Titel eines Filmes, welcher in einer eigenen Datenbanktabelle hinterlegt wurde.
 
+### Url holen
 
-### Url holen 
 Um die Url eines einzelnen Filmes auszugeben verwendet man:
 
 ```php
@@ -43,9 +44,9 @@ echo rex_getUrl('', '', ['movie-id' => $movieId]);
 | `movie-id` | ist der im Profil hinterlegte Namensraum |
 | `$movieId`    | Datensatz-Id des Filmes |
 
+### Id holen
 
-### Id holen 
-Nach dem der Film mit der eigenen Url aufgerufen wurde (Darstellung der Detailseite), muss jetzt die dazugehörige Datensatz-Id ermittelt werden. Erst dann können die eigentlichen Daten aus der Tabelle abgerufen und ausgegeben werden.
+Nachdem der Film mit der eigenen Url aufgerufen wurde (Darstellung der Detailseite), muss jetzt die dazugehörige Datensatz-Id ermittelt werden. Erst dann können die eigentlichen Daten aus der Tabelle abgerufen und ausgegeben werden.
 
 ```php
 // versuche die Url aufzulösen
@@ -86,14 +87,12 @@ if ($manager) {
 
 Möchte man den Filmen Genres zuordnen, passiert dies meist über eine Relation zu diesen Kategorien.
 Die Urls dazu könnten dann so aussehen: `/filme/komoedie/the-big-lebowski/`
- 
 
 ### Zusätzliche Pfade für die Url
 
 #### eigene Pfade an die Url hängen
 
 Im Feld **eigene Pfade an die Url hängen** lassen sich zusätzliche Pfade eintragen, die als gültige Urls verwendet werden können. So ließe sich beispielsweise bei einem Film noch eine zusätzliche Seite über `/filme/the-big-lebowski/zitate/` anzeigen. Dann muss in dem Textfeld einfach nur `zitate` eingetragen werden - ohne vorangestellten und abschließenden Schrägstrich.
-
 
 #### Unterkategorien anhängen?
 
@@ -127,10 +126,10 @@ if ($manager && $profile = $manager->getProfile()) {
 
 ## Extension Points
 
-- URL_PRE_SAVE
-- URL_PROFILE_RESTRICTION
-- URL_SEO_TAGS
-- URL_TABLE_UPDATED
+* URL_PRE_SAVE
+* URL_PROFILE_RESTRICTION
+* URL_SEO_TAGS
+* URL_TABLE_UPDATED
 
 ### URL_PRE_SAVE
 
@@ -219,7 +218,7 @@ rex_extension::register('URL_PROFILE_RESTRICTION', function (\rex_extension_poin
 
 ### URL_SEO_TAGS
 
-Hiermit können die verschiedenen HTML-Tags nachträglich beeinflusst werden. 
+Hiermit können die verschiedenen HTML-Tags nachträglich beeinflusst werden.
 
 #### Beispiel
 
@@ -236,12 +235,11 @@ Hiermit können die verschiedenen HTML-Tags nachträglich beeinflusst werden.
 Dieser ExtensionPoint wird getriggert, sobald die Tabelle der Urls sich ändert.
 
 #### Beispiel
+
 ```php
 \rex_extension::register('URL_PROFILE_RESTRICTION', function () {
 });
 ```
-
-
 
 ## SEO-Methoden
 
@@ -255,7 +253,7 @@ echo $seo->getTags();
 Eine Anpassung der einzelnen Tags kann über den Extension Point `URL_SEO_TAGS` erreicht werden.
 
 #### Beispiel
- 
+
 ```php
 use Url\Seo;
 use Url\Url;
@@ -292,35 +290,33 @@ if ($manager) {
 $tags = $seo->getTags();
 ```
 
-## Weitere Tipps 
+## Weitere Tipps
 
 ### Leere Einträge vermeiden
 
 Werden URLs selbst erzeugt, z.B. über eine YForm-Tabelle, dann sollte das Feld oder die Feldkombination, aus der die URL generiert wird, nur einmal vorkommen (prüfen auf `unique`) und außerdem niemals leer sein (prüfen auf `empty`). Kommt das Feld oder die Feldkombination mehrfach vor, so wird ab der zweiten URL zusätzlich automatisch die ID des Datensatzes angehangen.
 
-### YForm-Formular auf einer von Url-AddOn erzeugten Url 
+### YForm-Formular auf einer von Url-AddOn erzeugten Url
 
-Befindet sich ein Formular auf einer Seite, die über eine URL des URL-Addon aufgerufen wurde, so muss die Ziel-URL des Formulars angepasst werden. 
+Befindet sich ein Formular auf einer Seite, die über eine URL des URL-Addon aufgerufen wurde, so muss die Ziel-URL des Formulars angepasst werden.
 
 ```php
 $yform->setObjectparams('form_action', rex_getUrl('', '', [$manager->getProfile()->getNamespace() => $manager->getDatasetId()]));
-``` 
+```
 
 oder
 
 ```php
 $yform->setObjectparams('form_action', Url::getCurrent());
-``` 
+```
 
 Weiere Infos zu den Objekt-Parametern von YForm befinden sich in der YForm-Doku.
 
+### Einzelne Datensätze nicht in der sitemap.xml aufnehmen
 
-### Einzelne Datensätze nicht in der sitemap.xml aufnehmen 
-
-Dazu kann man ein zusätzliches YFormfeld anlegen der das Indexieren speichert. Im Url-AddOn werden dann zwei Profile angelegt und auf das Index-Feld gefiltert. Das eine Profil erhält zusätzlich die Info "In Sitemap aufnehmen".
+Dazu kann man ein zusätzliches YForm-Feld anlegen der das Indexieren speichert. Im Url-AddOn werden dann zwei Profile angelegt und auf das Index-Feld gefiltert. Das eine Profil erhält zusätzlich die Info "In Sitemap aufnehmen".
 
 ## Debugging
-
 
 * Sind alle gewünschten Domains in YRewrite vollständig und korrekt angegeben, einschließlich separater 404-Fehlerseite?
 * Wurden Änderungen an der Datenbank vorgenommen, die sich mit dem Löschen des REDAXO-Caches. Datensätze, die außerhalb von REDAXO erstellt, verändert oder gelöscht werden, benötigen ein Auffrischen des Caches.
