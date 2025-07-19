@@ -47,9 +47,14 @@ class Database
             $sqlTables = \rex_sql::factory($dbId)->getTablesAndViews();
             foreach ($sqlTables as $sqlTable) {
                 $tableColumns = [];
-                $sqlColumns = \rex_sql::showColumns($sqlTable, $dbId);
-                foreach ($sqlColumns as $sqlColumn) {
-                    $tableColumns[] = ['name' => $sqlColumn['name']];
+                try {
+                    $sqlColumns = \rex_sql::showColumns($sqlTable, $dbId);
+                    foreach ($sqlColumns as $sqlColumn) {
+                        $tableColumns[] = ['name' => $sqlColumn['name']];
+                    }
+                } catch (\rex_sql_exception $e) {
+                    // Tabelle oder View ist fehlerhaft oder existiert nicht mehr, überspringen
+                    continue;
                 }
                 $tables[] = [
                     'name' => $sqlTable,
