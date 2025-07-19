@@ -16,11 +16,11 @@ class Seo
     /**
      * @var \Url\Rewriter\Rewriter
      */
-    private $rewriter;
+    private \Url\Rewriter\Rewriter $rewriter;
 
     private $rewriterSeo;
 
-    private $manager;
+    private ?UrlManager $manager = null;
 
     public function __construct()
     {
@@ -31,7 +31,7 @@ class Seo
         }
     }
 
-    public function getTags()
+    public function getTags(): string
     {
         if (!$this->isUrl()) {
             return '';
@@ -102,20 +102,21 @@ class Seo
 
     }
 
-    public function getFullUrl()
+    public function getFullUrl(): string
     {
         $url = $this->manager->getUrl();
         $url->withSolvedScheme();
         return $url->getSchemeAndHttpHost().$url->getPath();
     }
 
-    public static function getSitemap()
+    public static function getSitemap(): array
     {
         $profiles = Profile::getAll();
         if (!$profiles) {
             return [];
         }
 
+        /** @var null|YRewrite $rewriter */
         $rewriter = Url::getRewriter();
 
         $sitemap = [];
@@ -125,7 +126,7 @@ class Seo
             }
 
             // Befindet sich der Artikel in der aktuellen Domain?
-            if ($rewriter->getDomainByArticleId($profile->getArticleId()) !== $rewriter->getCurrentDomain()) {
+            if ($rewriter !== null && $rewriter->getDomainByArticleId($profile->getArticleId()) !== $rewriter->getCurrentDomain()) {
                 continue;
             }
 
@@ -204,12 +205,12 @@ class Seo
         return $sitemap;
     }
 
-    protected function isUrl()
+    protected function isUrl(): bool
     {
         return $this->manager instanceof UrlManager;
     }
 
-    protected function normalize($string)
+    protected function normalize(string $string): string
     {
         $string = rex_escape(strip_tags($string));
         return str_replace(["\n", "\r"], [' ', ''], $string);

@@ -15,8 +15,8 @@ class UrlManagerSql
 {
     const TABLE_NAME = 'url_generator_url';
 
-    private $sql;
-    private $where = [];
+    private \rex_sql $sql;
+    private array $where = [];
 
     private function __construct()
     {
@@ -24,7 +24,7 @@ class UrlManagerSql
         $this->sql->setTable(\rex::getTable(self::TABLE_NAME));
     }
 
-    public static function factory()
+    public static function factory(): self
     {
         return new self();
     }
@@ -32,7 +32,7 @@ class UrlManagerSql
     /**
      * @param int $id
      */
-    public function setArticleId($id)
+    public function setArticleId(int $id): void
     {
         $this->sql->setValue('article_id', $id);
         $this->where['article_id'] = $id;
@@ -41,7 +41,7 @@ class UrlManagerSql
     /**
      * @param int $id
      */
-    public function setClangId($id)
+    public function setClangId(int $id): void
     {
         $this->sql->setValue('clang_id', $id);
         $this->where['clang_id'] = $id;
@@ -50,7 +50,7 @@ class UrlManagerSql
     /**
      * @param int $id
      */
-    public function setDataId($id)
+    public function setDataId(int $id): void
     {
         $this->sql->setValue('data_id', $id);
         $this->where['data_id'] = $id;
@@ -59,7 +59,7 @@ class UrlManagerSql
     /**
      * @param int $id
      */
-    public function setProfileId($id)
+    public function setProfileId(int $id): void
     {
         $this->sql->setValue('profile_id', $id);
         $this->where['profile_id'] = $id;
@@ -68,7 +68,7 @@ class UrlManagerSql
     /**
      * @param array $value
      */
-    public function setSeo(array $value)
+    public function setSeo(array $value): void
     {
         $value = json_encode($value);
         $this->sql->setValue('seo', $value);
@@ -78,7 +78,7 @@ class UrlManagerSql
     /**
      * @param bool $value
      */
-    public function setSitemap($value)
+    public function setSitemap(bool $value): void
     {
         $value = ($value === true) ? $value : false;
         $this->sql->setValue('sitemap', $value);
@@ -88,16 +88,17 @@ class UrlManagerSql
     /**
      * @param bool $value
      */
-    public function setStructure($value)
+    public function setStructure(bool $value): void
     {
         $this->sql->setValue('is_structure', $value);
-        $this->where['is_structure'] = ($value ? '1' : '0');;
+        $this->where['is_structure'] = ($value ? '1' : '0');
+        ;
     }
 
     /**
      * @param string $url
      */
-    public function setUrl($url)
+    public function setUrl(string $url): void
     {
         $this->sql->setValue('url', $url);
         $this->sql->setValue('url_hash', sha1($url));
@@ -107,18 +108,18 @@ class UrlManagerSql
     /**
      * @param bool $value
      */
-    public function setUserPath($value)
+    public function setUserPath(bool $value): void
     {
         $this->sql->setValue('is_user_path', $value);
         $this->where['is_user_path'] = ($value ? '1' : '0');
     }
 
     /**
-     * @param string $value
+     * @param string|null $value
      *
      * @throws \Exception
      */
-    public function setLastmod($value = null)
+    public function setLastmod(?string $value = null): void
     {
         if (!$value) {
             $value = time();
@@ -138,7 +139,7 @@ class UrlManagerSql
      *
      * @return array
      */
-    public function fetch()
+    public function fetch(): array
     {
         $query = '';
         foreach ($this->where as $fieldName => $value) {
@@ -155,7 +156,7 @@ class UrlManagerSql
     /**
      * @return bool
      */
-    public function save()
+    public function save(): bool
     {
         try {
             $this->sql->addGlobalCreateFields();
@@ -173,7 +174,7 @@ class UrlManagerSql
     /**
      * @throws \rex_sql_exception
      */
-    public static function deleteAll()
+    public static function deleteAll(): void
     {
         $sql = self::factory();
         $sql->sql->setQuery('TRUNCATE TABLE '.\rex::getTable(self::TABLE_NAME));
@@ -186,7 +187,7 @@ class UrlManagerSql
      *
      * @throws \rex_sql_exception
      */
-    public static function deleteByProfileId($profileId)
+    public static function deleteByProfileId(int $profileId): void
     {
         $sql = self::factory();
         $sql->sql->setWhere('profile_id = ?', [$profileId]);
@@ -201,7 +202,7 @@ class UrlManagerSql
      *
      * @throws \rex_sql_exception
      */
-    public static function deleteByProfileIdAndDatasetId($profileId, $datasetId)
+    public static function deleteByProfileIdAndDatasetId(int $profileId, int $datasetId): void
     {
         $sql = self::factory();
         $sql->sql->setWhere('profile_id = ? AND data_id = ?', [$profileId, $datasetId]);
@@ -217,7 +218,7 @@ class UrlManagerSql
      *
      * @return array
      */
-    public static function getByProfileId($profileId)
+    public static function getByProfileId(int $profileId): array
     {
         $sql = self::factory();
         return $sql->sql->getArray('SELECT * FROM '.\rex::getTable(self::TABLE_NAME).' WHERE `profile_id` = ?', [$profileId]);
@@ -231,9 +232,10 @@ class UrlManagerSql
      *
      * @return array
      */
-    public static function getHreflang(UrlManager $manager, $clangIds)
+    public static function getHreflang(UrlManager $manager, array $clangIds): array
     {
-        $where = implode(' OR ',
+        $where = implode(
+            ' OR ',
             array_map(function () {
                 return '`clang_id` = ?';
             }, $clangIds)
@@ -258,7 +260,7 @@ class UrlManagerSql
      *
      * @return array
      */
-    public static function getOrigin(Profile $profile, $datasetId, $clangId)
+    public static function getOrigin(Profile $profile, int $datasetId, int $clangId): array
     {
         $sql = self::factory();
         return $sql->sql->getArray('SELECT * FROM '.\rex::getTable(self::TABLE_NAME).' WHERE `profile_id` = ? AND `data_id` = ? AND `clang_id` = ? AND is_user_path = ? AND is_structure = ?', [$profile->getId(), $datasetId, $clangId, 0, 0]);
@@ -273,7 +275,7 @@ class UrlManagerSql
      *
      * @return array
      */
-    public static function getOriginAndExpanded(Profile $profile, $datasetId, $clangId)
+    public static function getOriginAndExpanded(Profile $profile, int $datasetId, int $clangId): array
     {
         $sql = self::factory();
         return $sql->sql->getArray('SELECT * FROM '.\rex::getTable(self::TABLE_NAME).' WHERE `profile_id` = ? AND `data_id` = ? AND `clang_id` = ?', [$profile->getId(), $datasetId, $clangId]);
@@ -286,7 +288,7 @@ class UrlManagerSql
      *
      * @return array
      */
-    public static function getByUrl(Url $url)
+    public static function getByUrl(Url $url): array
     {
         $this_url = clone $url;
         $this_url->withScheme('');
@@ -297,7 +299,7 @@ class UrlManagerSql
         return $sql->sql->getArray('SELECT * FROM '.\rex::getTable(self::TABLE_NAME).' WHERE `url` = ?', [$urlAsString]);
     }
 
-    public static function triggerTableUpdated()
+    public static function triggerTableUpdated(): void
     {
         \rex_extension::registerPoint(new \rex_extension_point('URL_TABLE_UPDATED'));
     }

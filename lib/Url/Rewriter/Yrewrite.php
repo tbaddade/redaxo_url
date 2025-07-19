@@ -18,11 +18,12 @@ class Yrewrite extends Rewriter
     /**
      * @return string
      */
-    public function articleIdNotFound()
+    public function articleIdNotFound(): string
     {
         \rex_extension::register('YREWRITE_PREPARE', function (\rex_extension_point $ep) {
             return UrlManager::getArticleParams();
         }, \rex_extension::EARLY);
+        return '';
     }
 
     public function getDomainByArticleId($articleId)
@@ -38,7 +39,7 @@ class Yrewrite extends Rewriter
     /**
      * @return string
      */
-    public function getSitemapExtensionPoint()
+    public function getSitemapExtensionPoint(): string
     {
         return 'YREWRITE_SITEMAP';
     }
@@ -46,7 +47,7 @@ class Yrewrite extends Rewriter
     /**
      * @return array
      */
-    public function getSitemapFrequency()
+    public function getSitemapFrequency(): array
     {
         return \rex_yrewrite_seo::$changefreq;
     }
@@ -54,7 +55,7 @@ class Yrewrite extends Rewriter
     /**
      * @return array
      */
-    public function getSitemapPriority()
+    public function getSitemapPriority(): array
     {
         return \rex_yrewrite_seo::$priority;
     }
@@ -62,7 +63,7 @@ class Yrewrite extends Rewriter
     /**
      * @return \rex_yrewrite_seo
      */
-    public function getSeoInstance()
+    public function getSeoInstance(): \rex_yrewrite_seo
     {
         return new \rex_yrewrite_seo();
     }
@@ -70,7 +71,7 @@ class Yrewrite extends Rewriter
     /**
      * @return string
      */
-    public function getSeoTags()
+    public function getSeoTags(): string
     {
         return '';
     }
@@ -78,7 +79,7 @@ class Yrewrite extends Rewriter
     /**
      * @return string
      */
-    public function getSeoTagsExtensionPoint()
+    public function getSeoTagsExtensionPoint(): string
     {
         return 'YREWRITE_SEO_TAGS';
     }
@@ -89,7 +90,7 @@ class Yrewrite extends Rewriter
      *
      * @return string
      */
-    public function getFullUrl($article_id, $clang_id)
+    public function getFullUrl($article_id, $clang_id): string
     {
         return \rex_yrewrite::getFullUrlByArticleId($article_id, $clang_id);
     }
@@ -99,7 +100,7 @@ class Yrewrite extends Rewriter
      *
      * @return string
      */
-    public function getFullPath($path)
+    public function getFullPath($path): string
     {
         return \rex_yrewrite::getFullPath($path);
     }
@@ -107,7 +108,7 @@ class Yrewrite extends Rewriter
     /**
      * @return string
      */
-    public function getSuffix()
+    public function getSuffix(): string
     {
         $scheme = \rex_yrewrite::getScheme();
         return $scheme->getSuffix();
@@ -118,11 +119,11 @@ class Yrewrite extends Rewriter
      *
      * @return string
      */
-    public function getSchemeByDomain($domain)
+    public function getSchemeByDomain($domain): string
     {
         $domain = \rex_yrewrite::getDomainByName($domain);
         if (!$domain) {
-            return null;
+            return '';
         }
         return $domain->getScheme();
     }
@@ -130,7 +131,7 @@ class Yrewrite extends Rewriter
     /**
      * @return bool
      */
-    public function isHttps()
+    public function isHttps(): bool
     {
         return \rex_yrewrite::isHttps();
     }
@@ -141,7 +142,7 @@ class Yrewrite extends Rewriter
      *
      * @return string
      */
-    public function normalize($string, $clang = 1)
+    public function normalize($string, $clang = 1): string
     {
         $scheme = \rex_yrewrite::getScheme();
         return $scheme->normalize($string, $clang);

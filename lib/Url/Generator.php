@@ -15,14 +15,14 @@ use Url\Rewriter\Yrewrite;
 
 class Generator
 {
-    protected $manager;
+    protected ExtensionPointManager $manager;
 
     public function __construct(ExtensionPointManager $manager)
     {
         $this->manager = $manager;
     }
 
-    public function execute()
+    public function execute(): void
     {
         switch ($this->manager->getMode()) {
             case ExtensionPointManager::MODE_UPDATE_URL_ALL:
@@ -57,7 +57,7 @@ class Generator
         }
     }
 
-    public static function boot()
+    public static function boot(): void
     {
         if (null === Url::getRewriter()) {
             if (\rex_addon::get('yrewrite')->isAvailable()) {

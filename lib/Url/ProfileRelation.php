@@ -13,12 +13,12 @@ namespace Url;
 
 class ProfileRelation
 {
-    private $index;
-    private $position;
-    private $segment_part_separators;
-    private $table;
+    private int|string $index;
+    private int|string $position;
+    private array $segment_part_separators;
+    private array $table;
 
-    public function __construct($index, $values)
+    public function __construct(int|string $index, array $values)
     {
         $this->index = $index;
         $this->position = $values['position'];
@@ -26,32 +26,32 @@ class ProfileRelation
         $this->table = $values['table'];
     }
 
-    public function getDatabaseId()
+    public function getDatabaseId(): int|string|null
     {
         return $this->table['dbid'];
     }
 
-    public function getTableName()
+    public function getTableName(): string
     {
         return $this->table['name'];
     }
 
-    public function getColumnName($column)
+    public function getColumnName(string $column): string
     {
         return $this->table['column_names'][$column];
     }
 
-    public function getColumnNameWithAlias($column)
+    public function getColumnNameWithAlias(string $column): string
     {
         return $this->getAlias().'.'.$this->getColumnName($column);
     }
 
-    public function getAlias()
+    public function getAlias(): string
     {
         return Profile::RELATION_PREFIX.$this->index;
     }
 
-    public function getIndex()
+    public function getIndex(): int|string
     {
         return $this->index;
     }
@@ -60,17 +60,17 @@ class ProfileRelation
      * Get segment part seperators as array
      * @return array
      */
-    public function getSegmentPartSeparators()
+    public function getSegmentPartSeparators(): array
     {
         return $this->segment_part_separators;
     }
 
-    public function getSegmentPosition()
+    public function getSegmentPosition(): int|string|null
     {
         return $this->position;
     }
 
-    public function completeQuery(\rex_yform_manager_query $query, $sourceRelationColumnName, $sourceClangColumnName, $structureArticleClangId)
+    public function completeQuery(\rex_yform_manager_query $query, string $sourceRelationColumnName, string $sourceClangColumnName, int|string|null $structureArticleClangId): \rex_yform_manager_query
     {
         $joinCondition = $sourceRelationColumnName.' = '.$this->getColumnNameWithAlias('id');
 

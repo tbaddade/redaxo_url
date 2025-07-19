@@ -13,18 +13,18 @@ namespace Url;
 
 class VideoUrl extends Url
 {
-    public $aspectRatio = '16:9';
-    public $autoPlay = false;
-    public $fullscreen = true;
-    public $related = false;
-    public $urlParams = [];
+    public string $aspectRatio = '16:9';
+    public bool $autoPlay = false;
+    public bool $fullscreen = true;
+    public bool $related = false;
+    public array $urlParams = [];
 
     /**
      * Returns a embed code.
      *
      * @return string the embed url
      */
-    public function getEmbedCode()
+    public function getEmbedCode(): string
     {
         $attributes = [
             'src' => $this->getEmbedUrl(),
@@ -41,7 +41,7 @@ class VideoUrl extends Url
      *
      * @return string the embed url
      */
-    public function getPlayerCode()
+    public function getPlayerCode(): string
     {
         $attributes = [
             'class' => 'js-player',
@@ -55,9 +55,9 @@ class VideoUrl extends Url
     /**
      * Builds a embed url from a video id.
      *
-     * @return string the embed url
+     * @return string|null the embed url
      */
-    public function getEmbedUrl()
+    public function getEmbedUrl(): ?string
     {
         if ($this->isVimeo()) {
             return $this->getVimeoEmbedUrl();
@@ -72,7 +72,7 @@ class VideoUrl extends Url
     /*
      * @return null|string Null on failure, the video's id on success
      */
-    public function getId()
+    public function getId(): ?string
     {
         if ($this->isVimeo()) {
             return $this->getVimeoId();
@@ -87,7 +87,7 @@ class VideoUrl extends Url
     /**
      * @return null|string Null on failure to match, the service's name on success
      */
-    public function getService()
+    public function getService(): ?string
     {
         $url = $this->getFullUrl();
         if (preg_match('%vimeo%i', $url)) {
@@ -105,7 +105,7 @@ class VideoUrl extends Url
      *
      * @return null|string the thumbnail url
      */
-    public function getThumbnailUrl()
+    public function getThumbnailUrl(): ?string
     {
         if ($this->isVimeo()) {
             return $this->getVimeoThumbnailUrl();
@@ -122,7 +122,7 @@ class VideoUrl extends Url
      *
      * @return string The url's id
      */
-    public function getVimeoEmbedUrl()
+    public function getVimeoEmbedUrl(): string
     {
         $params = [
             'byline' => '0',
@@ -142,7 +142,7 @@ class VideoUrl extends Url
      *
      * @return string The url's id
      */
-    public function getVimeoId()
+    public function getVimeoId(): string
     {
         return $this->getIdFromUrlPath();
     }
@@ -152,7 +152,7 @@ class VideoUrl extends Url
      *
      * @return null|string The thumbnail url
      */
-    public function getVimeoThumbnailUrl()
+    public function getVimeoThumbnailUrl(): ?string
     {
         $data = json_decode(file_get_contents('http://vimeo.com/api/v2/video/'.$this->getVimeoId().'.json'), true);
         if (isset($data[0])) {
@@ -167,7 +167,7 @@ class VideoUrl extends Url
      *
      * @return string The url's id
      */
-    public function getYoutubeEmbedUrl()
+    public function getYoutubeEmbedUrl(): string
     {
         $params = [];
 
@@ -187,7 +187,7 @@ class VideoUrl extends Url
      *
      * @return string the url's id
      */
-    public function getYoutubeId()
+    public function getYoutubeId(): string
     {
         $url = $this->getUrl();
         $urlParamKeys = ['v', 'vi'];
@@ -206,7 +206,7 @@ class VideoUrl extends Url
      *
      * @return string The thumbnail url
      */
-    public function getYoutubeThumbnailUrl()
+    public function getYoutubeThumbnailUrl(): string
     {
         return 'https://img.youtube.com/vi/'.$this->getYoutubeId().'/0.jpg';
     }
@@ -214,7 +214,7 @@ class VideoUrl extends Url
     /**
      * @return bool
      */
-    public function isVimeo()
+    public function isVimeo(): bool
     {
         return $this->getService() == 'vimeo';
     }
@@ -222,7 +222,7 @@ class VideoUrl extends Url
     /**
      * @return bool
      */
-    public function isYoutube()
+    public function isYoutube(): bool
     {
         return $this->getService() == 'youtube';
     }
@@ -232,7 +232,7 @@ class VideoUrl extends Url
      *
      * @throws \rex_exception
      */
-    public function setAspectRatio($aspectRatio)
+    public function setAspectRatio(string $aspectRatio): void
     {
         if (count(explode(':', $aspectRatio)) != 2) {
             throw new \rex_exception('$aspectRatio is expected to define two numbers separate by a colon, "'.$aspectRatio.'" given!');
@@ -244,7 +244,7 @@ class VideoUrl extends Url
     /**
      * @param $autoPlay bool
      */
-    public function setAutoPlay($autoPlay = true)
+    public function setAutoPlay(bool $autoPlay = true): void
     {
         $this->autoPlay = $autoPlay;
     }
@@ -254,7 +254,7 @@ class VideoUrl extends Url
      *
      * @throws \rex_exception
      */
-    public function setFullscreen($fullscreen = true)
+    public function setFullscreen(bool $fullscreen = true): void
     {
         $this->fullscreen = $fullscreen;
     }
@@ -264,7 +264,7 @@ class VideoUrl extends Url
      *
      * @throws \rex_exception
      */
-    public function setRelated($related = true)
+    public function setRelated(bool $related = true): void
     {
         $this->related = $related;
     }
@@ -273,7 +273,7 @@ class VideoUrl extends Url
      * @param $key string
      * @param $value bool|string
      */
-    public function addUrlParam($key, $value)
+    public function addUrlParam(string $key, bool|string $value): void
     {
         $this->urlParams[$key] = $value;
     }
@@ -281,7 +281,7 @@ class VideoUrl extends Url
     /*
      * @return string The last element of the url path
      */
-    protected function getIdFromUrlPath()
+    protected function getIdFromUrlPath(): string
     {
         $pathParts = explode('/', $this->getPath());
 
