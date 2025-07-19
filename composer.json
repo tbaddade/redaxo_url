@@ -1,6 +1,6 @@
 {
     "require": {
-        "riimu/kit-urlparser": "^2.2.0"
+        "riimu/kit-urlparser": "^2"
     },
     "scripts": {
         "post-install-cmd": [

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f40f7589f8dce5a9ac201657c385cd67",
+    "content-hash": "315e9b70622d9ee86e632ba9443c4d5d",
     "packages": [
         {
             "name": "riimu/kit-urlparser",
