@@ -1,5 +1,5 @@
 {
-  "name": "riimu/kit-urlparser",
+  "name": "alxndr-w/kit-urlparser",
   "description": "RFC 3986 compliant url parsing library with PSR-7 Uri component",
   "license": "MIT",
   "type": "library",
@@ -12,6 +12,11 @@
   ],
   "authors": [
     {
+      "name": "Alexander Walther",
+      "email": "aw@alexplus.de",
+      "homepage": "http://alexplus.de"
+    },
+    {
       "name": "Riikka Kalliomäki",
       "email": "riikka.kalliomaki@gmail.com",
       "homepage": "http://riimu.net"
@@ -19,7 +24,7 @@
   ],
   "homepage": "http://kit.riimu.net",
   "require": {
-    "php": ">=5.6.0",
+    "php": ">=8.1.0",
     "psr/http-message": "^1.0"
   },
   "suggest": {

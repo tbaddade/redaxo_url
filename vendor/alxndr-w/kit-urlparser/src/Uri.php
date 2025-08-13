@@ -71,7 +71,7 @@ class Uri implements UriInterface
      * @see https://tools.ietf.org/html/rfc3986#section-3.1
      * @return string The URI scheme or an empty string if no scheme has been provided
      */
-    public function getScheme()
+    public function getScheme() :string
     {
         return $this->scheme;
     }
@@ -91,7 +91,7 @@ class Uri implements UriInterface
      * @see https://tools.ietf.org/html/rfc3986#section-3.2
      * @return string The URI authority or an empty string if no authority information has been provided
      */
-    public function getAuthority()
+    public function getAuthority() :string
     {
         return $this->constructString([
             '%s%s@' => $this->getUserInfo(),
@@ -111,7 +111,7 @@ class Uri implements UriInterface
      * @see http://tools.ietf.org/html/rfc3986#section-3.2.1
      * @return string The URI user information or an empty string if no username has been provided
      */
-    public function getUserInfo()
+    public function getUserInfo() :string
     {
         return $this->userInfo;
     }
@@ -126,7 +126,7 @@ class Uri implements UriInterface
      * @see http://tools.ietf.org/html/rfc3986#section-3.2.2
      * @return string The URI host or an empty string if no host has been provided
      */
-    public function getHost()
+    public function getHost() :string
     {
         return $this->host;
     }
@@ -141,7 +141,7 @@ class Uri implements UriInterface
      * @see http://tools.ietf.org/html/rfc3986#section-3.2.3
      * @return int|null The URI port or null if no port has been provided
      */
-    public function getPort()
+    public function getPort() :?int
     {
         if ($this->port === $this->getStandardPort()) {
             return null;
@@ -155,7 +155,7 @@ class Uri implements UriInterface
      * @see https://tools.ietf.org/html/rfc3986#section-3.3
      * @return string The URI path or an empty string if no path has been provided
      */
-    public function getPath()
+    public function getPath() :string
     {
         return $this->path;
     }
@@ -165,7 +165,7 @@ class Uri implements UriInterface
      * @see https://tools.ietf.org/html/rfc3986#section-3.4
      * @return string The URI query string or an empty string if no query has been provided
      */
-    public function getQuery()
+    public function getQuery() :string
     {
         return $this->query;
     }
@@ -175,7 +175,7 @@ class Uri implements UriInterface
      * @see https://tools.ietf.org/html/rfc3986#section-3.5
      * @return string The URI fragment or an empty string if no fragment has been provided
      */
-    public function getFragment()
+    public function getFragment() :string
     {
         return $this->fragment;
     }
@@ -193,7 +193,7 @@ class Uri implements UriInterface
      * @return static A new instance with the specified scheme
      * @throws \InvalidArgumentException If the scheme is invalid
      */
-    public function withScheme($scheme)
+    public function withScheme($scheme) :UriInterface
     {
         $scheme = strtolower($scheme);
         $pattern = new UriPattern();
@@ -218,7 +218,7 @@ class Uri implements UriInterface
      * @param string|null $password The password associated with the user
      * @return static A new instance with the specified user information
      */
-    public function withUserInfo($user, $password = null)
+    public function withUserInfo($user, $password = null) :UriInterface
     {
         $username = rawurlencode($user);
 
@@ -244,7 +244,7 @@ class Uri implements UriInterface
      * @return static A new instance with the specified host
      * @throws \InvalidArgumentException If the hostname is invalid
      */
-    public function withHost($host)
+    public function withHost($host) :UriInterface
     {
         $pattern = new UriPattern();
 
@@ -266,7 +266,7 @@ class Uri implements UriInterface
      * @return static A new instance with the specified port
      * @throws \InvalidArgumentException If the port is invalid
      */
-    public function withPort($port)
+    public function withPort($port) :UriInterface
     {
         if ($port !== null) {
             $port = (int) $port;
@@ -291,7 +291,7 @@ class Uri implements UriInterface
      * @param string $path The path to use with the new instance
      * @return static A new instance with the specified path
      */
-    public function withPath($path)
+    public function withPath($path) :UriInterface
     {
         return $this->with('path', $this->encode($path, '@/'));
     }
@@ -306,7 +306,7 @@ class Uri implements UriInterface
      * @param string $query The query string to use with the new instance
      * @return static A new instance with the specified query string
      */
-    public function withQuery($query)
+    public function withQuery($query) :UriInterface
     {
         return $this->with('query', $this->encode($query, ':@/?'));
     }
@@ -321,7 +321,7 @@ class Uri implements UriInterface
      * @param string $fragment The fragment to use with the new instance
      * @return static A new instance with the specified fragment
      */
-    public function withFragment($fragment)
+    public function withFragment($fragment) :UriInterface
     {
         return $this->with('fragment', $this->encode($fragment, ':@/?'));
     }

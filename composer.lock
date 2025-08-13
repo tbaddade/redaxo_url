@@ -4,24 +4,24 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f40f7589f8dce5a9ac201657c385cd67",
+    "content-hash": "c7788b76030830a402982d19415698c1",
     "packages": [
         {
-            "name": "riimu/kit-urlparser",
-            "version": "v2.2.0",
+            "name": "alxndr-w/kit-urlparser",
+            "version": "v2.2.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/Riimu/Kit-UrlParser.git",
-                "reference": "483d9807582b2f524564bcbe58017d985e1907e0"
+                "url": "https://github.com/alxndr-w/Kit-UrlParser.git",
+                "reference": "e3f4366b31ef3cffe4d42f7bd2e99a6d6254f70f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Riimu/Kit-UrlParser/zipball/483d9807582b2f524564bcbe58017d985e1907e0",
-                "reference": "483d9807582b2f524564bcbe58017d985e1907e0",
+                "url": "https://api.github.com/repos/alxndr-w/Kit-UrlParser/zipball/e3f4366b31ef3cffe4d42f7bd2e99a6d6254f70f",
+                "reference": "e3f4366b31ef3cffe4d42f7bd2e99a6d6254f70f",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.6.0",
+                "php": ">=8.1.0",
                 "psr/http-message": "^1.0"
             },
             "suggest": {
@@ -39,6 +39,11 @@
             ],
             "authors": [
                 {
+                    "name": "Alexander Walther",
+                    "email": "aw@alexplus.de",
+                    "homepage": "http://alexplus.de"
+                },
+                {
                     "name": "Riikka Kalliomäki",
                     "email": "riikka.kalliomaki@gmail.com",
                     "homepage": "http://riimu.net"
@@ -54,19 +59,18 @@
                 "url"
             ],
             "support": {
-                "issues": "https://github.com/Riimu/Kit-UrlParser/issues",
-                "source": "https://github.com/Riimu/Kit-UrlParser/tree/v2.2.0"
+                "source": "https://github.com/alxndr-w/Kit-UrlParser/tree/v2.2.1"
             },
-            "time": "2022-12-13T18:51:30+00:00"
+            "time": "2025-07-19T15:55:43+00:00"
         }
     ],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {},
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": [],
-    "platform-dev": [],
+    "platform": {},
+    "platform-dev": {},
     "plugin-api-version": "2.6.0"
 }
