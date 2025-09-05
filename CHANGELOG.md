@@ -1,6 +1,24 @@
 
 # Changelog
 
+## Version 2.2.1 - 05.09.2025
+
+- Vendor ausgetauscht (Vorbereitet für REDAXO 5.21, Update psr/http-message)
+
+## Version 2.2.0 - 07.04.2025
+
+### Neu
+- [#288](https://github.com/tbaddade/redaxo_url/pull/288) DB-Passwort darf auch leer sein (@alxndr-w)
+- [#301](https://github.com/tbaddade/redaxo_url/pull/301) Profile::get könnte jetzt auch null zurückgeben (@christophboecker)
+
+### Bugfixes
+- [#271](https://github.com/tbaddade/redaxo_url/pull/271) Vereinheitlichung des Rückgabewertes für `Seo::getTags()` (@xong)
+- [#276](https://github.com/tbaddade/redaxo_url/pull/276), [#277](https://github.com/tbaddade/redaxo_url/pull/277) Update README (@markohanke, @alxndr-w)
+- [#290](https://github.com/tbaddade/redaxo_url/pull/290) Fehler beim Update des Caches vermeiden (@dergel)
+- [#293](https://github.com/tbaddade/redaxo_url/pull/293) Typo package.yml (@TobiasKrais)
+- [#295](https://github.com/tbaddade/redaxo_url/pull/295) Fehler beseitigt, wenn ein Feld vom Type Date mit falschem Wert für die Url genutzt wurde (@isospin)
+- Vendor psr/http-message jetzt vom Core nutzen
+
 ## Version 2.1.0 - 25.01.2022
 
 ### Neu
