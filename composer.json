@@ -1,6 +1,6 @@
 {
     "require": {
-        "alxndr-w/kit-urlparser": "^2"
+        "dergel/kit-urlparser": "^2.3.0"
     },
     "scripts": {
         "post-install-cmd": [
