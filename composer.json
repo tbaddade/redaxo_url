@@ -4,10 +4,10 @@
     },
     "scripts": {
         "post-install-cmd": [
-            "rm -rf vendor/composer && rm -f vendor/autoload.php"
+            "rm -rf vendor/composer vendor/dergel/kit-urlparser/examples && rm -f vendor/autoload.php"
         ],
         "post-update-cmd": [
-            "rm -rf vendor/composer && rm -f vendor/autoload.php"
+            "rm -rf vendor/composer vendor/dergel/kit-urlparser/examples && rm -f vendor/autoload.php"
         ]
     },
     "replace": {
