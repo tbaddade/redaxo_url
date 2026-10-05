@@ -94,11 +94,9 @@ class ExtensionPointManager
         switch ($this->extensionPoint->getName()) {
             case 'ART_ADDED':
             case 'ART_MOVED':
-            case 'ART_STATUS':
             case 'ART_UPDATED':
             case 'CAT_ADDED':
             case 'CAT_MOVED':
-            case 'CAT_STATUS':
             case 'CAT_UPDATED':
                 $clangId = $this->extensionPoint->getParam('clang');
                 if (!$this->extensionPoint->hasParam('clang') && $this->extensionPoint->hasParam('clang_id')) {

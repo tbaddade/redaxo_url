@@ -26,8 +26,8 @@ if (null !== Url::getRewriter()) {
 rex_extension::register('PACKAGES_INCLUDED', function (\rex_extension_point $epPackagesIncluded) {
     if (rex::isBackend() && rex::getUser()) {
         $extensionPoints = [
-            'ART_ADDED', 'ART_DELETED', 'ART_MOVED', 'ART_STATUS', 'ART_UPDATED',
-            'CAT_ADDED', 'CAT_DELETED', 'CAT_MOVED', 'CAT_STATUS', 'CAT_UPDATED',
+            'ART_ADDED', 'ART_DELETED', 'ART_MOVED', 'ART_UPDATED',
+            'CAT_ADDED', 'CAT_DELETED', 'CAT_MOVED', 'CAT_UPDATED',
             'CLANG_ADDED', 'CLANG_DELETED','CLANG_UPDATED',
             'CACHE_DELETED',
             'REX_FORM_SAVED',
