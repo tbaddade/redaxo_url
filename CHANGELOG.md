@@ -4,6 +4,11 @@ Url - Changelog
 
 # Changelog
 
+Version 1.0.2 - 16.10.2026
+---------------------------------
+### Bugfixes
+- Gleiche Urls bei mehreren Datensätzen wurden nicht erkannt (Suffix wurde beim Vergleich nicht berücksichtigt). Der neuere Datensatz erhält jetzt die Id angehangen, die Url des älteren Datensatzes bleibt unverändert.
+
 Version 1.0.1 - 06.11.2017
 ---------------------------------
 ### Bugfixes
