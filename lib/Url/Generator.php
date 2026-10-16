@@ -140,6 +140,8 @@ class Generator
 
         $results = \rex_sql::factory()->setQuery($query)->getArray();
         if (count($results)) {
+            // bereits vergebene Urls (Domain + Pfad), über alle Profile hinweg
+            $savePaths = [];
             foreach ($results as $result) {
                 $articleId = $result['article_id'];
                 $clangId = $result['clang_id'];
@@ -243,10 +245,12 @@ class Generator
 
                     $querySelect = implode(',', $querySelect);
 
-                    $query = 'SELECT ' . $querySelect . ' FROM ' . $table->name . ' ' . $queryFrom . ' ' . $queryWhere . '';
+                    // nach Id sortieren, damit bei gleichen Urls immer der ältere Datensatz die Url ohne Id behält
+                    $queryOrder = 'ORDER BY ' . $table->name . '.' . $table->id . ' ASC';
+
+                    $query = 'SELECT ' . $querySelect . ' FROM ' . $table->name . ' ' . $queryFrom . ' ' . $queryWhere . ' ' . $queryOrder;
                     $entries = \rex_sql::factory($table->dbid)->setQuery($query)->getArray();
                     if (count($entries)) {
-                        $savePaths = [];
                         foreach ($entries as $entry) {
                             $path = [];
                             if (isset($entry['field_1']) && $entry['field_1'] != '') {
@@ -291,7 +295,12 @@ class Generator
                             $articleUrl = self::stripRewriterSuffix($articleUrl) . '/';
                             $url = Url::parse($articleUrl);
 
-                            $path .= (isset($savePaths[$path])) ? '-' . $entry['id'] : '';
+                            // existiert die Url bereits, wird die Id des Datensatzes angehangen
+                            $savePathKey = $url->getDomain() . $url->getPath() . $path;
+                            if (isset($savePaths[$savePathKey])) {
+                                $path .= '-' . $entry['id'];
+                            }
+                            $savePaths[$savePathKey] = true;
                             $path .= Url::getRewriter()->getSuffix();
 
                             $path = \rex_extension::registerPoint(new \rex_extension_point('URL_GENERATOR_PATH_CREATED', $path, ['article_id' => $articleId, 'clang_id' => $clangId, 'data' => $entry, 'table' => $table]));
@@ -379,8 +388,6 @@ class Generator
                             $urlParamKey = (trim($table->urlParamKey) == '') ? self::$pathsNoUrlParamKey : $table->urlParamKey;
 
                             self::$paths[$url->getDomain()][$articleId][$urlParamKey][$entry['id']][$articleClangId] = json_decode(json_encode($object), true);
-
-                            $savePaths[$path] = '';
                         }
                     }
                 }
